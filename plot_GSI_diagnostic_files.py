@@ -46,7 +46,6 @@ def calculate_stats(o_f):
     
     return mean, std
 
-
 def plot_histogram(o_f, bins, meta_data):
     # get count and calculate mean and standard deviation of o_f
     n = len(o_f) 
@@ -113,7 +112,6 @@ else:
                  "Obs_ID": "Total"
                 }
 
-
 ## Read data
 f = Dataset(nc_file, mode='r')
 
@@ -132,8 +130,8 @@ if obs_id != None:
     lons = lons[idx]
     lats = lats[idx]
 
-if o_f.size == 0:
-    print("No observations for %s from Observation ID: %s" % (var, obs_id))
+    if o_f.size == 0:
+        print("No observations for %s from Observation ID: %s" % (var, obs_id))
 
 # Temperature
 if var == 't':
