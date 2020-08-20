@@ -5,18 +5,19 @@ import matplotlib.colors as mcolors
 from scipy import spatial
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import argparse
 
+parser = argparse.ArgumentParser(description='Plot O-F histogram and spatial plot with GSI diagnostic files.')          
+parser.add_argument('-f', '--file', type=str,                                                                                                        
+                    help='path to GSI diagnostic file.', required=True)
+parser.add_argument('-o', '--obs', type=int, default=None,                                                                                                        
+                    help='the specific observation code.')
 
+args = parser.parse_args()
 
-## netCDF4 file name
-# nc_file = 'diag_conv_ps_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_gps_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_q_ges.2020081512_ensmean.nc4'
-nc_file = 'diag_conv_sst_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_t_ges.2020081512_ensmean.nc4'
+nc_file = args.file
+obs_id = args.obs
 
-## Indicate obervation type
-obs_id = 120
 
 ################################################################## 
 
@@ -63,18 +64,21 @@ def plot_histogram(o_f, bins, meta_data):
     plt.xlabel('O - F')
     plt.ylabel('Count')
     plt.title('%s%s_%s:%s,O-F all data on %s' % (meta_data['Variable'],meta_data['Obs_ID'],meta_data['Hour'],meta_data['File_type'],meta_data['Date']), fontsize=14)
-    plt.show()
+    plt.savefig('%s_%s_%s_O_minus_F_histogram.png' % (meta_data['Date'],meta_data['Variable'],meta_data['Obs_ID']), bbox_inches='tight', pad_inches=0.1)
     
     return 0
 
-def plot_spatial(o_f, bounds, meta_data):
+def plot_spatial(o_f, bounds, meta_data, lons, lats):
+    
+    n = len(o_f) 
+    mean, std = calculate_stats(o_f)
     
     plt.figure(figsize=(15,12))
     ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=0))
     ax.coastlines()
     norm = mcolors.BoundaryNorm(boundaries=bounds, ncolors=256)
     
-    cs = plt.scatter(lons[idx], lats[idx], c=o_f, s=30,
+    cs = plt.scatter(lons, lats, c=o_f, s=30,
                 norm=norm, cmap='bwr', #edgecolors='gray', linewidth=0.25,
                 transform=ccrs.PlateCarree())
     
@@ -84,7 +88,7 @@ def plot_spatial(o_f, bounds, meta_data):
     cb = plt.colorbar(cs, shrink=0.5, pad=.04, extend='both')
     cb.set_label('O - F', fontsize=12)
     plt.title('%s%s_%s:%s,O-F all data on %s' % (meta_data['Variable'],meta_data['Obs_ID'],meta_data['Hour'],meta_data['File_type'],meta_data['Date']), fontsize=14)
-    plt.show()
+    plt.savefig('%s_%s_%s_O_minus_F_spatial.png' % (meta_data['Date'],meta_data['Variable'],meta_data['Obs_ID']), bbox_inches='tight', pad_inches=0.1)
     
     return 0
     
@@ -93,12 +97,21 @@ def plot_spatial(o_f, bounds, meta_data):
 
 var, date, hour, file_type = get_metadata(nc_file)
 
-meta_data = {"Variable": var,
-             "Date": date,
-             "Hour": hour,
-             "File_type": file_type,
-             "Obs_ID": obs_id
-            }
+if obs_id != None:
+                
+    meta_data = {"Variable": var,
+                 "Date": date,
+                 "Hour": hour,
+                 "File_type": file_type,
+                 "Obs_ID": obs_id
+                }
+else:
+    meta_data = {"Variable": var,
+                 "Date": date,
+                 "Hour": hour,
+                 "File_type": file_type,
+                 "Obs_ID": "Total"
+                }
 
 
 ## Read data
@@ -112,8 +125,12 @@ f.close()
     
 
 ## Find data with indicated observation type
-idx = np.where(o_type == obs_id)
-o_f = o_f[idx]
+if obs_id != None:    
+    idx = np.where(o_type == obs_id)
+    o_f = o_f[idx]
+    
+    lons = lons[idx]
+    lats = lats[idx]
 
 if o_f.size == 0:
     print("No observations for %s from Observation ID: %s" % (var, obs_id))
@@ -124,7 +141,7 @@ if var == 't':
     plot_histogram(o_f, bins, meta_data)
     
     bounds = np.arange(-10,12.5,2.5)
-    plot_spatial(o_f, bounds, meta_data)
+    plot_spatial(o_f, bounds, meta_data, lons, lats)
 
 # Specific Humidity
 if var == 'q':
@@ -132,7 +149,7 @@ if var == 'q':
     plot_histogram(o_f, bins, meta_data)
     
     bounds = np.arange(-0.01,0.011,0.0025)
-    plot_spatial(o_f, bounds, meta_data)
+    plot_spatial(o_f, bounds, meta_data, lons, lats)
 
 # Pressure
 if var == 'ps':
@@ -140,5 +157,5 @@ if var == 'ps':
     plot_histogram(o_f, bins, meta_data)
     
     bounds = np.arange(-500,510,100)
-    plot_spatial(o_f, bounds, meta_data)
+    plot_spatial(o_f, bounds, meta_data, lons, lats)
 
