@@ -1,3 +1,4 @@
+
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib.pyplot as plt
@@ -5,19 +6,19 @@ import matplotlib.colors as mcolors
 from scipy import spatial
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import argparse
 
-%matplotlib inline
+parser = argparse.ArgumentParser(description='Plot O-F histogram and spatial plot with GSI diagnostic files.')          
+parser.add_argument('-f', '--file', type=str,                                                                                                        
+                    help='path to GSI diagnostic file.', required=True)
+parser.add_argument('-o', '--obs', type=int, default=None,                                                                                                        
+                    help='the specific observation code.')
 
-## netCDF4 file name
+args = parser.parse_args()
 
-# nc_file = 'diag_conv_ps_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_gps_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_q_ges.2020081512_ensmean.nc4'
-# nc_file = 'diag_conv_sst_ges.2020081512_ensmean.nc4'
-nc_file = 'diag_conv_t_ges.2020081512_ensmean.nc4'
+nc_file = args.file
+obs_id = args.obs
 
-## Indicate obervation type
-obs_id = 133
 
 ################################################################## 
 
@@ -46,7 +47,6 @@ def calculate_stats(o_f):
     
     return mean, std
 
-
 def plot_histogram(o_f, bins, meta_data):
     # get count and calculate mean and standard deviation of o_f
     n = len(o_f) 
@@ -64,7 +64,7 @@ def plot_histogram(o_f, bins, meta_data):
     plt.xlabel('O - F')
     plt.ylabel('Count')
     plt.title('%s%s_%s:%s,O-F all data on %s' % (meta_data['Variable'],meta_data['Obs_ID'],meta_data['Hour'],meta_data['File_type'],meta_data['Date']), fontsize=14)
-    plt.show()
+    plt.savefig('%s_%s_%s_O_minus_F_histogram.png' % (meta_data['Date'],meta_data['Variable'],meta_data['Obs_ID']), bbox_inches='tight', pad_inches=0.1)
     
     return 0
 
@@ -76,24 +76,19 @@ def plot_spatial(o_f, bounds, meta_data, lons, lats):
     plt.figure(figsize=(15,12))
     ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=0))
     ax.coastlines()
-    ax.set_extent([-180,180,-90,90],crs=ccrs.PlateCarree())
     norm = mcolors.BoundaryNorm(boundaries=bounds, ncolors=256)
     
     cs = plt.scatter(lons, lats, c=o_f, s=30,
                 norm=norm, cmap='bwr', #edgecolors='gray', linewidth=0.25,
                 transform=ccrs.PlateCarree())
     
-    if meta_data['Variable'] == 'q':
-        t = ('n: %s\nstd: %s\nmean: %s' % (n,np.round(std,6),np.round(mean,6)))
-        ax.text(-175, -60, t, fontsize=14, transform=ccrs.PlateCarree())
-    else:
-        t = ('n: %s\nstd: %s\nmean: %s' % (n,np.round(std,3),np.round(mean,3)))
-        ax.text(-175, -60, t, fontsize=14, transform=ccrs.PlateCarree())
+    t = ('n: %s\nstd: %s\nmean: %s' % (n,std,mean))
+    ax.text(-175, -70, t, fontsize = 16, transform=ccrs.PlateCarree())
 
     cb = plt.colorbar(cs, shrink=0.5, pad=.04, extend='both')
     cb.set_label('O - F', fontsize=12)
     plt.title('%s%s_%s:%s,O-F all data on %s' % (meta_data['Variable'],meta_data['Obs_ID'],meta_data['Hour'],meta_data['File_type'],meta_data['Date']), fontsize=14)
-    plt.show()
+    plt.savefig('%s_%s_%s_O_minus_F_spatial.png' % (meta_data['Date'],meta_data['Variable'],meta_data['Obs_ID']), bbox_inches='tight', pad_inches=0.1)
     
     return 0
     
@@ -102,13 +97,21 @@ def plot_spatial(o_f, bounds, meta_data, lons, lats):
 
 var, date, hour, file_type = get_metadata(nc_file)
 
-meta_data = {"Variable": var,
-             "Date": date,
-             "Hour": hour,
-             "File_type": file_type,
-             "Obs_ID": obs_id
-            }
-
+if obs_id != None:
+                
+    meta_data = {"Variable": var,
+                 "Date": date,
+                 "Hour": hour,
+                 "File_type": file_type,
+                 "Obs_ID": obs_id
+                }
+else:
+    meta_data = {"Variable": var,
+                 "Date": date,
+                 "Hour": hour,
+                 "File_type": file_type,
+                 "Obs_ID": "Total"
+                }
 
 ## Read data
 f = Dataset(nc_file, mode='r')
@@ -121,7 +124,6 @@ f.close()
     
 
 ## Find data with indicated observation type
-
 if obs_id != None:    
     idx = np.where(o_type == obs_id)
     o_f = o_f[idx]
@@ -129,8 +131,8 @@ if obs_id != None:
     lons = lons[idx]
     lats = lats[idx]
 
-if o_f.size == 0:
-    print("No observations for %s from Observation ID: %s" % (var, obs_id))
+    if o_f.size == 0:
+        print("No observations for %s from Observation ID: %s" % (var, obs_id))
 
 # Temperature
 if var == 't':
@@ -155,4 +157,3 @@ if var == 'ps':
     
     bounds = np.arange(-500,510,100)
     plot_spatial(o_f, bounds, meta_data, lons, lats)
-
