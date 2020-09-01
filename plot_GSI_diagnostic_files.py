@@ -162,9 +162,6 @@ def plot_spatial(diff, bounds, meta_data, lons, lats):
                 norm=norm, cmap='bwr', #edgecolors='gray', linewidth=0.25,
                 transform=ccrs.PlateCarree())
     
-#     t = ('n: %s\nstd: %s\nmean: %s' % (n,std,mean))
-#     ax.text(-175, -70, t, fontsize = 16, transform=ccrs.PlateCarree())
-    
     if meta_data['Variable'] == 'q':
         t = ('n: %s\nstd: %s\nmean: %s' % (n,np.round(std,6),np.round(mean,6)))
         ax.text(-175, -70, t, fontsize=16, transform=ccrs.PlateCarree())
