@@ -88,7 +88,10 @@ def get_obs_type(obs_id):
         290: "Non-SUPEROBED Scatterometer Winds over Ocean"
     }
     
-    return obs_indicators[obs_id]
+    if (obs_id in d.keys()) == True:	
+        return obs_indicators[obs_id]
+    else:
+        return str(obs_id)
 
 def calculate_stats(diff):
     mean = np.mean(diff)
