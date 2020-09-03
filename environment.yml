@@ -1,0 +1,15 @@
+name: DA_Diags
+channels:
+  - defaults
+dependencies:
+  - python=3
+  - numpy
+  - scipy
+  - matplotlib
+  - cartopy
+  - requests
+  - jupyter
+  - jupyterlab
+  - netcdf4
+  - xarray
+  - pandas
