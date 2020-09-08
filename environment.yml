@@ -6,10 +6,10 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
-  - cartopy
-  - requests
-  - jupyter
-  - jupyterlab
   - netcdf4
   - xarray
   - pandas
+  - cartopy
+  - cython
+  - jupyter
+  - pyyaml
