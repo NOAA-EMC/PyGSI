@@ -69,12 +69,12 @@ def main(parsed_yaml_file):
         
         data = diag.getData(DATA_TYPE, obs_id, qc_flag)
         
-    else:
+    elif parsed_yaml_file['satellite input']['path']:
         
-        nc_file   = parsed_yaml_file['conventional input']['path']
-        channel   = parsed_yaml_file['conventional input']['channel']
-        qc_flag   = parsed_yaml_file['conventional input']['qc flag']
-        DATA_TYPE = parsed_yaml_file['conventional input']['data type'][0]
+        nc_file   = parsed_yaml_file['satellite input']['path']
+        channel   = parsed_yaml_file['satellite input']['channel']
+        qc_flag   = parsed_yaml_file['satellite input']['qc flag']
+        DATA_TYPE = parsed_yaml_file['satellite input']['data type'][0]
         
         diag = satellite(nc_file)
         
