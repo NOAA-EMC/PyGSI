@@ -94,6 +94,8 @@ def main(parsed_yaml_file):
                 'std'  : std,
                 'rmse' : rmse
                }]
+    
+    write_csv(nc_file, csv_dict)
         
     return
 
