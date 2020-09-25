@@ -27,7 +27,7 @@ class gsidiag:
         if dtype == 'conv':
             variable = self.path.split('/')[-1].split('.')[0].split('_')[2]
         
-            metadata = {'Data_type' : dtype,
+            metadata = {'Diag_type' : dtype,
                         'Variable'  : variable,
                         'Date'      : date,
                         'File_type' : ftype
@@ -35,7 +35,7 @@ class gsidiag:
         else:
             satellite = self.path.split('/')[-1].split('.')[0].split('_')[2]
             
-            metadata = {'Data_type' : dtype,
+            metadata = {'Diag_type' : dtype,
                         'Satellite' : satellite,
                         'Date'      : date,
                         'File_type' : ftype

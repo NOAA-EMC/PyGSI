@@ -6,6 +6,8 @@ satellite input:
     -
   qc flag:
     - 0
+  data type:
+    - O-F
   plot type: [histogram, spatial]
 
 conventional input:
@@ -13,6 +15,9 @@ conventional input:
   observation id:
     - 120
   qc flag:
+    -
+  data type:
+    - O-F
   plot type:
     - histogram
     - spatial
