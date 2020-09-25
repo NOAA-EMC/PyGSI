@@ -106,7 +106,7 @@ def main(parsed_yaml_file):
 
 parser = argparse.ArgumentParser(description='Get basic statistics from GSI diagnostic file and save as .csv file.')          
 parser.add_argument('-f', '--file', type=str,                                                                                                        
-                    help='path to GSI diagnostic file.', required=True)
+                    help='path to .yaml file.', required=True)
 
 args = parser.parse_args()
 
