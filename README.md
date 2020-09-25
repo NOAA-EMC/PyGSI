@@ -1,8 +1,8 @@
-__Kevin Dougherty__  
-__September 2020__  
+__Kevin Dougherty__
+__September 2020__
 
 
-# GSI_plots
+# PyGSI
 Scripts used to validate GSI diagnostic files for JEDI
 
 
