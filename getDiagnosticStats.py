@@ -3,10 +3,12 @@ from datetime import datetime
 import yaml
 import csv
 import sys
+import argparse
 
 sys.path.append('/home/Kevin.Dougherty/GSI_plots')
 
 from runDiagnostics import conventional, satellite
+
 
 def calculate_stats(data):
     
@@ -102,7 +104,14 @@ def main(parsed_yaml_file):
         
 #########################################################        
 
+parser = argparse.ArgumentParser(description='Get basic statistics from GSI diagnostic file and save as .csv file.')          
+parser.add_argument('-f', '--file', type=str,                                                                                                        
+                    help='path to GSI diagnostic file.', required=True)
 
-file = open('test_YAML.yaml')
+args = parser.parse_args()
+
+f = args.file
+
+file = open(f)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 main(parsed_yaml_file)
