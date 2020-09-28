@@ -60,44 +60,56 @@ def main(parsed_yaml_file):
     Need to add output file. Make default '/.'
     """
     
-    if parsed_yaml_file['conventional input']['path']:
-        
-        nc_file   = parsed_yaml_file['conventional input']['path']
-        obs_id    = parsed_yaml_file['conventional input']['observation id']
-        qc_flag   = parsed_yaml_file['conventional input']['qc flag']
-        DATA_TYPE = parsed_yaml_file['conventional input']['data type'][0]
-        
-        diag = conventional(nc_file)
-        
-        data = diag.getData(DATA_TYPE, obs_id, qc_flag)
-        
-    elif parsed_yaml_file['satellite input']['path']:
-        
-        nc_file   = parsed_yaml_file['satellite input']['path']
-        channel   = parsed_yaml_file['satellite input']['channel']
-        qc_flag   = parsed_yaml_file['satellite input']['qc flag']
-        DATA_TYPE = parsed_yaml_file['satellite input']['data type'][0]
-        
-        diag = satellite(nc_file)
-        
-        data = diag.getData(DATA_TYPE, channel, qc_flag)
+    def main(parsed_yaml_file):
     
-    metadata = diag.get_metadata()
+    for group in parsed_yaml_file['diagnostic']:
+        for groupType in group.keys():
+            
+            if groupType == 'conventional input':
+        
+                nc_file   = group[groupType]['path'][0]
+                obs_id    = group[groupType]['observation id']
+                qc_flag   = group[groupType]['qc flag']
+                DATA_TYPE = group[groupType]['data type'][0]
 
-    mn, mx, mean, std, rmse = calculate_stats(data)
+                diag = conventional(nc_file)
 
-    date = metadata['Date'].strftime("%Y%m%d%H")
+                data = diag.getData(DATA_TYPE, obs_id, qc_flag)
+            
+            elif groupType == 'radiance input':
+                
+                nc_file   = group[groupType]['path'][0]
+                channel   = group[groupType]['channel']
+                qc_flag   = group[groupType]['qc flag']
+                DATA_TYPE = group[groupType]['data type'][0]
 
-    # dictionary of values needed in csv
-    csv_dict = [{'Date' : date,
-                'min'  : mn,
-                'max'  : mx,
-                'mean' : mean,
-                'std'  : std,
-                'rmse' : rmse
-               }]
+                diag = satellite(nc_file)
+
+                data = diag.getData(DATA_TYPE, channel, qc_flag)
+
+                lats, lons = diag.get_lat_lon(channel, qc_flag)
+        
+            else:
+                print('File type not recognized. Please address in yaml file.')
+                return
+            
     
-    write_csv(nc_file, csv_dict)
+            metadata = diag.get_metadata()
+
+            mn, mx, mean, std, rmse = calculate_stats(data)
+
+            date = metadata['Date'].strftime("%Y%m%d%H")
+
+            # dictionary of values needed in csv
+            csv_dict = [{'Date' : date,
+                        'min'  : mn,
+                        'max'  : mx,
+                        'mean' : mean,
+                        'std'  : std,
+                        'rmse' : rmse
+                       }]
+
+            write_csv(nc_file, csv_dict)
         
     return
 
