@@ -10,7 +10,7 @@ import argparse
 
 sys.path.append('/home/Kevin.Dougherty/GSI_plots')
 
-from pyGSI.diags import conventional, satellite
+from pyGSI.Diags import conventional, satellite
 
 
 def plot_labels(metadata, stats):
@@ -28,10 +28,10 @@ def plot_labels(metadata, stats):
              
         if metadata['Diag_type'] == 'conv':
             left_title = '{Data_type}: {Variable}'.format(**metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F.png'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
         else:
             left_title = '{Data_type}: {Satellite}'.format(**metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_F.png'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_F'.format(**metadata)
              
     elif metadata['File_type'] == 'anl':
              
@@ -40,10 +40,10 @@ def plot_labels(metadata, stats):
              
         if metadata['Diag_type'] == 'conv':
             left_title = '{Data_type}: {Variable}'.format(**metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A.png'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
         else:
             left_title = '{Data_type}: {Satellite}'.format(**metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_A.png'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_A'.format(**metadata)
              
     labels = {'statText'  : t,
               'xLabel'    : xlabel,
@@ -101,7 +101,41 @@ def plot_histogram(data, metadata):
     title_split = labels['leftTitle'].split('\n')
     plt.title(labels['leftTitle'], loc='left', fontsize=14)
     plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    plt.savefig(labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+    plt.savefig(labels['saveFile'] + _'histogram.png', bbox_inches='tight', pad_inches=0.1)
+    
+    return
+
+
+def plot_spatial(data, metadata, lats, lons):
+    
+    stats = calculate_stats(data)
+    
+    plt.figure(figsize=(15,12))
+    ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=0))
+    ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+    ax.set_extent([-180, 180, -90, 90])
+    
+    upperbound = np.round(stats['Std'])*3
+    lowerbound = 0-upperbound
+    bins = (upperbound - lowerbound)/20
+    
+    norm = mcolors.BoundaryNorm(boundaries=np.arange(lowerbound, upperbound+bins, bins), ncolors=256)
+    
+    cs = plt.scatter(lons, lats, c=data, s=30,
+                norm=norm, cmap='bwr',
+                transform=ccrs.PlateCarree())
+    
+    labels = plot_labels(metadata, stats)
+             
+    ax.text(-175, -70, labels['statText'], fontsize=14, transform=ccrs.PlateCarree())
+    
+    cb = plt.colorbar(cs, shrink=0.5, pad=.04, extend='both')
+    cb.set_label(labels['xLabel'], fontsize=12)
+    
+    plt.title(labels['leftTitle'], loc='left', fontsize=14)
+    plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+    plt.savefig(labels['saveFile'] + '_spatial.png', bbox_inches='tight', pad_inches=0.1)
+
     
     return
 
