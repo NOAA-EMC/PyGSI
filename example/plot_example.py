@@ -173,7 +173,7 @@ def main(parsed_yaml_file):
     
     plot_histogram(data, metadata)
         
-    
+    plot_spatial(data, metadata)
     
     
     return
