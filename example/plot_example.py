@@ -58,16 +58,14 @@ def plot_labels(metadata, stats):
 
 def calculate_stats(data):
     
-    n = len(data)
+    n = np.count_nonzero(~np.isnan(data))
     
-    mean = np.mean(data)
-    var_list = [(x-mean)**2 for x in data]
-    variance = np.sum(var_list)/(len(var_list)-1)
-    std = np.sqrt(variance)
-    mx = max(data)
-    mn = min(data)
+    mean = np.nanmean(data)
+    std = np.nanstd(data)
+    mx = np.nanmax(data)
+    mn = np.nanmin(data)
     
-    rmse = np.sqrt(np.mean(np.square(data)))
+    rmse = np.sqrt(np.nanmean(np.square(data)))
     
     stats = {'N'    : n,
              'Min'  : mn,
@@ -82,7 +80,7 @@ def calculate_stats(data):
 
 def plot_histogram(data, metadata):
     
-    stats = calculate_stats(data)
+    stats = calculate_stats(data) 
     
     binsize = (stats['Max']-stats['Min'])/np.sqrt(stats['N'])
     bins = np.arange(0-(4*stats['Std']),0+(4*stats['Std']),binsize)
@@ -101,7 +99,7 @@ def plot_histogram(data, metadata):
     title_split = labels['leftTitle'].split('\n')
     plt.title(labels['leftTitle'], loc='left', fontsize=14)
     plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    plt.savefig(labels['saveFile'] + _'histogram.png', bbox_inches='tight', pad_inches=0.1)
+    plt.savefig(labels['saveFile'] + '_histogram.png', bbox_inches='tight', pad_inches=0.1)
     
     return
 
@@ -115,14 +113,14 @@ def plot_spatial(data, metadata, lats, lons):
     ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
     ax.set_extent([-180, 180, -90, 90])
     
-    upperbound = np.round(stats['Std'])*3
+    upperbound = (np.round(stats['Std']*2)/2)*5
     lowerbound = 0-upperbound
-    bins = (upperbound - lowerbound)/20
+    bins = (upperbound - lowerbound)/10
     
     norm = mcolors.BoundaryNorm(boundaries=np.arange(lowerbound, upperbound+bins, bins), ncolors=256)
     
     cs = plt.scatter(lons, lats, c=data, s=30,
-                norm=norm, cmap='bwr',
+                norm=norm, cmap='bwr', #edgecolors='gray', linewidth=0.25,
                 transform=ccrs.PlateCarree())
     
     labels = plot_labels(metadata, stats)
@@ -141,39 +139,47 @@ def plot_spatial(data, metadata, lats, lons):
 
 
 def main(parsed_yaml_file):
-    if parsed_yaml_file['conventional input']['path']:
+    
+    for group in parsed_yaml_file['diagnostic']:
+        for groupType in group.keys():
+            
+            if groupType == 'conventional input':
         
-        nc_file   = parsed_yaml_file['conventional input']['path'][0]
-        obs_id    = parsed_yaml_file['conventional input']['observation id']
-        qc_flag   = parsed_yaml_file['conventional input']['qc flag']
-        DATA_TYPE = parsed_yaml_file['conventional input']['data type'][0]
+                nc_file   = group[groupType]['path'][0]
+                obs_id    = group[groupType]['observation id']
+                qc_flag   = group[groupType]['qc flag']
+                DATA_TYPE = group[groupType]['data type'][0]
+
+                diag = conventional(nc_file)
+
+                data = diag.getData(DATA_TYPE, obs_id, qc_flag)
+
+                lats, lons = diag.get_lat_lon(obs_id, qc_flag)
         
-        diag = conventional(nc_file)
+            elif groupType == 'radiance input':
+                
+                nc_file   = group[groupType]['path'][0]
+                channel   = group[groupType]['channel']
+                qc_flag   = group[groupType]['qc flag']
+                DATA_TYPE = group[groupType]['data type'][0]
+
+                diag = satellite(nc_file)
+
+                data = diag.getData(DATA_TYPE, channel, qc_flag)
+
+                lats, lons = diag.get_lat_lon(channel, qc_flag)
         
-        data = diag.getData(DATA_TYPE, obs_id, qc_flag)
-        
-    elif parsed_yaml_file['satellite input']['path']:
-        
-        nc_file   = parsed_yaml_file['satellite input']['path']
-        channel   = parsed_yaml_file['satellite input']['channel']
-        qc_flag   = parsed_yaml_file['satellite input']['qc flag']
-        DATA_TYPE = parsed_yaml_file['satellite input']['data type'][0]
-        
-        diag = satellite(nc_file)
-        
-        data = diag.getData(DATA_TYPE, channel, qc_flag)
-        
-    else:
-        print('File type not recognized. Please address in yaml file.')
+            else:
+                print('File type not recognized. Please address in yaml file.')
+                return
         
     
-    metadata = diag.get_metadata()
-    metadata['Data_type'] = DATA_TYPE
-    print(metadata)
-    
-    plot_histogram(data, metadata)
-        
-    plot_spatial(data, metadata)
+            metadata = diag.get_metadata()
+            metadata['Data_type'] = DATA_TYPE
+
+            plot_histogram(data, metadata)
+
+            plot_spatial(data, metadata, lats, lons)
     
     
     return
