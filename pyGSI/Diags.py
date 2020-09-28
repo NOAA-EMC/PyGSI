@@ -57,8 +57,7 @@ class gsidiag:
             return data
 
         elif dtype == 'O-A':
-            # Not sure if I need to do this because 'ges' and 'anl' files are both f.variable['Obs_Minus_Forecast_adjusted'][:]
-            # but I will leave it for now
+            
             check = check_o_minus_a()
             if check:
                 data = self.omf[idx]
@@ -109,7 +108,6 @@ class conventional(gsidiag):
         """
         super().__init__(path)
 
-#         self.get_metadata()
         self.read_conv_obs()
 
 
@@ -171,9 +169,9 @@ class conventional(gsidiag):
             idx    : indices of the requested data in the file
         """
 
-        if not obsid:
+        if not obsid or obsid == [None]:
             obsid=None
-        if not qcflag:
+        if not qcflag or qcflag == [None]:
             qcflag=None
 
         idx = self.o_type
@@ -260,9 +258,9 @@ class radiance(gsidiag):
         locations from a satellite radiance diagnostic file.
         """
 
-        if not channel:
+        if not channel or channel == [None]:
             channel=None
-        if not qcflag:
+        if not qcflag or qcflag == [None]:
             qcflag=None
 
         idx = self.channel_idx
