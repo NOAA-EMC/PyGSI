@@ -171,9 +171,9 @@ class conventional(gsidiag):
             idx    : indices of the requested data in the file
         """
         
-        if not obsid:
+        if not obsid or obsid == [None]:
             obsid=None
-        if not qcflag:
+        if not qcflag or qcflag == [None]:
             qcflag=None
         
         idx = self.o_type
@@ -248,9 +248,11 @@ class satellite(gsidiag):
             
         """
         
-        idx = self.get_idx_sat(channel, qc_flag)
+        idx = self.get_idx_sat(channel, qcflag)
         
         data = self.query_dataType(dtype, idx)
+        
+        data[data > 1e4] = np.nan
         
         return data
     
@@ -260,9 +262,9 @@ class satellite(gsidiag):
         locations from a satellite diagnostic file.
         """
         
-        if not channel:
+        if not channel or channel == [None]:
             channel=None
-        if not qcflag:
+        if not qcflag or qcflag == [None]:
             qcflag=None
             
         idx = self.channel_idx
