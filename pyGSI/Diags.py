@@ -13,6 +13,9 @@ class gsidiag:
 
         self.path = path
         
+    def __len__(self):
+        return len(self.lats)
+        
         
     def get_metadata(self):
         """
@@ -33,10 +36,10 @@ class gsidiag:
                         'File_type' : ftype
                        }
         else:
-            radiance = self.path.split('/')[-1].split('.')[0].split('_')[2]
+            satellite = self.path.split('/')[-1].split('.')[0].split('_')[2]
             
             metadata = {'Diag_type' : dtype,
-                        'Satellite' : radiance,
+                        'Satellite' : satellite,
                         'Date'      : date,
                         'File_type' : ftype
                        }
@@ -111,6 +114,9 @@ class conventional(gsidiag):
         
 #         self.get_metadata()
         self.read_conv_obs()
+    
+    def __str__(self):
+        return "Conventional object"
         
         
     def read_conv_obs(self):
@@ -212,6 +218,9 @@ class radiance(gsidiag):
         super().__init__(path)
 
         self.read_radiance_obs()
+        
+    def __str__(self):
+        return "radiance object"
         
     def read_radiance_obs(self):
         """
