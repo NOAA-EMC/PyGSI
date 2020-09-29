@@ -33,10 +33,10 @@ class gsidiag:
                         'File_type' : ftype
                        }
         else:
-            satellite = self.path.split('/')[-1].split('.')[0].split('_')[2]
+            radiance = self.path.split('/')[-1].split('.')[0].split('_')[2]
             
             metadata = {'Diag_type' : dtype,
-                        'Satellite' : satellite,
+                        'Satellite' : radiance,
                         'Date'      : date,
                         'File_type' : ftype
                        }
@@ -199,11 +199,11 @@ class conventional(gsidiag):
         return dic
     
     
-class satellite(gsidiag):
+class radiance(gsidiag):
     
     def __init__(self, path):
         """
-        Initialize a satellite GSI diagnostic object
+        Initialize a radiance GSI diagnostic object
         INPUT:
             path   : path to conventional GSI diagnostic object
         RESULT:
@@ -211,11 +211,11 @@ class satellite(gsidiag):
         """
         super().__init__(path)
 
-        self.read_satellite_obs()
+        self.read_radiance_obs()
         
-    def read_satellite_obs(self):
+    def read_radiance_obs(self):
         """
-        Reads the data from the satellite diagnostic file during initialization.
+        Reads the data from the radiance diagnostic file during initialization.
         """
         
         f = Dataset(self.path, mode='r')
@@ -237,7 +237,7 @@ class satellite(gsidiag):
         
     def getData(self, dtype, channel=None, qcflag=None):
         """
-        Given parameters, get the data from a satellite 
+        Given parameters, get the data from a radiance 
         diagnostic file.
         INPUT:
             dtype   : type of data to extract i.e. observation, O-F, O-A, H(x)
@@ -259,7 +259,7 @@ class satellite(gsidiag):
     def get_idx_sat(self, channel=None, qcflag=None):
         """
         Given parameters, get the indices of the observation
-        locations from a satellite diagnostic file.
+        locations from a radiance diagnostic file.
         """
         
         if not channel or channel == [None]:
@@ -279,7 +279,7 @@ class satellite(gsidiag):
         return idx
     
     # How can we get this method to be used for both conv
-    # and satellite
+    # and radiance
     def get_lat_lon(self, channel=None, qcflag=None):
         """
         Gets lats and lons with desired indices
