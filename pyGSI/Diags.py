@@ -111,8 +111,7 @@ class conventional(gsidiag):
             self   : GSIdiag object containing the path to extract data
         """
         super().__init__(path)
-        
-#         self.get_metadata()
+          
         self.read_conv_obs()
     
     def __str__(self):
@@ -133,6 +132,8 @@ class conventional(gsidiag):
         self.time = f.variables['Time'][:]
         self.stnelev = f.variables['Station_Elevation'][:]
         self.o = f.variables['Observation'][:]
+        self.prepqc = f.variables['Prep_QC_Mark'][:]
+        self.setupqc = f.variables['Setup_QC_Mark'][:]
         
         if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
             self.u_o = f.variables['u_Observation'][:]
@@ -159,7 +160,7 @@ class conventional(gsidiag):
             data   : requested data
         """
         
-        idx = self.get_idx_conv(obsid, qcflag=None)
+        idx = self.get_idx_conv(obsid, qcflag)
         
         data = self.query_dataType(dtype, idx)
         
@@ -188,7 +189,7 @@ class conventional(gsidiag):
             valid_idxs = np.isin(idx, obsid)
             idx = np.where(valid_idxs)
         if qcflag != None:
-            valid_idxs = np.isin(idx, qcflag)
+            valid_idxs = np.isin(self.prepqc[idx], qcflag)
             idx = np.where(valid_idxs)
         
         return idx
@@ -244,26 +245,38 @@ class radiance(gsidiag):
         f.close()
         
         
-    def getData(self, dtype, channel=None, qcflag=None):
+    def getData(self, dtype, channel=None, qcflag=None,
+                separate_channels=False, separate_qc=False):
         """
         Given parameters, get the data from a radiance 
         diagnostic file.
         INPUT:
-            dtype   : type of data to extract i.e. observation, O-F, O-A, H(x)
-            channel : observation channel number
-            qcflag  : qc flag (default: None) i.e. 0, 1
+            required:
+                dtype : type of data to extract i.e. observation, O-F, O-A, H(x)
+                
+            optional:  
+                channel           : observation channel number
+                qcflag            : qc flag (default: None) i.e. 0, 1
+                separate_channels : if True, calls getData_special() and returns dictionary
+                                    of separate data by specified channels
+                separate_qc       : if True, calls getData_special() and returns dictionary
+                                    of separate data by specified QC flags
         OUTPUT:
-            data    : requested data
+            data : requested data
             
         """
+        if separate_channels == True or separate_qc == True:
+            data = self.getData_special(dtype, channel, qcflag, separate_channels, separate_qc)
+            return data
         
-        idx = self.get_idx_sat(channel, qcflag)
-        
-        data = self.query_dataType(dtype, idx)
-        
-        data[data > 1e4] = np.nan
-        
-        return data
+        else:
+            idx = self.get_idx_sat(channel, qcflag)
+
+            data = self.query_dataType(dtype, idx)
+
+            data[data > 1e5] = np.nan
+
+            return data
     
     def get_idx_sat(self, channel=None, qcflag=None):
         """
@@ -281,11 +294,66 @@ class radiance(gsidiag):
         if channel != None:
             valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
+
+        if channel == None and qcflag != None:
+            idx = self.qc_flag
+            valid_idxs = np.isin(idx, qcflag)
+            idx = np.where(valid_idxs)
+
         if qcflag != None:
             valid_idxs = np.isin(self.qc_flag[idx], qcflag)
             idx = np.where(valid_idxs)
             
         return idx
+    
+    def getData_special(self, dtype, channel, qcflag,
+                        separate_channels, separate_qc):
+        """
+        Creates a dictionary that separates channels and qc flags
+        depending on the conditions of seperate_channels and
+        separate_qc
+        """
+        data_dict = {}
+        
+        if separate_channels == True and separate_qc == False:
+            for c in channel:
+                idx = self.get_idx_sat(c, qcflag)
+
+                data = self.query_dataType(dtype, idx)
+
+                data[data > 1e5] = np.nan
+
+                data_dict['Channel_%s' % c] = data
+
+            return data_dict
+        
+        if separate_channels == False and separate_qc == True:
+            for qc in qcflag:
+                idx = self.get_idx_sat(channel, qc)
+
+                data = self.query_dataType(dtype, idx)
+
+                data[data > 1e5] = np.nan
+
+                data_dict['QC_Flag_%s' % qc] = data
+
+            return data_dict
+        
+        if separate_channels == True and separate_qc == True:
+            for c in channel:
+                data_dict['Channel_%s' % c] = {}
+                for qc in qcflag:
+                    idx = self.get_idx_sat(c, qc)
+
+                    data = self.query_dataType(dtype, idx)
+
+                    data[data > 1e5] = np.nan
+
+                    data_dict['Channel_%s' % c]['QC_Flag_%s' % qc] = data
+                    
+            return data_dict
+                    
+                    
     
     # How can we get this method to be used for both conv
     # and radiance
