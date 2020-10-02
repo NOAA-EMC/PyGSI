@@ -291,19 +291,25 @@ class radiance(gsidiag):
             
         idx = self.channel_idx
         
-        if channel != None:
+        if channel != None and qcflag != None:
+            valid_idxs = np.isin(idx, channel)
+            idx = np.where(valid_idxs)
+            
+            valid_idxs = np.isin(self.qc_flag[idx], qcflag)
+            idx = np.where(valid_idxs)
+            
+        elif channel != None and qcflag == None:
             valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
 
-        if channel == None and qcflag != None:
+        elif channel == None and qcflag != None:
             idx = self.qc_flag
             valid_idxs = np.isin(idx, qcflag)
             idx = np.where(valid_idxs)
 
-        if qcflag != None:
-            valid_idxs = np.isin(self.qc_flag[idx], qcflag)
-            idx = np.where(valid_idxs)
-            
+        elif channel == None and qcflag == None:
+            idx = np.where(idx)
+
         return idx
     
     def getData_special(self, dtype, channel, qcflag,

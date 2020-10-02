@@ -8,9 +8,9 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import argparse
 
-sys.path.append('/home/Kevin.Dougherty/GSI_plots')
+sys.path.append('/home/Kevin.Dougherty/PyGSI/pyGSI')
 
-from pyGSI.Diags import conventional, satellite
+from Diags import conventional, radiance
 
 
 def plot_labels(metadata, stats):
@@ -99,7 +99,7 @@ def plot_histogram(data, metadata):
     title_split = labels['leftTitle'].split('\n')
     plt.title(labels['leftTitle'], loc='left', fontsize=14)
     plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    plt.savefig(labels['saveFile'] + '_histogram.png', bbox_inches='tight', pad_inches=0.1)
+    plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
     
     return
 
@@ -132,7 +132,7 @@ def plot_spatial(data, metadata, lats, lons):
     
     plt.title(labels['leftTitle'], loc='left', fontsize=14)
     plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    plt.savefig(labels['saveFile'] + '_spatial.png', bbox_inches='tight', pad_inches=0.1)
+    plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
 
     
     return
@@ -163,7 +163,7 @@ def main(parsed_yaml_file):
                 qc_flag   = group[groupType]['qc flag']
                 DATA_TYPE = group[groupType]['data type'][0]
 
-                diag = satellite(nc_file)
+                diag = radiance(nc_file)
 
                 data = diag.getData(DATA_TYPE, channel, qc_flag)
 
@@ -186,7 +186,7 @@ def main(parsed_yaml_file):
 
 #########################################################
 
-parser = argparse.ArgumentParser(description='Get basic statistics from GSI diagnostic file and save as .csv file.')          
+parser = argparse.ArgumentParser(description='Plot GSI diagnostics histogram and spatial plots.')          
 parser.add_argument('-f', '--file', type=str,                                                                                                        
                     help='path to .yaml file.', required=True)
 
