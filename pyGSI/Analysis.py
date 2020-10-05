@@ -12,6 +12,7 @@ class increment:
         """
 
         self.path = path
+        self.get_metadata()
 
     def get_metadata(self):
         """
@@ -37,9 +38,40 @@ class increment:
             validtime = dt.datetime(2000,1,1)
             anltime = dt.datetime(2000,1,1)
             IAUhr = -9999
-        metadata = {
-                    'valid time': validtime,
-                    'analysis time': anltime,
-                    'IAU forecast hour': IAUhr,
-                   }
-        return metadata
+        inc.close()
+        self.validtime = validtime
+        self.analysistime = anltime
+        self.IAUhr = IAUhr
+
+    def get_latlonlevs(self):
+        """
+        Get lat/lon/levs values from increment file
+        """
+        inc = nc.Dataset(self.path, 'r')
+        lat = inc.variables['lat'][:]
+        lon = inc.variables['lon'][:]
+        lon[lon>180.] = lon[lon>180.]-360.
+        lon = np.roll(lon,int(len(lon)/2),axis=0)
+        lons, lats = np.meshgrid(lon, lat)
+        levs = inc.variables['lev'][:]
+        inc.close()
+        return lats, lons, levs
+
+    def get_increment(self, varname, lev=None):
+        """
+        Get increment field in either 2 or 3D
+        call it as so:
+        for 2D
+        T_inc = incobject.get_increment('T_inc', lev=64)
+        for 3D
+        T_inc3D = incobject.get_increment('T_inc')
+        """
+        inc = nc.Dataset(self.path, 'r')
+        if lev:
+            vardata = inc.variables[varname][lev, ...]
+        else:
+            vardata = inc.variables[varname][:]
+        lon = inc.variables['lon'][:]
+        vardata = np.roll(vardata,int(len(lon)/2),axis=1)
+        return vardata
+
