@@ -195,5 +195,8 @@ args = parser.parse_args()
 f = args.file
 
 file = open(f)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+try:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+except AttributeError:
+    parsed_yaml_file = yaml.load(file)
 main(parsed_yaml_file)
