@@ -74,6 +74,22 @@ class gsidiag:
             data = Hx[idx]
             return data
         
+        elif dtype == 'Water_Fraction':
+            data = self.water_frac[idx]
+            return data
+        
+        elif dtype == 'Land_Fraction':
+            data = self.land_frac[idx]
+            return data
+        
+        elif dtype == 'Ice_Fraction':
+            data = self.ice_frac[idx]
+            return data
+        
+        elif dtype == 'Snow_Fraction':
+            data = self.snow_frac[idx]
+            return data
+        
         else:
             raise Exception(f'Unrecognizable data type: {dtype}')
             return None
@@ -153,9 +169,13 @@ class conventional(gsidiag):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
-            dtype  : type of data to extract i.e. observation, O-F, O-A, H(x)
-            obsid  : observation measurement ID number
-            qcflag : qc flag (default: None) i.e. 0, 1
+            required:
+                dtype  : type of data to extract i.e. observation, O-F, O-A, H(x)
+                
+            optional:    
+                obsid  : observation measurement ID number
+                qcflag : qc flag (default: None) i.e. 0, 1
+                
         OUTPUT:
             data   : requested data
         """
@@ -241,6 +261,7 @@ class radiance(gsidiag):
         self.land_frac = f.variables['Land_Fraction'][:]
         self.ice_frac = f.variables['Ice_Fraction'][:]
         self.snow_frac = f.variables['Snow_Fraction'][:]
+        self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
         
         f.close()
         
@@ -252,7 +273,8 @@ class radiance(gsidiag):
         diagnostic file.
         INPUT:
             required:
-                dtype : type of data to extract i.e. observation, O-F, O-A, H(x)
+                dtype : type of data to extract i.e. observation, O-F, O-A, H(x), Water_Fraction,
+                        Land_Fraction, Ice_Fraction, Snow_Fraction
                 
             optional:  
                 channel           : observation channel number
