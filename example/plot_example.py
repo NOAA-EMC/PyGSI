@@ -8,7 +8,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import argparse
 
-sys.path.append('/home/Kevin.Dougherty/PyGSI/pyGSI')
+sys.path.append('../pyGSI')
 
 from Diags import conventional, radiance
 
