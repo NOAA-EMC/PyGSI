@@ -147,7 +147,6 @@ class conventional(gsidiag):
         self.press = f.variables['Pressure'][:]
         self.time = f.variables['Time'][:]
         self.stnelev = f.variables['Station_Elevation'][:]
-        self.o = f.variables['Observation'][:]
         self.prepqc = f.variables['Prep_QC_Mark'][:]
         self.setupqc = f.variables['Setup_QC_Mark'][:]
         
