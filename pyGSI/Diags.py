@@ -314,12 +314,13 @@ class radiance(gsidiag):
         idx = self.channel_idx
         
         if channel != None and qcflag != None:
-            valid_idxs = np.isin(idx, channel)
+            chan_idxs = np.isin(self.channel_idx, channel)
+    
+            qc_idxs = np.isin(self.qc_flag, qcflag)
+
+            valid_idxs = np.logical_and(chan_idxs, qc_idxs)
             idx = np.where(valid_idxs)
-            
-            valid_idxs = np.isin(self.qc_flag[idx], qcflag)
-            idx = np.where(valid_idxs)
-            
+    
         elif channel != None and qcflag == None:
             valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
