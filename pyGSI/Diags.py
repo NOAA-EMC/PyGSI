@@ -52,12 +52,26 @@ class gsidiag:
         the appropriate indexed data
         """
         if dtype == 'O-F':
-            data = self.omf[idx]
-            return data
+            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                u = self.u_omf[idx]
+                v = self.v_omf[idx]
+                
+                return u,v
+            
+            else:
+                data = self.omf[idx]
+                return data
         
         elif dtype == 'observation':
-            data = self.observation[idx]
-            return data
+            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                u = self.u_o[idx]
+                v = self.v_o[idx]
+                
+                return u,v
+            
+            else:
+                data = self.o[idx]
+                return data
         
         elif dtype == 'O-A':
             # Not sure if I need to do this because 'ges' and 'anl' files are both f.variable['Obs_Minus_Forecast_adjusted'][:]
@@ -181,9 +195,15 @@ class conventional(gsidiag):
         
         idx = self.get_idx_conv(obsid, qcflag)
         
-        data = self.query_dataType(dtype, idx)
+        if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+            u, v = self.query_dataType(dtype, idx)
+            
+            return u, v
+            
+        else:
+            data = self.query_dataType(dtype, idx)
         
-        return data
+            return data
     
     
     def get_idx_conv(self, obsid=None, qcflag=None):
@@ -319,7 +339,7 @@ class radiance(gsidiag):
 
             valid_idxs = np.logical_and(chan_idxs, qc_idxs)
             idx = np.where(valid_idxs)
-    
+            
         elif channel != None and qcflag == None:
             valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
