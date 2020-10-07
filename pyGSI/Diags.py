@@ -224,12 +224,25 @@ class conventional(gsidiag):
         
         idx = self.o_type
         
-        if obsid != None:
-            valid_idxs = np.isin(idx, obsid)
+        if obsid != None and qcflag != None:
+            obs_idxs = np.isin(self.o_type, obsid)
+    
+            qc_idxs = np.isin(self.qc_flag, qcflag)
+
+            valid_idxs = np.logical_and(obs_idxs, qc_idxs)
             idx = np.where(valid_idxs)
-        if qcflag != None:
-            valid_idxs = np.isin(self.prepqc[idx], qcflag)
+            
+        elif obsid != None and qcflag == None:
+            valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
+
+        elif obsid == None and qcflag != None:
+            idx = self.prepqc
+            valid_idxs = np.isin(idx, qcflag)
+            idx = np.where(valid_idxs)
+
+        elif obsid == None and qcflag == None:
+            idx = np.where(idx)
         
         return idx
     
