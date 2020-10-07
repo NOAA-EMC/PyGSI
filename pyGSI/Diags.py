@@ -233,7 +233,7 @@ class conventional(gsidiag):
             idx = np.where(valid_idxs)
             
         elif obsid != None and qcflag == None:
-            valid_idxs = np.isin(idx, channel)
+            valid_idxs = np.isin(idx, obsid)
             idx = np.where(valid_idxs)
 
         elif obsid == None and qcflag != None:
