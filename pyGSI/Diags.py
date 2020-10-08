@@ -62,7 +62,7 @@ class gsidiag:
                 data = self.omf[idx]
                 return data
         
-        elif dtype == 'observation':
+        elif dtype == 'Observation':
             if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
                 u = self.u_o[idx]
                 v = self.v_o[idx]
