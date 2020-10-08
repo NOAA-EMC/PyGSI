@@ -162,7 +162,6 @@ class conventional(gsidiag):
         self.time = f.variables['Time'][:]
         self.stnelev = f.variables['Station_Elevation'][:]
         self.prepqc = f.variables['Prep_QC_Mark'][:]
-        self.setupqc = f.variables['Setup_QC_Mark'][:]
         
         if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
             self.u_o = f.variables['u_Observation'][:]
