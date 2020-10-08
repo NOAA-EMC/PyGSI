@@ -101,33 +101,53 @@ def plot_labels(metadata, stats):
     if metadata['File_type'] == 'ges':
         
         if metadata['Data_type'] == 'O-F':
+            
             if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
                 xlabel = "Wind Speed (m/s)"
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
             else:
                 xlabel = 'Observation - Forecast'
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
+                
+        elif metadata['Data_type'] == 'H(x)':
+            xlabel = get_xlabel(metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata)
+            
         else:
             xlabel = get_xlabel(metadata)
-             
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata)
+            
+            
         if metadata['Diag_type'] == 'conv':
             left_title = '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
         else:
-            left_title = '{Data_type}: {Satellite}'.format(**metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_F'.format(**metadata)
+            left_title = '{Data_type}: {Satellite} {Diag_type}'.format(**metadata)
              
     elif metadata['File_type'] == 'anl':
              
         if metadata['Data_type'] == 'O-A':
-            xlabel     = 'Observation - Analysis'
+            
+            if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
+                xlabel = "Wind Speed (m/s)"
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
+            else:
+                xlabel = 'Observation - Forecast'
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
+                
+        elif metadata['Data_type'] == 'H(x)':
+            xlabel = get_xlabel(metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata)
+            
         else:
-            xlabel     = metadata['Data_type']
-             
+            xlabel = get_xlabel(metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata)
+            
+            
         if metadata['Diag_type'] == 'conv':
             left_title = '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
         else:
             left_title = '{Data_type}: {Satellite} {Diag_type}'.format(**metadata)
-            save_file   = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_O_minus_A'.format(**metadata)
+            
              
     labels = {'statText'  : t,
               'xLabel'    : xlabel,
@@ -260,6 +280,9 @@ def plot_features(dtype, stats, metadata):
 
 
 def plot_spatial(data, metadata, lats, lons):
+    
+    if metadata['Diag_type'] == 'conv':
+        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
     
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
