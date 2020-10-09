@@ -84,7 +84,7 @@ class gsidiag:
                 print('File type does not support O-A')
         
         elif dtype == 'H(x)':
-            Hx = get_H_x()
+            Hx = self.o - self.omf
             data = Hx[idx]
             return data
         
@@ -119,15 +119,7 @@ class gsidiag:
         if ftype == 'anl':
             return True
         else:
-            return False
-        
-    def get_H_x(self):
-        """
-        Calculates H(x): O - (O-F) = F = H(x)
-        """
-        
-        Hx = self.o - self.omf
-        return Hx        
+            return False        
         
     
 class conventional(gsidiag):
@@ -160,8 +152,11 @@ class conventional(gsidiag):
         self.lats = f.variables['Latitude'][:]
         self.press = f.variables['Pressure'][:]
         self.time = f.variables['Time'][:]
-        self.stnelev = f.variables['Station_Elevation'][:]
-        self.prepqc = f.variables['Prep_QC_Mark'][:]
+#         self.prepqc = f.variables['Prep_QC_Mark'][:]
+        try:
+            self.stnelev = f.variables['Station_Elevation'][:]
+        except:
+            self.modelelev = f.variables['Model_Elevation'][:]
         
         if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
             self.u_o = f.variables['u_Observation'][:]

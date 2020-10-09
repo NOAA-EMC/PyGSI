@@ -1,4 +1,4 @@
-name: DA_Diags
+name: PyGSI
 channels:
   - defaults
 dependencies:

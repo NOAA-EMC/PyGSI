@@ -89,7 +89,9 @@ def get_xlabel(metadata):
 
 def plot_labels(metadata, stats):
     
-    if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'q':
+    if stats == None:
+        t = None
+    elif metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'q':
         t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],np.round(stats['Std'],6),np.round(stats['Mean'],6), np.round(stats['Max'],6), np.round(stats['Min'],6)))
     else:
         t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],np.round(stats['Std'],3),np.round(stats['Mean'],3), np.round(stats['Max'],3), np.round(stats['Min'],3)))
@@ -104,18 +106,18 @@ def plot_labels(metadata, stats):
             
             if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
                 xlabel = "Wind Speed (m/s)"
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata) + '%s' % '_'.join(str(metadata['ObsID']))
             else:
                 xlabel = 'Observation - Forecast'
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata)
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata) + '%s' % '_'.join(str(metadata['ObsID']))
                 
         elif metadata['Data_type'] == 'H(x)':
             xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
             
         else:
             xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata)
+            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
             
             
         if metadata['Diag_type'] == 'conv':
@@ -129,7 +131,7 @@ def plot_labels(metadata, stats):
             
             if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
                 xlabel = "Wind Speed (m/s)"
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
+                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
             else:
                 xlabel = 'Observation - Forecast'
                 save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
@@ -197,7 +199,7 @@ def plot_features(dtype, stats, metadata):
         
         extend='both'
     
-    elif dtype == 'Observation' or dtype == 'F(x)' or dtype == 'windspeed':
+    elif dtype == 'Observation' or dtype == 'H(x)' or dtype == 'windspeed':
         if dtype == 'windspeed':
             cmap = 'Spectral_r'
             
@@ -286,59 +288,93 @@ def plot_spatial(data, metadata, lats, lons):
     
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
-            metadata['Variable'] = i
-            
-            stats = calculate_stats(data[i])
+            if len(data[i]) == 0:
+                
+                fig = plt.figure(figsize=(15,12))
+                ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 
-            if str(i) == 'windspeed':              
-                cmap, norm, extend = plot_features('windspeed', stats, metadata)
+                ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+                ax.set_extent([-180, 180, -90, 90])
+                
+                stats = None
+                labels = plot_labels(metadata, stats)
+
+                ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
+                plt.title(labels['leftTitle'], loc='left', fontsize=14)
+                plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+                plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+                
             else:
-                cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
+                metadata['Variable'] = i
+
+                stats = calculate_stats(data[i])
+
+                if str(i) == 'windspeed':              
+                    cmap, norm, extend = plot_features('windspeed', stats, metadata)
+                else:
+                    cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
+
+                fig = plt.figure(figsize=(15,12))
+                ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
+
+                ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+                ax.set_extent([-180, 180, -90, 90])
+
+                cs = plt.scatter(lons, lats, c=data[i], s=30,
+                                 norm=norm, cmap=cmap,
+                                 transform=ccrs.PlateCarree())
+
+                labels = plot_labels(metadata, stats)
+
+                ax.text(185, 55, labels['statText'], fontsize=14)
+
+                cb = plt.colorbar(cs, orientation='horizontal', shrink=0.5, pad=.04, extend=extend)
+                cb.set_label(labels['xLabel'], fontsize=12)
+
+                plt.title(labels['leftTitle'], loc='left', fontsize=14)
+                plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+                plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+    
+    else:
+        
+        if len(data) == 0:
+            fig = plt.figure(figsize=(15,12))
+            ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
+
+            ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+            ax.set_extent([-180, 180, -90, 90])
             
+            stats = None
+            labels = plot_labels(metadata, stats)
+            
+            ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
+            plt.title(labels['leftTitle'], loc='left', fontsize=14)
+            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)  
+            plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+        
+        else:
+            stats = calculate_stats(data)
+            cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
+
             fig = plt.figure(figsize=(15,12))
             ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 
             ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
             ax.set_extent([-180, 180, -90, 90])
 
-            cs = plt.scatter(lons, lats, c=data[i], s=30,
+            cs = plt.scatter(lons, lats, c=data, s=30,
                              norm=norm, cmap=cmap,
                              transform=ccrs.PlateCarree())
 
             labels = plot_labels(metadata, stats)
 
             ax.text(185, 55, labels['statText'], fontsize=14)
-  
+
             cb = plt.colorbar(cs, orientation='horizontal', shrink=0.5, pad=.04, extend=extend)
             cb.set_label(labels['xLabel'], fontsize=12)
 
             plt.title(labels['leftTitle'], loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    
-    else:
-        
-        stats = calculate_stats(data)
-        cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
-        
-        fig = plt.figure(figsize=(15,12))
-        ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
-
-        ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
-        ax.set_extent([-180, 180, -90, 90])
-
-        cs = plt.scatter(lons, lats, c=data, s=30,
-                         norm=norm, cmap=cmap,
-                         transform=ccrs.PlateCarree())
-
-        labels = plot_labels(metadata, stats)
-
-        ax.text(185, 55, labels['statText'], fontsize=14)
-        
-        cb = plt.colorbar(cs, orientation='horizontal', shrink=0.5, pad=.04, extend=extend)
-        cb.set_label(labels['xLabel'], fontsize=12)
-
-        plt.title(labels['leftTitle'], loc='left', fontsize=14)
-        plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-        plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)  
+            plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
     
     return
