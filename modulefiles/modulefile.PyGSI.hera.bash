@@ -1,5 +1,7 @@
 export PATH="/scratch1/NCEPDEV/da/Kevin.Dougherty/anaconda3/bin:$PATH"
-export PYTHONPATH="${PYTHONPATH}:/home/Kevin.Dougherty/PyGSI/"
+
+PyGSIdir="$(cd "$(dirname "$BASH_SOURCE").//"; pwd)"
+export PYTHONPATH="${PYTHONPATH}:${PyGSIdir}"
 
 source /scratch1/NCEPDEV/da/Kevin.Dougherty/anaconda3/etc/profile.d/conda.sh
 
