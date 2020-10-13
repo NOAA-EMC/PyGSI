@@ -4,4 +4,5 @@ export PYTHONPATH="${PYTHONPATH}:/home/Kevin.Dougherty/PyGSI/"
 source /scratch1/NCEPDEV/da/Kevin.Dougherty/anaconda3/etc/profile.d/conda.sh
 
 conda init bash
+source ~/.bashrc
 conda activate PyGSI
