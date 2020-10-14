@@ -84,6 +84,9 @@ def get_xlabel(metadata):
         xlabel = "Precipitable Water (mm)"
     elif metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'tcp':
         xlabel = "Pressure (hPa)"
+    elif metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'u' \
+    or metadata['Variable'] == 'v' or metadata['Variable'] == 'windspeed':
+        xlabel = "Windspeed (m/s)"
     else:
         xlabel = 'Radiance'
 
@@ -101,56 +104,56 @@ def plot_labels(metadata, stats):
     
     date_title = metadata['Date'].strftime("%d %b %Y %Hz")
     
-    
-    if metadata['File_type'] == 'ges':
+    if metadata['Data_type'] == 'O-F':
+        if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
+            xlabel = "Wind Speed (m/s)"
+        else:
+            xlabel = "Observation - Forecast"
         
-        if metadata['Data_type'] == 'O-F':
-            
-            if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
-                xlabel = "Wind Speed (m/s)"
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata) + '%s' % '_'.join(str(metadata['ObsID']))
-            else:
-                xlabel = 'Observation - Forecast'
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F'.format(**metadata) + '%s' % '_'.join(str(metadata['ObsID']))
-                
-        elif metadata['Data_type'] == 'H(x)':
-            xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
-            
-        else:
-            xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
-            
-            
         if metadata['Diag_type'] == 'conv':
-            left_title = '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
         else:
-            left_title = '{Data_type}: {Satellite} {Diag_type}'.format(**metadata)
-             
-    elif metadata['File_type'] == 'anl':
-             
-        if metadata['Data_type'] == 'O-A':
-            
-            if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
-                xlabel = "Wind Speed (m/s)"
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata) + '%s' % '_'.join(metadata['ObsID'])
-            else:
-                xlabel = 'Observation - Forecast'
-                save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A'.format(**metadata)
-                
-        elif metadata['Data_type'] == 'H(x)':
-            xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x'.format(**metadata)
-            
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_F_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['Channels'])
+    
+    elif metadata['Data_type'] == 'O-A':
+        if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'windspeed':
+            xlabel = "Wind Speed (m/s)"
         else:
-            xlabel = get_xlabel(metadata)
-            save_file  = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}'.format(**metadata)
-            
-            
+            xlabel = "Observation - Analysis"
+        
         if metadata['Diag_type'] == 'conv':
-            left_title = '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
         else:
-            left_title = '{Data_type}: {Satellite} {Diag_type}'.format(**metadata)
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_O_minus_A_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['Channels'])
+            
+    elif metadata['Data_type'] == 'H(x)':
+        xlabel = get_xlabel(metadata)
+        
+        if metadata['Diag_type'] == 'conv':
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
+        else:
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_H_of_x_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['Channels'])
+            
+    else:
+        xlabel = get_xlabel(metadata)
+        
+        if metadata['Diag_type'] == 'conv':
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
+        else:
+            save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_{Data_type}_'.format(**metadata) + '%s' % '_'.join(str(x) for x in metadata['Channels'])
+            
+            
+    if metadata['Diag_type'] == 'conv':
+        if metadata['assimilated'] == 'yes':
+            left_title = '{Data_type}: {Variable} - Data Assimilated\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
+            save_file = save_file + '_assimilated'
+        elif metadata['assimilated'] == 'no':
+            left_title = '{Data_type}: {Variable} - Data Monitored\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
+            save_file = save_file + '_monitored'
+        else:
+            left_title = '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type'])
+    else:
+        left_title = '{Data_type}: {Variable}\n'.format(**metadata) + 'Channels: %s' % ' '.join(metadata['Channels'])
             
              
     labels = {'statText'  : t,
@@ -264,6 +267,16 @@ def plot_features(dtype, stats, metadata):
             bins = (upperbound - lowerbound)/50
             
             extend = 'both'
+        
+        else:
+            cmap = 'viridis'
+            
+            upperbound = np.round(stats['Std'])*5
+            lowerbound = 0 - upperbound
+            bins = (upperbound - lowerbound)/10
+            
+            extend ='both'
+            
             
         
         norm = mcolors.BoundaryNorm(boundaries=np.arange(lowerbound, upperbound+bins, bins), ncolors=256)
@@ -307,6 +320,7 @@ def plot_spatial(data, metadata, lats, lons):
                 plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
                 
             else:
+                
                 metadata['Variable'] = i
 
                 stats = calculate_stats(data[i])
@@ -351,7 +365,7 @@ def plot_spatial(data, metadata, lats, lons):
             
             ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
             plt.title(labels['leftTitle'], loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)  
+            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
             plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
         
         else:
