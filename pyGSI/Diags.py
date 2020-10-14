@@ -152,6 +152,7 @@ class conventional(gsidiag):
         self.lats = f.variables['Latitude'][:]
         self.press = f.variables['Pressure'][:]
         self.time = f.variables['Time'][:]
+        self.anl_use = f.variables['Analysis_Use_Flag'][:]
 #         self.prepqc = f.variables['Prep_QC_Mark'][:]
         try:
             self.stnelev = f.variables['Station_Elevation'][:]
@@ -172,7 +173,7 @@ class conventional(gsidiag):
         f.close()
 
             
-    def getData(self, dtype, obsid=None, qcflag=None):
+    def getData(self, dtype, obsid=None, analysis_use=False):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
@@ -180,27 +181,51 @@ class conventional(gsidiag):
                 dtype  : type of data to extract i.e. observation, O-F, O-A, H(x)
                 
             optional:    
-                obsid  : observation measurement ID number
-                qcflag : qc flag (default: None) i.e. 0, 1
+                obsid        : observation measurement ID number; default=None
+                analysis_use : if True, will return two sets of data: assimlated
+                               (analysis_use_flag=1), and monitored (analysis_use
+                               _flag=-1); default = False
                 
         OUTPUT:
             data   : requested data
         """
-        
-        idx = self.get_idx_conv(obsid, qcflag)
-        
-        if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
-            u, v = self.query_dataType(dtype, idx)
-            
-            return u, v
+        if analysis_use == True:
+            assimilated_idx, monitored_idx = self.get_idx_conv(obsid, analysis_use)
+            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                u_assimilated, v_assimilated = self.query_dataType(dtype, assimilated_idx)
+                u_monitored, v_monitored = self.query_dataType(dtype, monitored_idx)
+                
+                u = {'assimilated': u_assimilated,
+                     'monitored': u_monitored}
+                v = {'assimilated': v_assimilated,
+                     'monitored': v_monitored}
+                
+                return u, v
+            else:
+                assimilated_data = self.query_dataType(dtype, assimilated_idx)
+                monitored_data = self.query_dataType(dtype, monitored_idx)
+                
+                data = {'assimilated': assimilated_data,
+                        'monitored'  : monitored_data
+                       }
+                
+                return data
             
         else:
-            data = self.query_dataType(dtype, idx)
-        
-            return data
+            idx = self.get_idx_conv(obsid, analysis_use)
+
+            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                u, v = self.query_dataType(dtype, idx)
+
+                return u, v
+
+            else:
+                data = self.query_dataType(dtype, idx)
+
+                return data
     
     
-    def get_idx_conv(self, obsid=None, qcflag=None):
+    def get_idx_conv(self, obsid=None, analysis_use=False):
         """
         Given parameters, get the indices of the observation
         locations from a conventional diagnostic file
@@ -213,39 +238,56 @@ class conventional(gsidiag):
         
         if not obsid or obsid == [None]:
             obsid=None
-        if not qcflag or qcflag == [None]:
-            qcflag=None
         
         idx = self.o_type
         
-        if obsid != None and qcflag != None:
-            obs_idxs = np.isin(self.o_type, obsid)
-    
-            qc_idxs = np.isin(self.qc_flag, qcflag)
+        if analysis_use == False:
+            if obsid != None:
+                valid_idxs = np.isin(idx, obsid)
+                idx = np.where(valid_idxs)
 
-            valid_idxs = np.logical_and(obs_idxs, qc_idxs)
-            idx = np.where(valid_idxs)
-            
-        elif obsid != None and qcflag == None:
-            valid_idxs = np.isin(idx, obsid)
-            idx = np.where(valid_idxs)
-
-        elif obsid == None and qcflag != None:
-            idx = self.prepqc
-            valid_idxs = np.isin(idx, qcflag)
-            idx = np.where(valid_idxs)
-
-        elif obsid == None and qcflag == None:
-            idx = np.where(idx)
+            else:
+                idx = np.where(idx)
         
-        return idx
+            return idx
+        
+        else:
+            if obsid != None:
+                obs_idx = np.isin(idx, obsid)
+                
+                assimilated = np.isin(self.anl_use, 1)
+                monitored = np.isin(self.anl_use, -1)
+                
+                valid_assimilated = np.logical_and(obs_idx, assimilated)
+                valid_monitored = np.logical_and(obs_idx, monitored)
+                
+                assimilated_idx = np.where(valid_assimilated)
+                monitored_idx = np.where(valid_monitored)
+            
+            else:
+                assimilated = np.isin(self.anl_use, 1)
+                monitored = np.isin(self.anl_use, -1)
+                
+                assimilated_idx = np.where(assimilated)
+                monitored_idx = np.where(monitored)
+                
+            return assimilated_idx, monitored_idx
+            
     
-    def get_lat_lon(self, obsid=None, qcflag=None):
+    def get_lat_lon(self, obsid=None, analysis_use=False):
         """
         Gets lats and lons with desired indices
         """
-        idx = self.get_idx_conv(obsid, qcflag)
-        return self.lats[idx], self.lons[idx]
+        if analysis_use == True:
+            assimilated_idx, monitored_idx = self.get_idx_conv(obsid, analysis_use)
+            lats = {'assimilated': self.lats[assimilated_idx],
+                    'monitored': self.lats[monitored_idx]}
+            lons = {'assimilated': self.lons[assimilated_idx],
+                    'monitored': self.lons[monitored_idx]}
+            return lats, lons
+        else:
+            idx = self.get_idx_conv(obsid, analysis_use)
+            return self.lats[idx], self.lons[idx]
     
     def metadata(self):
         dic = self.get_metadata()
