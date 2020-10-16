@@ -297,6 +297,24 @@ def plot_features(dtype, stats, metadata):
     
     return cmap, norm, extend
 
+def no_data_spatial(metadata):
+    fig = plt.figure(figsize=(15,12))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
+
+    ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+    ax.set_extent([-180, 180, -90, 90])
+
+    stats = None
+    labels = plot_labels(metadata, stats)
+
+    ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
+    plt.title(labels['leftTitle'], loc='left', fontsize=14)
+    plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+    plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+    plt.close('all')
+    
+    return
+
 
 def plot_histogram(data, metadata):
     if metadata['Diag_type'] == 'conv':
@@ -304,35 +322,22 @@ def plot_histogram(data, metadata):
         
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
+            fig = plt.figure(figsize=(8,6))
+            ax = fig.add_subplot(111)
             
-            if len(data[i]) <= 1:
-                fig = plt.figure(figsize=(8,6))
-                ax = fig.add_subplot(111)
-            
+            if len(data[i]) <= 1:            
                 if len(data[i]) == 0:
                     stats = None
                     labels = plot_labels(metadata, stats)
                     ax.text(0.5, 0.5, 'No Data', fontsize=32, alpha=0.6, ha='center')
                 else:
-                    stats = calculate_stats(data)
+                    stats = calculate_stats(data[i])
                     labels = plot_labels(metadata, stats)
 
                     ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
                     ax.text(0.5, 0.5, 'Single Observation', fontsize=32, alpha=0.6, ha='center')
                 
-                plt.xlabel(labels['xLabel'])
-                plt.ylabel('Count')
-                
-                wrapper = TextWrapper(width=70,break_long_words=False,replace_whitespace=False)
-                leftTitle = '\n'.join(wrapper.wrap(labels['leftTitle']))
-                
-                plt.title(leftTitle, loc='left', fontsize=14)
-                plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)    
-                plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
-                plt.close('all')
-                
-            else:
-                        
+            else:       
                 metadata['Variable'] = i
 
                 stats = calculate_stats(data[i])
@@ -344,8 +349,6 @@ def plot_histogram(data, metadata):
                 else:
                     bins = np.arange(0-(4*stats['Std']),0+(4*stats['Std']),binsize)
 
-                fig = plt.figure(figsize=(8,6))
-                ax = fig.add_subplot(111)
                 plt.hist(data[i], bins=bins)
                 plt.axvline(stats['Mean'], color='r', linestyle='solid', linewidth=1)
                 if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
@@ -354,65 +357,6 @@ def plot_histogram(data, metadata):
                 labels = plot_labels(metadata, stats)
 
                 ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
-
-                plt.xlabel(labels['xLabel'])
-                plt.ylabel('Count')
-
-                wrapper = TextWrapper(width=70,break_long_words=False,replace_whitespace=False)
-                leftTitle = '\n'.join(wrapper.wrap(labels['leftTitle']))
-                
-                plt.title(leftTitle, loc='left', fontsize=14)
-                plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-                plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
-                plt.close('all')
-            
-    else:
-        if len(data) <= 1:
-            fig = plt.figure(figsize=(8,6))
-            ax = fig.add_subplot(111)
-
-            if len(data) == 0:
-                stats = None
-                labels = plot_labels(metadata, stats)
-                ax.text(0.5, 0.5, 'No Data', fontsize=32, alpha=0.6, ha='center')
-            else:
-                stats = calculate_stats(data)
-                labels = plot_labels(metadata, stats)
-                
-                ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
-                ax.text(0.5, 0.5, 'Single Observation', fontsize=32, alpha=0.6, ha='center')
-
-            plt.xlabel(labels['xLabel'])
-            plt.ylabel('Count')
-
-            wrapper = TextWrapper(width=70,break_long_words=False,replace_whitespace=False)
-            leftTitle = '\n'.join(wrapper.wrap(labels['leftTitle']))
-
-            plt.title(leftTitle, loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)              
-            plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
-            plt.close('all')
-        
-        else:
-        
-            stats = calculate_stats(data) 
-
-            binsize = (stats['Max']-stats['Min'])/np.sqrt(stats['N'])
-            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A': 
-                bins = np.arange(0-(4*stats['Std']),0+(4*stats['Std']),binsize)
-            else:
-                bins = np.arange(stats['Mean']-(4*stats['Std']),stats['Mean']+(4*stats['Std']),binsize)
-
-            fig = plt.figure(figsize=(8,6))
-            ax = fig.add_subplot(111)
-            plt.hist(data, bins=bins)
-            plt.axvline(stats['Mean'], color='r', linestyle='solid', linewidth=1)
-            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
-                plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
-
-            labels = plot_labels(metadata, stats)
-
-            ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
 
             plt.xlabel(labels['xLabel'])
             plt.ylabel('Count')
@@ -424,8 +368,54 @@ def plot_histogram(data, metadata):
             plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
             plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
+            
+    else:
+        fig = plt.figure(figsize=(8,6))
+        ax = fig.add_subplot(111)
+        
+        if len(data) <= 1:
+            if len(data) == 0:
+                stats = None
+                labels = plot_labels(metadata, stats)
+                ax.text(0.5, 0.5, 'No Data', fontsize=32, alpha=0.6, ha='center')
+            else:
+                stats = calculate_stats(data)
+                labels = plot_labels(metadata, stats)
+                
+                ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
+                ax.text(0.5, 0.5, 'Single Observation', fontsize=32, alpha=0.6, ha='center')
+        
+        else:
+            stats = calculate_stats(data) 
+
+            binsize = (stats['Max']-stats['Min'])/np.sqrt(stats['N'])
+            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A': 
+                bins = np.arange(0-(4*stats['Std']),0+(4*stats['Std']),binsize)
+            else:
+                bins = np.arange(stats['Mean']-(4*stats['Std']),stats['Mean']+(4*stats['Std']),binsize)
+
+            plt.hist(data, bins=bins)
+            plt.axvline(stats['Mean'], color='r', linestyle='solid', linewidth=1)
+            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
+                plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
+
+            labels = plot_labels(metadata, stats)
+
+            ax.text(0.75,.7, labels['statText'], fontsize=14, transform=ax.transAxes)
+
+        plt.xlabel(labels['xLabel'])
+        plt.ylabel('Count')
+
+        wrapper = TextWrapper(width=70,break_long_words=False,replace_whitespace=False)
+        leftTitle = '\n'.join(wrapper.wrap(labels['leftTitle']))
+
+        plt.title(leftTitle, loc='left', fontsize=14)
+        plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+        plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+        plt.close('all')
     
     return
+
 
 def plot_spatial(data, metadata, lats, lons):
     
@@ -435,21 +425,7 @@ def plot_spatial(data, metadata, lats, lons):
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
             if len(data[i]) == 0:
-                
-                fig = plt.figure(figsize=(15,12))
-                ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
-
-                ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
-                ax.set_extent([-180, 180, -90, 90])
-                
-                stats = None
-                labels = plot_labels(metadata, stats)
-
-                ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
-                plt.title(labels['leftTitle'], loc='left', fontsize=14)
-                plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-                plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
-                plt.close('all')
+                no_data_spatial(metadata)
                 
             else:
                 
@@ -492,20 +468,7 @@ def plot_spatial(data, metadata, lats, lons):
     else:
         
         if len(data) == 0:
-            fig = plt.figure(figsize=(15,12))
-            ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
-
-            ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
-            ax.set_extent([-180, 180, -90, 90])
-            
-            stats = None
-            labels = plot_labels(metadata, stats)
-            
-            ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
-            plt.title(labels['leftTitle'], loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-            plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
-            plt.close('all')
+            no_data_spatial(metadata)
         
         else:
             stats = calculate_stats(data)
