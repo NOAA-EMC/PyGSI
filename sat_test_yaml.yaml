@@ -1,0 +1,8083 @@
+diagnostic:
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: &id001
+    - histogram
+    - spatial
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n15_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n18_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 16
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 38
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 49
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 51
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 55
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 57
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 59
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 61
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 63
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 66
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 70
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 72
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 74
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 79
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 81
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 83
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 85
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 87
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 104
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 106
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 109
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 111
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 113
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 116
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 122
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 125
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 128
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 131
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 135
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 138
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 141
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 144
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 146
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 148
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 151
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 154
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 157
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 159
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 161
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 163
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 167
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 170
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 173
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 176
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 180
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 185
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 187
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 193
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 199
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 205
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 207
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 210
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 212
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 214
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 217
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 219
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 222
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 224
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 226
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 230
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 232
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 236
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 239
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 243
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 246
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 249
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 252
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 254
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 260
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 262
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 265
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 267
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 275
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 282
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 294
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 296
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 299
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 303
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 306
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 323
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 327
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 329
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 335
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 345
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 347
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 350
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 354
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 356
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 360
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 366
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 371
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 373
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 375
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 377
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 379
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 381
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 383
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 386
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 389
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 398
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 401
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 404
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 407
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 410
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 414
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 416
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 426
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 428
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 432
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 434
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 439
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 445
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 457
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 515
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 546
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 552
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 559
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 566
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 571
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 573
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 646
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 662
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 668
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 756
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 867
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 906
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 921
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1027
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1046
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1121
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1191
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1194
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1271
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1479
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1509
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1513
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1521
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1536
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1574
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1579
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1585
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1587
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1626
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1639
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1643
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1652
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1658
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1671
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1786
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1805
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1884
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1991
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2019
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2094
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2213
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2239
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2271
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2321
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2398
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2701
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2889
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2958
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2993
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3002
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3049
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3105
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3110
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5381
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5399
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5480
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-a_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 20
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 21
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 22
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 27
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 28
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 40
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 52
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 69
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 72
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 92
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 93
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 98
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 99
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 104
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 105
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 110
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 111
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 116
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 117
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 123
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 128
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 129
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 138
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 139
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 144
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 145
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 150
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 151
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 156
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 157
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 162
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 168
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 169
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 172
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 173
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 174
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 175
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 179
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 180
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 185
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 186
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 190
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 192
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 198
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 201
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 204
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 207
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 210
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 215
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 216
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 226
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 227
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 232
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 252
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 253
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 256
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 257
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 261
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 262
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 267
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 272
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 295
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 299
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 305
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 310
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 325
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 333
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 338
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 355
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 362
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 375
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 475
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 497
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 528
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 587
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 672
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 787
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 791
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 870
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 914
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 950
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1301
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1304
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1329
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1371
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1382
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1415
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1424
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1449
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1455
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1477
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1500
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1519
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1565
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1574
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1627
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1669
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1694
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1766
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1800
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1826
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1865
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1866
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1868
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1869
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1872
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1873
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1876
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1881
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1882
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1911
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1917
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1918
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1924
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1928
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_airs_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_aqua_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_n19_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ssmis_f17_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ssmis_f17_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ssmis_f17_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ssmis_f17_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 24
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ssmis_f17_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_seviri_m08_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_seviri_m08_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_seviri_m11_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_seviri_m11_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 14
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 16
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 17
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 18
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 19
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 20
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 21
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 22
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 14
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 16
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 17
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 18
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 19
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 20
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 21
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 22
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_atms_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 24
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 26
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 28
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 32
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 37
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 39
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 42
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 44
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 47
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 49
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 51
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 53
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 55
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 57
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 59
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 61
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 63
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 65
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 67
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 69
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 71
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 73
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 75
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 77
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 79
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 81
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 83
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 85
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 87
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 89
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 91
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 93
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 95
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 97
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 99
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 103
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 105
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 107
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 109
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 111
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 113
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 115
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 117
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 121
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 123
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 125
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 127
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 129
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 131
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 135
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 137
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 139
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 141
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 143
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 145
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 147
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 149
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 151
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 153
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 155
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 157
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 159
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 163
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 167
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 171
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 175
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 179
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 183
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 187
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 190
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 194
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 197
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 200
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 211
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 224
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 275
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 279
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 291
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 311
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 332
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 342
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 389
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 410
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 427
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 464
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 482
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 501
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 529
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 710
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 713
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 742
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 882
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 890
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 937
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 995
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1008
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1022
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1058
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 24
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 26
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 28
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 32
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 37
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 39
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 42
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 44
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 47
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 49
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 51
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 53
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 55
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 57
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 59
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 61
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 63
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 65
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 67
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 69
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 71
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 73
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 75
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 77
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 79
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 81
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 83
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 85
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 87
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 89
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 91
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 93
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 95
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 97
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 99
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 103
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 105
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 107
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 109
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 111
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 113
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 115
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 117
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 121
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 123
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 125
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 127
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 129
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 131
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 135
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 137
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 139
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 141
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 143
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 145
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 147
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 149
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 151
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 153
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 155
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 157
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 159
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 163
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 167
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 171
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 175
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 179
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 183
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 187
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 190
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 194
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 197
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 200
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 211
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 224
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 275
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 279
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 291
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 311
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 332
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 342
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 389
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 410
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 427
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 464
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 482
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 501
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 529
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 710
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 713
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 742
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 882
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 890
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 937
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 995
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1008
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1022
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1058
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_n20_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 16
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 38
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 49
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 51
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 55
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 57
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 59
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 61
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 63
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 66
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 70
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 72
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 74
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 79
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 81
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 83
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 85
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 87
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 104
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 106
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 109
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 111
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 113
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 116
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 122
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 125
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 128
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 131
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 135
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 138
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 141
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 144
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 146
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 148
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 151
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 154
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 157
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 159
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 161
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 163
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 167
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 170
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 173
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 176
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 180
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 185
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 187
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 193
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 199
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 205
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 207
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 210
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 212
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 214
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 217
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 219
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 222
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 224
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 226
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 230
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 232
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 236
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 239
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 243
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 246
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 249
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 252
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 254
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 260
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 262
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 265
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 267
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 275
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 282
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 294
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 296
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 299
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 303
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 306
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 323
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 327
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 329
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 335
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 345
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 347
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 350
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 354
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 356
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 360
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 366
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 371
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 373
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 375
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 377
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 379
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 381
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 383
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 386
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 389
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 398
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 401
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 404
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 407
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 410
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 414
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 416
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 426
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 428
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 432
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 434
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 439
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 445
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 457
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 515
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 546
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 552
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 559
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 566
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 571
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 573
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 646
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 662
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 668
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 756
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 867
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 906
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 921
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1027
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1046
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1121
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1133
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1191
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1194
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1271
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1479
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1509
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1513
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1521
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1536
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1574
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1579
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1585
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1587
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1626
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1639
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1643
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1652
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1658
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1671
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1786
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1805
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1884
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1991
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2019
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2094
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2119
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2213
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2239
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2271
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2321
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2398
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2701
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2889
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2958
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2993
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3002
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3049
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3105
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3110
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5381
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5399
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5480
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_iasi_metop-b_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ahi_himawari8_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ahi_himawari8_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_ahi_himawari8_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_abi_g16_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_abi_g16_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 6
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 7
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 8
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 9
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 10
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 11
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 12
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 13
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 15
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_amsua_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 1
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 2
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 3
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 4
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
+- radiance input:
+    channel:
+    - 5
+    data type:
+    - O-F
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_mhs_metop-c_ges.2020092200.nc4
+    plot type: *id001
+    qc flag:
+    - 0
