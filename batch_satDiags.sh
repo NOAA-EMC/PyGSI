@@ -9,12 +9,9 @@
 
 # PyGSIdir=path/to/PyGSI_Directory
 PyGSIdir=/home/$LOGNAME/PyGSI
-OUTDIR=GSI_diag_figures
+OUTDIR=/home/$LOGNAME/PyGSI/tmp
 
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
-python mp_plot_satDiags.py -n 20 -y sat_test_yaml.yaml
-
-mkdir $OUTDIR
-mv *.png ./$OUTDIR
+python mp_plot_satDiags.py -n 20 -y sat_test_yaml.yaml -o $OUTDIR

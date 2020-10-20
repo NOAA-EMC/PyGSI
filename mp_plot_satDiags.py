@@ -6,7 +6,7 @@ import yaml
 from multiprocessing import Pool
 import sys
 from pyGSI.Diags import radiance
-from plotting.plotDiags import plot_spatial, plot_histogram
+from pyGSI.plotDiags import plot_spatial, plot_histogram
 from datetime import datetime
 
 startTime = datetime.now()
@@ -17,9 +17,8 @@ def plotting(YAML):
     DataType = YAML['radiance input']['data type'][0]
     Channel  = YAML['radiance input']['channel']
     QCFlag   = YAML['radiance input']['qc flag'][0]
-    plotType = YAML['radiance input']['plot type']
-    
-    plotType = ['histogram', 'spatial']
+    plotType = YAML['radiance input']['plot type']   
+    outDir   = YAML['outDir']
 
     diag = radiance(diagFile)
     
@@ -30,10 +29,10 @@ def plotting(YAML):
     metadata['Data_type'] = DataType  
     metadata['Channels'] = Channel
     
-    if np.isin('histogram', plotType):
-        plot_histogram(data, metadata)
+#     if np.isin('histogram', plotType):
+#         plot_histogram(data, metadata, outDir)
     if np.isin('spatial', plotType):
-        plot_spatial(data, metadata, lats, lons)
+        plot_spatial(data, metadata, lats, lons, outDir)
     
 
 def work_log(YAML):
@@ -54,6 +53,8 @@ ap.add_argument("-n", "--nprocs",
                 help="Number of tasks/processors for multiprocessing")  
 ap.add_argument("-y", "--yaml",
                 help="Path to yaml file with diag data")
+ap.add_argument("-o", "--outdir",
+                help="Out directory where files will be saved")
 
 MyArgs = ap.parse_args()
 
@@ -63,11 +64,17 @@ else:
     nprocs = 1
 
 YAML = MyArgs.yaml
+outDir = MyArgs.outdir
+print(outDir)
     
 file = open(YAML)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 work = (parsed_yaml_file['diagnostic'])
+
+# Add outdir to yaml dict
+for w in work:
+    w['outDir'] = outDir
 
 pool_handler(nprocs)
     

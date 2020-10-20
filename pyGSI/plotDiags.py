@@ -136,16 +136,16 @@ def plot_labels(metadata, stats):
         save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_'.format(**metadata) + '%s_' % dataType + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
         
             
-    # Left Title label
-    convTitle_dict = {'yes': {'left_title': '{Data_type}: {Variable} - Data Assimilated\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                              'save_file' :  save_file + '_assimilated'},
-                      'no' : {'left_title': '{Data_type}: {Variable} - Data Monitored\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                              'save_file' :  save_file + '_monitored'},
-                      'n/a': {'left_title': '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                              'save_file' :  save_file}
-                     }
-    
+    # Left Title label    
     if metadata['Diag_type'] == 'conv':
+        convTitle_dict = {'yes': {'left_title': '{Data_type}: {Variable} - Data Assimilated\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
+                                  'save_file' :  save_file + '_assimilated'},
+                          'no' : {'left_title': '{Data_type}: {Variable} - Data Monitored\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
+                                  'save_file' :  save_file + '_monitored'},
+                          'n/a': {'left_title': '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
+                                  'save_file' :  save_file}
+                         }
+        
         left_title = convTitle_dict[metadata['assimilated']]['left_title']
         save_file  = convTitle_dict[metadata['assimilated']]['save_file']
 
@@ -283,7 +283,7 @@ def plot_features(dtype, stats, metadata):
     
     return cmap, norm, extend
 
-def no_data_spatial(metadata):
+def no_data_spatial(metadata, outDir='./'):
     fig = plt.figure(figsize=(15,12))
     ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
 
@@ -296,13 +296,13 @@ def no_data_spatial(metadata):
     ax.text(0,0, 'No Data', fontsize=32, alpha=0.6, ha='center')
     plt.title(labels['leftTitle'], loc='left', fontsize=14)
     plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-    plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+    plt.savefig(outDir+'/%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
     
     return
 
 
-def plot_histogram(data, metadata):
+def plot_histogram(data, metadata, outDir='./'):
     if metadata['Diag_type'] == 'conv':
         metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
         
@@ -352,7 +352,7 @@ def plot_histogram(data, metadata):
 
             plt.title(leftTitle, loc='left', fontsize=14)
             plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-            plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+            plt.savefig(outDir+'/%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
             
     else:
@@ -397,13 +397,13 @@ def plot_histogram(data, metadata):
 
         plt.title(leftTitle, loc='left', fontsize=14)
         plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-        plt.savefig('%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+        plt.savefig(outDir+'/%s_histogram.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
         plt.close('all')
     
     return
 
 
-def plot_spatial(data, metadata, lats, lons):
+def plot_spatial(data, metadata, lats, lons, outDir='./'):
     
     if metadata['Diag_type'] == 'conv':
         metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
@@ -411,7 +411,7 @@ def plot_spatial(data, metadata, lats, lons):
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
             if len(data[i]) == 0:
-                no_data_spatial(metadata)
+                no_data_spatial(metadata, outDir)
                 
             else:
                 
@@ -448,13 +448,13 @@ def plot_spatial(data, metadata, lats, lons):
 
                 plt.title(labels['leftTitle'], loc='left', fontsize=14)
                 plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
-                plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+                plt.savefig(outDir+'/%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
                 plt.close('all')
     
     else:
         
         if len(data) == 0:
-            no_data_spatial(metadata)
+            no_data_spatial(metadata, outDir)
         
         else:
             stats = calculate_stats(data)
@@ -485,7 +485,7 @@ def plot_spatial(data, metadata, lats, lons):
 
             plt.title(labels['leftTitle'], loc='left', fontsize=14)
             plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)  
-            plt.savefig('%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+            plt.savefig(outDir+'/%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
     
     return

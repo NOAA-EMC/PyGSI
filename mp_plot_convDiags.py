@@ -6,7 +6,7 @@ import yaml
 from multiprocessing import Pool
 import sys
 from pyGSI.Diags import conventional
-from plotting.plotDiags import plot_spatial, plot_histogram
+from pyGSI.plotDiags import plot_spatial, plot_histogram
 from datetime import datetime
 
 startTime = datetime.now()
@@ -18,11 +18,9 @@ def plotting(YAML):
     ObsID    = YAML['conventional input']['observation id']
     AnlUse   = YAML['conventional input']['analysis use'][0]
     plotType = YAML['conventional input']['plot type']
-
+    outDir   = YAML['outDir']
     
     diag = conventional(diagFile)
-    
-#     print(AnlUse)
     
     if AnlUse == True:
         diagComponents = diagFile.split('/')[-1].split('.')[0].split('_')
@@ -63,9 +61,9 @@ def plotting(YAML):
                     lon = lons['monitored']
                     
                 if plot == 'histogram':
-                    plot_histogram(data, metadata)
+                    plot_histogram(data, metadata, outDir)
                 if plot == 'spatial':
-                    plot_spatial(data, metadata, lat, lon)
+                    plot_spatial(data, metadata, lat, lon, outDir)
  
 
     else:
@@ -89,9 +87,9 @@ def plotting(YAML):
         metadata['assimilated'] = 'n/a'
             
         if np.isin('histogram', plotType):
-            plot_histogram(data, metadata)
+            plot_histogram(data, metadata, outDir)
         if np.isin('spatial', plotType):
-            plot_spatial(data, metadata, lat, lon)
+            plot_spatial(data, metadata, lat, lon, outDir)
 
     
 def work_log(YAML):
@@ -112,6 +110,8 @@ ap.add_argument("-n", "--nprocs",
                 help="Number of tasks/processors for multiprocessing")  
 ap.add_argument("-y", "--yaml",
                 help="Path to yaml file with diag data")
+ap.add_argument("-o", "--outdir",
+                help="Out directory where files will be saved")
 
 MyArgs = ap.parse_args()
 
@@ -121,11 +121,15 @@ else:
     nprocs = 1
 
 YAML = MyArgs.yaml
+outDir = MyArgs.outdir
     
 file = open(YAML)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 work = (parsed_yaml_file['diagnostic'])
+
+for w in work:
+    w['outDir'] = outDir
 
 pool_handler(nprocs)
     
