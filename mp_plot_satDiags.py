@@ -16,7 +16,7 @@ def plotting(YAML):
     diagFile = YAML['radiance input']['path'][0]
     DataType = YAML['radiance input']['data type'][0]
     Channel  = YAML['radiance input']['channel']
-    QCFlag   = YAML['radiance input']['qc flag'][0]
+    QCFlag   = YAML['radiance input']['qc flag']
     plotType = YAML['radiance input']['plot type']   
     outDir   = YAML['outDir']
 
@@ -29,8 +29,8 @@ def plotting(YAML):
     metadata['Data_type'] = DataType  
     metadata['Channels'] = Channel
     
-#     if np.isin('histogram', plotType):
-#         plot_histogram(data, metadata, outDir)
+    if np.isin('histogram', plotType):
+        plot_histogram(data, metadata, outDir)
     if np.isin('spatial', plotType):
         plot_spatial(data, metadata, lats, lons, outDir)
     
