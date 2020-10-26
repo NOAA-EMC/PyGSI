@@ -382,37 +382,21 @@ class radiance(gsidiag):
             qcflag=None
             
         idx = self.channel_idx
-        
-        if channel != None and qcflag != None:
+        valid_idx = np.full_like(idx, True, dtype=bool)
+        if qcflag != None:
+            idxqc = self.qc_flag
+            valid_idx_qc = np.isin(idxqc, qcflag)
+            valid_idx = np.logical_and(valid_idx, valid_idx_qc)
+        if channel != None:
             chidx = np.where(self.sensor_chan == channel)
             if len(chidx) > 0 and len(chidx[0]) > 0:
                 channel = self.chaninfo_idx[chidx[0][0]]
             else:
                 print('Channel specified not in sensor_chan, using relative index')
-            chan_idxs = np.isin(self.channel_idx, channel)
-    
-            qc_idxs = np.isin(self.qc_flag, qcflag)
+            valid_idx_ch = np.isin(self.channel_idx, channel)
+            valid_idx = np.logical_and(valid_idx, valid_idx_ch)
 
-            valid_idxs = np.logical_and(chan_idxs, qc_idxs)
-            idx = np.where(valid_idxs)
-            
-        elif channel != None and qcflag == None:
-            chidx = np.where(self.sensor_chan == channel)
-            if len(chidx) > 0 and len(chidx[0]) > 0:
-                channel = self.chaninfo_idx[chidx[0][0]]
-            else:
-                print('Channel specified not in sensor_chan, using relative index')
-            valid_idxs = np.isin(idx, channel)
-            idx = np.where(valid_idxs)
-
-        elif channel == None and qcflag != None:
-            idx = self.qc_flag
-            valid_idxs = np.isin(idx, qcflag)
-            idx = np.where(valid_idxs)
-
-        elif channel == None and qcflag == None:
-            idx = np.where(idx)
-
+        idx = np.where(valid_idx)
         return idx
     
     def getData_special(self, dtype, channel, qcflag,
