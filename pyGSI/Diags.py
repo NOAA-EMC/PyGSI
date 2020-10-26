@@ -384,8 +384,12 @@ class radiance(gsidiag):
             qcflag=None
             
         idx = self.channel_idx
-        
-        if channel != None and qcflag != None:
+        valid_idx = np.full_like(idx, True, dtype=bool)
+        if qcflag != None:
+            idxqc = self.qc_flag
+            valid_idx_qc = np.isin(idxqc, qcflag)
+            valid_idx = np.logical_and(valid_idx, valid_idx_qc)
+        if channel != None:
             chidx = np.where(self.sensor_chan == channel)
             if len(chidx) > 0 and len(chidx[0]) > 0:
                 channel = self.chaninfo_idx[chidx[0][0]]
@@ -397,6 +401,7 @@ class radiance(gsidiag):
             valid_idx_err = np.nonzero(self.inv_ob_err)
             valid_idx = np.logical_and(valid_idx, valid_idx_err)
 
+        idx = np.where(valid_idx)
         return idx
     
     def getData_special(self, dtype, channel, qcflag,
