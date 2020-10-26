@@ -398,7 +398,7 @@ class radiance(gsidiag):
             valid_idx_ch = np.isin(self.channel_idx, channel)
             valid_idx = np.logical_and(valid_idx, valid_idx_ch)
         if errcheck and 0 in qcflag:
-            valid_idx_err = np.nonzero(self.inv_ob_err)
+            valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True) 
             valid_idx = np.logical_and(valid_idx, valid_idx_err)
 
         idx = np.where(valid_idx)
