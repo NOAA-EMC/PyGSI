@@ -319,6 +319,8 @@ class radiance(gsidiag):
         f = Dataset(self.path, mode='r')
         
         self.channel_idx = f.variables['Channel_Index'][:]
+        self.sensor_chan = f.variables['sensor_chan'][:]
+        self.chaninfo_idx = f.variables['chaninfoidx'][:]
         self.lons = f.variables['Longitude'][:]
         self.lats = f.variables['Latitude'][:]
         self.time = f.variables['Obs_Time'][:]
@@ -379,9 +381,14 @@ class radiance(gsidiag):
         if not qcflag or qcflag == [None]:
             qcflag=None
             
-        idx = self.channel_idx
         
         if channel != None and qcflag != None:
+            chidx = np.where(self.sensor_chan == channel)
+            if len(chidx) > 0 and len(chidx[0]) > 0:
+                channel = self.chaninfo_idx[chidx[0][0]]
+            else:
+                print('Channel specified not in sensor_chan, using relative index')
+            idx = self.channel_idx
             chan_idxs = np.isin(self.channel_idx, channel)
     
             qc_idxs = np.isin(self.qc_flag, qcflag)
@@ -390,6 +397,12 @@ class radiance(gsidiag):
             idx = np.where(valid_idxs)
             
         elif channel != None and qcflag == None:
+            chidx = np.where(self.sensor_chan == channel)
+            if len(chidx) > 0 and len(chidx[0]) > 0:
+                channel = self.chaninfo_idx[chidx[0][0]]
+            else:
+                print('Channel specified not in sensor_chan, using relative index')
+            idx = self.channel_idx
             valid_idxs = np.isin(idx, channel)
             idx = np.where(valid_idxs)
 
