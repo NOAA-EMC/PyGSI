@@ -415,7 +415,7 @@ class radiance(gsidiag):
         
         if separate_channels == True and separate_qc == False:
             for c in channel:
-                idx = self.get_idx_sat(c, qcflag, errcheck)
+                idx = self.get_idx_sat(c, qcflag, errcheck=errcheck)
 
                 data = self.query_dataType(dtype, idx)
 
@@ -427,7 +427,7 @@ class radiance(gsidiag):
         
         if separate_channels == False and separate_qc == True:
             for qc in qcflag:
-                idx = self.get_idx_sat(channel, qc, errcheck)
+                idx = self.get_idx_sat(channel, qc, errcheck=errcheck)
 
                 data = self.query_dataType(dtype, idx)
 
@@ -441,7 +441,7 @@ class radiance(gsidiag):
             for c in channel:
                 data_dict['Channel_%s' % c] = {}
                 for qc in qcflag:
-                    idx = self.get_idx_sat(c, qc, errcheck)
+                    idx = self.get_idx_sat(c, qc, errcheck=errcheck)
 
                     data = self.query_dataType(dtype, idx)
 
