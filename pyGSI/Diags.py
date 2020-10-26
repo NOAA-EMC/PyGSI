@@ -397,7 +397,7 @@ class radiance(gsidiag):
                 print('Channel specified not in sensor_chan, using relative index')
             valid_idx_ch = np.isin(self.channel_idx, channel)
             valid_idx = np.logical_and(valid_idx, valid_idx_ch)
-        if errcheck:
+        if errcheck and 0 not in qcflag:
             valid_idx_err = np.nonzero(self.inv_ob_err)
             valid_idx = np.logical_and(valid_idx, valid_idx_err)
 
