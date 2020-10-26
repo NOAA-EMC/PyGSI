@@ -337,7 +337,7 @@ class radiance(gsidiag):
         
         
     def getData(self, dtype, channel=None, qcflag=None,
-                separate_channels=False, separate_qc=False):
+                separate_channels=False, separate_qc=False, errcheck=True):
         """
         Given parameters, get the data from a radiance 
         diagnostic file.
@@ -353,16 +353,18 @@ class radiance(gsidiag):
                                     of separate data by specified channels
                 separate_qc       : if True, calls getData_special() and returns dictionary
                                     of separate data by specified QC flags
+                errcheck          : when true, and qc==0, will toss out obs where inverse
+                                    obs error is zero (i.e. not assimilated in GSI)
         OUTPUT:
             data : requested data
             
         """
         if separate_channels == True or separate_qc == True:
-            data = self.getData_special(dtype, channel, qcflag, separate_channels, separate_qc)
+            data = self.getData_special(dtype, channel, qcflag, separate_channels, separate_qc, errcheck=errcheck)
             return data
         
         else:
-            idx = self.get_idx_sat(channel, qcflag)
+            idx = self.get_idx_sat(channel, qcflag, errcheck=errcheck)
 
             data = self.query_dataType(dtype, idx)
 
@@ -370,7 +372,7 @@ class radiance(gsidiag):
 
             return data
     
-    def get_idx_sat(self, channel=None, qcflag=None):
+    def get_idx_sat(self, channel=None, qcflag=None, errcheck=True):
         """
         Given parameters, get the indices of the observation
         locations from a radiance diagnostic file.
@@ -389,34 +391,16 @@ class radiance(gsidiag):
                 channel = self.chaninfo_idx[chidx[0][0]]
             else:
                 print('Channel specified not in sensor_chan, using relative index')
-            chan_idxs = np.isin(self.channel_idx, channel)
-    
-            qc_idxs = np.isin(self.qc_flag, qcflag)
-
-            valid_idxs = np.logical_and(chan_idxs, qc_idxs)
-            idx = np.where(valid_idxs)
-            
-        elif channel != None and qcflag == None:
-            chidx = np.where(self.sensor_chan == channel)
-            if len(chidx) > 0 and len(chidx[0]) > 0:
-                channel = self.chaninfo_idx[chidx[0][0]]
-            else:
-                print('Channel specified not in sensor_chan, using relative index')
-            valid_idxs = np.isin(idx, channel)
-            idx = np.where(valid_idxs)
-
-        elif channel == None and qcflag != None:
-            idx = self.qc_flag
-            valid_idxs = np.isin(idx, qcflag)
-            idx = np.where(valid_idxs)
-
-        elif channel == None and qcflag == None:
-            idx = np.where(idx)
+            valid_idx_ch = np.isin(self.channel_idx, channel)
+            valid_idx = np.logical_and(valid_idx, valid_idx_ch)
+        if errcheck:
+            valid_idx_err = np.nonzero(self.inv_ob_err)
+            valid_idx = np.logical_and(valid_idx, valid_idx_err)
 
         return idx
     
     def getData_special(self, dtype, channel, qcflag,
-                        separate_channels, separate_qc):
+                        separate_channels, separate_qc, errcheck=True):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
@@ -426,7 +410,7 @@ class radiance(gsidiag):
         
         if separate_channels == True and separate_qc == False:
             for c in channel:
-                idx = self.get_idx_sat(c, qcflag)
+                idx = self.get_idx_sat(c, qcflag, errcheck)
 
                 data = self.query_dataType(dtype, idx)
 
@@ -438,7 +422,7 @@ class radiance(gsidiag):
         
         if separate_channels == False and separate_qc == True:
             for qc in qcflag:
-                idx = self.get_idx_sat(channel, qc)
+                idx = self.get_idx_sat(channel, qc, errcheck)
 
                 data = self.query_dataType(dtype, idx)
 
@@ -452,7 +436,7 @@ class radiance(gsidiag):
             for c in channel:
                 data_dict['Channel_%s' % c] = {}
                 for qc in qcflag:
-                    idx = self.get_idx_sat(c, qc)
+                    idx = self.get_idx_sat(c, qc, errcheck)
 
                     data = self.query_dataType(dtype, idx)
 
@@ -466,10 +450,10 @@ class radiance(gsidiag):
     
     # How can we get this method to be used for both conv
     # and radiance
-    def get_lat_lon(self, channel=None, qcflag=None):
+    def get_lat_lon(self, channel=None, qcflag=None, errcheck=True):
         """
         Gets lats and lons with desired indices
         """
-        idx = self.get_idx_sat(channel, qcflag)
+        idx = self.get_idx_sat(channel, qcflag, errcheck=errcheck)
         return self.lats[idx], self.lons[idx]
     
