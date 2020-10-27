@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 from matplotlib import pyplot
-from pyGSI import GSIStat
+from pyGSI.GSIStat import GSIstat
 
 
-adate = '2020010100'
-fname = 'gdas.t00z.gsistat'
+adate = '2020102606'
+fname = 'gdas.t06z.gsistat'
 
 gdas = GSIstat(fname, adate)
 
@@ -21,7 +21,9 @@ rad = gdas.extract('rad')
 print(rad)
 cost = gdas.extract('cost')
 print(cost)
-cost.plot(y='gJ')
+print(cost.index)
+#cost.plot(y='gJ',x=cost.index)
+pyplot.plot(cost.values[:,1])
 
 gdas.list_instruments()
 
