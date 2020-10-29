@@ -76,7 +76,7 @@ def write_ncfile(statDict, ncfilename):
 
     date = ncfile.createVariable('date', np.int64, ('time'))#, 'subtype'))
     date.units = 'time'
-    date.long_name = 'string of dates'
+    date.long_name = 'integer time represented as YYYYMMDDHH'
 
     epoch = ncfile.createVariable('epoch', np.int64, ('time'))#, 'subtype'))
     epoch.units = 'seconds since 01-01-1970 00:00:00'
@@ -108,7 +108,41 @@ def write_ncfile(statDict, ncfilename):
 
     q75 = ncfile.createVariable('q75', np.float32, ('time'))#, 'subtype'))
     q75.standard_name = '75th quantile'
+    
+    ######################################################################
+    
+    obscount_ll = ncfile.createVariable('obscount', np.int32, ('time', 'lon', 'lat'))
+    obscount_ll.standard_name = 'observation count'
 
+    mean_ll = ncfile.createVariable('mean', np.float32, ('time', 'lon', 'lat'))
+    mean_ll.standard_name = 'mean'
+
+    mx_ll = ncfile.createVariable('max', np.float32, ('time', 'lon', 'lat'))
+    mx_ll.standard_name = 'maximum'
+
+    mn_ll = ncfile.createVariable('min', np.float32, ('time', 'lon', 'lat'))
+    mn_ll.standard_name = 'minimum'
+
+    std_ll = ncfile.createVariable('std', np.float32, ('time', 'lon', 'lat'))
+    std_ll.standard_name = 'standard deviation'
+
+    rmse_ll = ncfile.createVariable('rmse', np.float32, ('time', 'lon', 'lat'))
+    rmse_ll.standard_name = 'root mean square error'
+
+    q25_ll = ncfile.createVariable('q25', np.float32, ('time', 'lon', 'lat'))
+    q25_ll.standard_name = '25th quantile'
+
+    q50_ll = ncfile.createVariable('q50', np.float32, ('time', 'lon', 'lat'))
+    q50_ll.standard_name = '50th quantile'
+
+    q75_ll = ncfile.createVariable('q75', np.float32, ('time', 'lon', 'lat'))
+    q75_ll.standard_name = '75th quantile'
+    
+    ######################################################################
+
+    lat[:] = statDict['lats']
+    lon[:] = statDict['lons']
+    
     subtype[:] = statDict['Subtype']
     date[:] = statDict['Date']
     epoch[:] = statDict['epoch']
@@ -144,6 +178,9 @@ def append_ncfile(statDict, ncfilename):
     q75 = ncfile.variables['q75']
     
     idx = len(date)
+    
+    lat[idx] = statDict['lats']
+    lon[idx] = statDict['lons']
     
     subtype[idx] = statDict['Subtype']
     date[idx] = statDict['Date']
@@ -202,9 +239,13 @@ def writeNetCDF(data, metadata, lat, lon):
 
             statDict['Date'] = metadata['Date'].strftime("%Y%m%d%H")
             statDict['epoch'] = metadata['Date'].timestamp()
-            statDict['lats'] = lat
-            statDict['lons'] = lon
             statDict['Subtype'] = int(metadata['Subtype'][0])
+            
+            lats = np.linspace(-89.5,89.5,180)
+            lons = np.linspace(0.5,359.5,360)
+        
+            statDict['lats'] = lats
+            statDict['lons'] = lons
 
             # Get the filename based on metadata
             ncfilename = get_filename(metadata)
@@ -225,9 +266,13 @@ def writeNetCDF(data, metadata, lat, lon):
 
         statDict['Date'] = int(metadata['Date'].strftime("%Y%m%d%H"))
         statDict['epoch'] = metadata['Date'].timestamp()
-        statDict['lats'] = lat
-        statDict['lons'] = lon
         statDict['Subtype'] = int(metadata['Subtype'][0])
+        
+        lats = np.linspace(-89.5,89.5,180)
+        lons = np.linspace(0.5,359.5,360)
+        
+        statDict['lats'] = lats
+        statDict['lons'] = lons
 
         # Get the filename based on metadata
         ncfilename = get_filename(metadata)
