@@ -25,7 +25,7 @@ def createNetCDF(YAML):
         if AnlUse == True:
             diagComponents = diagFile.split('/')[-1].split('.')[0].split('_')
             if diagComponents[1] == 'conv' and diagComponents[2] == 'uv':
-                u,v = diag.getData(DataType, obsid=ObsID, analysis_use=AnlUse)
+                u,v = diag.getData(DataType, obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
 
                 data = {'u': u['assimilated'],
                         'v': v['assimilated'],
@@ -33,11 +33,11 @@ def createNetCDF(YAML):
                        }
 
             else:
-                data = diag.getData(DataType, obsid=ObsID, analysis_use=AnlUse)
+                data = diag.getData(DataType, obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
 
                 data = data['assimilated']
 
-            lats, lons = diag.get_lat_lon(obsid=ObsID, analysis_use=AnlUse)
+            lats, lons = diag.get_lat_lon(obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
 
             metadata = diag.get_metadata()
 
