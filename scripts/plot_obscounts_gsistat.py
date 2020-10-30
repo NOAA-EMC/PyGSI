@@ -50,7 +50,6 @@ def plot_obscounts(inputfile, cyclestr, plotdir):
         nassim.append(radvar['assim'].sum())
         nread.append(radvar['read'].sum())
         nkeep.append(radvar['keep'].sum())
-        print(rad,radvar['read'].sum())
     # ozone obs
     ozstat = gdas.extract('oz')
     it1 = ozstat.query('it == 1')
@@ -109,51 +108,51 @@ def plot_obscounts(inputfile, cyclestr, plotdir):
         nread.append(np.sum(np.array(tmpread)))
         nkeep.append(np.sum(np.array(tmpread)))
 
-    # sort everything by number of obs assimilated
+    # sort everything by number of obs read
     yx = sorted(zip(nread, obsname))
     x_sorted = [x for y, x in yx]
-    nassim_sorted = [y for y, x in yx]
+    nread_sorted = [y for y, x in yx]
     yx = sorted(zip(nread, nassim))
-    nread_sorted = [x for y, x in yx]
+    nassim_sorted = [x for y, x in yx]
     x_pos = [i for i, _ in enumerate(x_sorted)]
     # read obs
     plt.figure(figsize=(8,11))
-    plt.barh(x_pos, nread_sorted, height=1, log=True, edgecolor='black')
+    plt.barh(x_pos, nread_sorted, height=1, log=True, edgecolor='black', color='firebrick')
     plt.xlabel('# of Observations Read')
     plt.title('GDAS Input Observation Counts '+cycle.strftime('%Y-%m-%d %H:%MZ Cycle'))
     plt.yticks(x_pos, x_sorted)
     for i, v in enumerate(nread_sorted):
-        plt.text(v *1.5, i+0.5, str(int(v)), color='black')
+        plt.text(v *1.5, i-.15, str(int(v)), color='black')
     plt.savefig(plotdir+'/nobs_read_'+cycle.strftime('%Y%m%d%H')+'.png')
     # assimilated obs
     plt.figure(figsize=(8,11))
-    plt.barh(x_pos, nassim_sorted, height=1, log=True, edgecolor='black')
+    plt.barh(x_pos, nassim_sorted, height=1, log=True, edgecolor='black', color='gray')
     plt.xlabel('# of Observations Assimilated')
     plt.title('GDAS Assimilated Observation Counts '+cycle.strftime('%Y-%m-%d %H:%MZ Cycle'))
     plt.yticks(x_pos, x_sorted)
     for i, v in enumerate(nassim_sorted):
-        plt.text(v *1.5, i+0.5, str(int(v)), color='black')
+        plt.text(v *1.5, i-.15, str(int(v)), color='black')
     plt.savefig(plotdir+'/nobs_assim_'+cycle.strftime('%Y%m%d%H')+'.png')
     # percentage of read obs assimilated
     plt.figure(figsize=(8,11))
-    plt.barh(x_pos, (np.array(nassim_sorted)/np.array(nread_sorted))*100., height=1, edgecolor='black')
+    plt.barh(x_pos, (np.array(nassim_sorted)/np.array(nread_sorted))*100., height=1, edgecolor='black', color='firebrick')
     plt.xlabel('Percentage of Observations Assimilated')
     plt.title('GDAS Observations Assimilated Percentage '+cycle.strftime('%Y-%m-%d %H:%MZ Cycle'))
     plt.yticks(x_pos, x_sorted)
     for i, v in enumerate((np.array(nassim_sorted)/np.array(nread_sorted))*100.):
         if not np.isinf(v):
-            plt.text(v +1, i+0.5, str(int(v)), color='black')
+            plt.text(v +1, i-.15, str(round(v,2)), color='black')
     plt.savefig(plotdir+'/nobs_pct_'+cycle.strftime('%Y%m%d%H')+'.png')
     # read and assimilated
     plt.figure(figsize=(8,11))
-    plt.barh(x_pos, nread_sorted, height=0.5, log=True, edgecolor='black', color='firebrick')
-    plt.barh(np.array(x_pos)+0.5, nassim_sorted, height=0.5, log=True, edgecolor='black', color='gray')
+    plt.barh(x_pos, nassim_sorted, height=0.5, log=True, edgecolor='black', color='gray')
+    plt.barh(np.array(x_pos)+0.5, nread_sorted, height=0.5, log=True, edgecolor='black', color='firebrick')
     plt.xlabel('# of Observations Read/Assimilated')
     plt.title('GDAS Input and Assimilated Observation Counts '+cycle.strftime('%Y-%m-%d %H:%MZ Cycle'))
     plt.yticks(np.array(x_pos)+0.25, x_sorted)
-    for i, v in enumerate(nassim_sorted):
-        plt.text(v *1.5, i+0.33, str(int(v)), color='black')
     for i, v in enumerate(nread_sorted):
+        plt.text(v *1.5, i+0.33, str(int(v)), color='black')
+    for i, v in enumerate(nassim_sorted):
         plt.text(v *1.5, i-0.20, str(int(v)), color='black')
     plt.savefig(plotdir+'/nobs_read_assim_'+cycle.strftime('%Y%m%d%H')+'.png')
 
