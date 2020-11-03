@@ -62,7 +62,7 @@ class gsidiag:
                 data = self.omf[idx]
                 return data
         
-        elif dtype == 'Observation':
+        elif dtype == 'Observation' or dtype == 'observation':
             if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
                 u = self.u_o[idx]
                 v = self.v_o[idx]
@@ -76,7 +76,7 @@ class gsidiag:
         elif dtype == 'O-A':
             # Not sure if I need to do this because 'ges' and 'anl' files are both f.variable['Obs_Minus_Forecast_adjusted'][:]
             # but I will leave it for now
-            check = check_o_minus_a()
+            check = self.check_o_minus_a()
             if check:
                 data = self.omf[idx]
                 return data
@@ -102,6 +102,10 @@ class gsidiag:
         
         elif dtype == 'Snow_Fraction':
             data = self.snow_frac[idx]
+            return data
+        
+        elif dtype == 'Cloud_Fraction':
+            data = self.cloud_frac[idx]
             return data
         
         else:
@@ -342,6 +346,7 @@ class radiance(gsidiag):
         self.land_frac = f.variables['Land_Fraction'][:]
         self.ice_frac = f.variables['Ice_Fraction'][:]
         self.snow_frac = f.variables['Snow_Fraction'][:]
+        self.cloud_frac = f.variables['Cloud_Fraction'][:]
         self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
         
         f.close()
