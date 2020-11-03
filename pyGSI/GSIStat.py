@@ -142,6 +142,9 @@ class GSIstat(object):
             if re.match(pattern, line):
                 tst = line.strip().split()
                 tst = tst[:2] + tst[2].split('_') + tst[3:]
+                if obtype == 'oz':
+                    tsttmp = tst
+                    tst = tsttmp[0:7] + tsttmp[8:]
                 tmp.append(tst)
 
         columns = ['it', 'channel', 'instrument', 'satellite', 'nassim',
@@ -219,8 +222,8 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                if any(x in line for x in ['mon', 'rej']):
-                    continue
+                #if any(x in line for x in ['mon', 'rej']):
+                #    continue
                 tmp.append(line.strip().split())
 
         columns = header.split()
@@ -271,8 +274,8 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                if any(x in line for x in ['mon', 'rej']):
-                    continue
+                #if any(x in line for x in ['mon', 'rej']):
+                #    continue
                 # don't add cpen or qcpen either
                 # careful here, cpen here also removes qcpen
                 # hence the extra space before qcpen and cpen
@@ -311,8 +314,8 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                if any(x in line for x in ['mon', 'rej']):
-                    continue
+                #if any(x in line for x in ['mon', 'rej']):
+                #    continue
                 line = re.sub('oz', ' ', line)
                 tmp.append(line.strip().split())
 
@@ -349,8 +352,8 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                if any(x in line for x in ['mon', 'rej']):
-                    continue
+                #if any(x in line for x in ['mon', 'rej']):
+                #    continue
                 line = re.sub('rad', ' ', line)
                 tmp.append(line.strip().split())
 
