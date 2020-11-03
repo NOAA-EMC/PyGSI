@@ -89,7 +89,10 @@ def get_xlabel(metadata):
     if metadata['Diag_type'] == 'conv':
         xlabel = conv_xlabel[metadata['Variable']]
     else:
-        xlabel = "Brightness Temperature (K)"
+        if metadata['Data_type'].split('_')[-1] == 'Fraction':
+            xlabel = '%s %s' % (metadata['Data_type'].split('_')[0], metadata['Data_type'].split('_')[-1])
+        else:
+            xlabel = "Brightness Temperature (K)"
         
     return xlabel
 
@@ -274,7 +277,7 @@ def plot_features(dtype, stats, metadata):
         
         upperbound = 1
         lowerbound = 0
-        bins = 1
+        bins = 0.5
         
         norm = mcolors.BoundaryNorm(boundaries=np.arange(lowerbound, upperbound+bins, bins), ncolors=256)
         
@@ -484,7 +487,7 @@ def plot_spatial(data, metadata, lats, lons, outDir='./'):
             cb.set_label(labels['xLabel'], fontsize=12)
 
             plt.title(labels['leftTitle'], loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)  
+            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)           
             plt.savefig(outDir+'/%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
     
