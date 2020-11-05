@@ -50,7 +50,7 @@ def calculate_stats(data):
 
         return statdict
     
-def write_ncfile(statDict, ncfilename):
+def write_ncfile(statDict, binnedData, ncfilename):
     
     ncfile = Dataset(ncfilename, 'w', format='NETCDF4')
 
@@ -58,17 +58,14 @@ def write_ncfile(statDict, ncfilename):
     lat_dim = ncfile.createDimension("lats", 180)
     lons_dim = ncfile.createDimension("lons", 360)
 
-    ncfile.diag_type='Conventional'
-    ncfile.variable='t'
-    ncfile.observationID='120'
-    # Latitude
-    lat = ncfile.createVariable('lat', np.float32, ('lats',))
-    lat.units='degrees'
-    lat.long_name='latitude'
-    # Longitude
-    lon = ncfile.createVariable('lon', np.float32, ('lons',))
-    lon.units='degrees'
-    lon.long_name='longitude'
+#     # Latitude
+#     lat = ncfile.createVariable('lat', np.float32, ('lats',))
+#     lat.units='degrees'
+#     lat.long_name='latitude'
+#     # Longitude
+#     lon = ncfile.createVariable('lon', np.float32, ('lons',))
+#     lon.units='degrees'
+#     lon.long_name='longitude'
     
     subtype = ncfile.createVariable('subtype', np.int64, ('time'))#('subtype'))
     subtype.units = 'subtype'
@@ -111,37 +108,29 @@ def write_ncfile(statDict, ncfilename):
     
     ######################################################################
     
-    obscount_ll = ncfile.createVariable('obscount', np.int32, ('time', 'lon', 'lat'))
-    obscount_ll.standard_name = 'observation count'
+    binned_obscount = ncfile.createVariable('binned_obscount', np.int32, ('time', 'lats', 'lons'))
+    binned_obscount.standard_name = 'binned observation count'
 
-    mean_ll = ncfile.createVariable('mean', np.float32, ('time', 'lon', 'lat'))
-    mean_ll.standard_name = 'mean'
+    binned_mean = ncfile.createVariable('binned_mean', np.float32, ('time', 'lats', 'lons'))
+    binned_mean.standard_name = 'binned mean'
 
-    mx_ll = ncfile.createVariable('max', np.float32, ('time', 'lon', 'lat'))
-    mx_ll.standard_name = 'maximum'
+    binned_mx = ncfile.createVariable('binned_max', np.float32, ('time', 'lats', 'lons'))
+    binned_mx.standard_name = 'binned maximum'
 
-    mn_ll = ncfile.createVariable('min', np.float32, ('time', 'lon', 'lat'))
-    mn_ll.standard_name = 'minimum'
+    binned_mn = ncfile.createVariable('binned_min', np.float32, ('time', 'lats', 'lons'))
+    binned_mn.standard_name = 'binned minimum'
 
-    std_ll = ncfile.createVariable('std', np.float32, ('time', 'lon', 'lat'))
-    std_ll.standard_name = 'standard deviation'
+    binned_std = ncfile.createVariable('binned_std', np.float32, ('time', 'lats', 'lons'))
+    binned_std.standard_name = 'binned standard deviation'
 
-    rmse_ll = ncfile.createVariable('rmse', np.float32, ('time', 'lon', 'lat'))
-    rmse_ll.standard_name = 'root mean square error'
+    binned_rmse = ncfile.createVariable('binned_rmse', np.float32, ('time', 'lats', 'lons'))
+    binned_rmse.standard_name = 'binned root mean square error'
 
-    q25_ll = ncfile.createVariable('q25', np.float32, ('time', 'lon', 'lat'))
-    q25_ll.standard_name = '25th quantile'
-
-    q50_ll = ncfile.createVariable('q50', np.float32, ('time', 'lon', 'lat'))
-    q50_ll.standard_name = '50th quantile'
-
-    q75_ll = ncfile.createVariable('q75', np.float32, ('time', 'lon', 'lat'))
-    q75_ll.standard_name = '75th quantile'
     
     ######################################################################
 
-    lat[:] = statDict['lats']
-    lon[:] = statDict['lons']
+#     lat[:] = statDict['lats']
+#     lon[:] = statDict['lons']
     
     subtype[:] = statDict['Subtype']
     date[:] = statDict['Date']
@@ -156,11 +145,18 @@ def write_ncfile(statDict, ncfilename):
     q50[:] = statDict['q50']
     q75[:] = statDict['q75']
     
+    binned_obscount[0,:,:] = binnedData['binned_nobs']
+    binned_mean[0,:,:] = binnedData['binned_mean']
+    binned_mx[0,:,:] = binnedData['binned_max']
+    binned_mn[0,:,:] = binnedData['binned_min']
+    binned_std[0:,:] = binnedData['binned_std']
+    binned_rmse[0,:,:] = binnedData['binned_rmse']
+    
     ncfile.close()
     
     return
 
-def append_ncfile(statDict, ncfilename):
+def append_ncfile(statDict, binnedData, ncfilename):
     
     ncfile = Dataset(ncfilename, 'a', format='NETCDF4')
     
@@ -177,10 +173,17 @@ def append_ncfile(statDict, ncfilename):
     q50 = ncfile.variables['q50']
     q75 = ncfile.variables['q75']
     
+    binned_obscount = ncfile.variables['binned_obscount'][:,:]
+    binned_mean = ncfile.variables['binned_mean'][:,:]
+    binned_max = ncfile.variables['binned_max'][:,:]
+    binned_min = ncfile.variables['binned_min'][:,:]
+    binned_std = ncfile.variables['binned_std'][:,:]
+    binned_rmse = ncfile.variables['binned_rmse'][:,:]
+
     idx = len(date)
     
-    lat[idx] = statDict['lats']
-    lon[idx] = statDict['lons']
+#     lat[idx] = statDict['lats']
+#     lon[idx] = statDict['lons']
     
     subtype[idx] = statDict['Subtype']
     date[idx] = statDict['Date']
@@ -194,6 +197,13 @@ def append_ncfile(statDict, ncfilename):
     q25[idx] = statDict['q25']
     q50[idx] = statDict['q50']
     q75[idx] = statDict['q75']
+    
+    binned_obscount[idx,:,:] = binnedData['binned_nobs']
+    binned_mean[idx,:,:] = binnedData['binned_mean']
+    binned_max[idx,:,:] = binnedData['binned_max']
+    binned_min[idx,:,:] = binnedData['binned_min']
+    binned_std[idx,:,:] = binnedData['binned_std']
+    binned_rmse[idx,:,:] = binnedData['binned_rmse']
     
     ncfile.close()
     
@@ -229,7 +239,7 @@ def get_filename(metadata):
     return ncfilename
 
 
-def writeNetCDF(data, metadata, lat, lon):
+def writeNetCDF(data, binnedData, metadata, lat, lon):
     
     if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
             
@@ -254,11 +264,11 @@ def writeNetCDF(data, metadata, lat, lon):
 
             # See if the file exists. If it doesn't, create it
             if os.path.isfile(ncpath) != True:
-                write_ncfile(statDict, ncpath)
+                write_ncfile(statDict, binnedData, ncpath)
 
             # else, append data to that file
             else:
-                append_ncfile(statDict, ncpath)
+                append_ncfile(statDict, binnedData, ncpath)
 
     else:
     
@@ -281,10 +291,10 @@ def writeNetCDF(data, metadata, lat, lon):
 
         # See if the file exists. If it doesn't, create it
         if os.path.isfile(ncpath) != True:
-            write_ncfile(statDict, ncpath)
+            write_ncfile(statDict, binnedData, ncpath)
 
         # else, append data to that file
         else:
-            append_ncfile(statDict, ncpath)
+            append_ncfile(statDict, binnedData, ncpath)
         
     return
