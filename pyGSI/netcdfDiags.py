@@ -149,7 +149,7 @@ def write_ncfile(statDict, binnedData, ncfilename):
     binned_mean[0,:,:] = binnedData['binned_mean']
     binned_mx[0,:,:] = binnedData['binned_max']
     binned_mn[0,:,:] = binnedData['binned_min']
-    binned_std[0:,:] = binnedData['binned_std']
+    binned_std[0,:,:] = binnedData['binned_std']
     binned_rmse[0,:,:] = binnedData['binned_rmse']
     
     ncfile.close()
@@ -173,12 +173,12 @@ def append_ncfile(statDict, binnedData, ncfilename):
     q50 = ncfile.variables['q50']
     q75 = ncfile.variables['q75']
     
-    binned_obscount = ncfile.variables['binned_obscount'][:,:]
-    binned_mean = ncfile.variables['binned_mean'][:,:]
-    binned_max = ncfile.variables['binned_max'][:,:]
-    binned_min = ncfile.variables['binned_min'][:,:]
-    binned_std = ncfile.variables['binned_std'][:,:]
-    binned_rmse = ncfile.variables['binned_rmse'][:,:]
+    binned_obscount = ncfile.variables['binned_obscount']
+    binned_mean = ncfile.variables['binned_mean']
+    binned_max = ncfile.variables['binned_max']
+    binned_min = ncfile.variables['binned_min']
+    binned_std = ncfile.variables['binned_std']
+    binned_rmse = ncfile.variables['binned_rmse']
 
     idx = len(date)
     

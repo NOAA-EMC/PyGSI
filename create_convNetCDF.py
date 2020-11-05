@@ -159,7 +159,7 @@ def createNetCDF(YAML):
         
 ###############################################
     
-# Parse command line
+#Parse command line
 ap = argparse.ArgumentParser()  
 ap.add_argument("-y", "--yaml",
                 help="Path to yaml file with diag data")
