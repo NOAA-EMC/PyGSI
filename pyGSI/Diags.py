@@ -346,7 +346,7 @@ class radiance(gsidiag):
         self.land_frac = f.variables['Land_Fraction'][:]
         self.ice_frac = f.variables['Ice_Fraction'][:]
         self.snow_frac = f.variables['Snow_Fraction'][:]
-        self.cloud_frac = f.variables['Cloud_Fraction'][:]
+        self.cloud_frac = f.variables['Cloud_Frac'][:]
         self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
         
         f.close()
