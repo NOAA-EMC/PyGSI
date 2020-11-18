@@ -31,78 +31,252 @@ def first_occurrence(worklist):
     return firstlist, repeatinglist
 
 
-def spatialBin(data, lat, lon):
-    # Creates new 1x1 global map
-    ll_lats = np.linspace(-89.5,89.5,180)
-    ll_lons = np.linspace(0.5,359.5,360)
+def binData(data, lat, lon, pressure, binsize='1x1', uvData=False):
+    """
+    The main function to spatially bin the data.
+    Inputs:
+        data      : data to binned
+        lat       : original data lats
+        lon       : original data lons
+        pressure  : original data pressure values
+        paramlist : list of all combinations of lat and lon values
+                    of the new grid data is being binned to
+        binsize   : string of the size of binning, must be square.
+                    Examples: '1x1', '2x2', '5x5' (Default = 1x1)
+        uvData    : if using uvData, will be True (Defalt = False) 
+    Outputs:
+        binned_data, binned_pressure
+    """
     
-    #Generate a list of tuples where each tuple is a combination of parameters.
-    #The list will contain all possible combinations of parameters.
+    # Create lats and lons based on binsize
+    lonlen = 360
+    latlen = 180
+
+    lon_lowerlim = 0
+    lon_upperlim = 360
+
+    lat_lowerlim = -90
+    lat_upperlim = 90
+
+    if binsize.split('x')[0] != binsize.split('x')[1]:
+        print('ERROR: Binsize must be square i.e. 1x1, 2x2, 5x5 etc. Please use different binsize.')
+        return
+
+    binsize = int(binsize.split('x')[0])
+
+    if latlen % binsize == 0 and lonlen % binsize == 0:
+        latbin = int(latlen/binsize)
+        lonbin = int(lonlen/binsize)
+        n_deg = binsize/2
+
+        ll_lats = np.linspace(lat_lowerlim+(n_deg),
+                              lat_upperlim-(n_deg),
+                              latbin)
+
+        ll_lons = np.linspace(lon_lowerlim+(n_deg),
+                              lon_upperlim-(n_deg),
+                              lonbin)
+
+    else:
+        print('ERROR: Binsize does not work for grid shape (180,360). Please use different binsize.')
+        return
+    
     paramlist = list(itertools.product(ll_lats, ll_lons))
     
-    # Create 2D arrays for each statistic
-    binned_nobs = np.zeros((180,360))
-    binned_mean = np.zeros((180,360))
-    binned_max = np.zeros((180,360))
-    binned_min = np.zeros((180,360))
-    binned_std = np.zeros((180,360))
-    binned_rmse = np.zeros((180,360))
+    # Bin Data
+    if uvData == True:
+        binned_u_data = np.full((latbin,lonbin), np.nan, dtype=object)
+        binned_v_data = np.full((latbin,lonbin), np.nan, dtype=object)
+        binned_pressure = np.full((latbin,lonbin), np.nan, dtype=object)
+        
+        for val in paramlist:
+            # Get index of 1x1 grid lat and lon
+            latidx = np.where(ll_lats == val[0])
+            lonidx = np.where(ll_lons == val[1])
+            # values of the 1x1 grid lat and lon
+            binnedlons = val[1]
+            binnedlats = val[0]
+
+            # find instances where data is within 1x1 grid point of orginal data
+            data_idx = np.where((lon >= binnedlons - n_deg) & (lon <= binnedlons + n_deg) & \
+                                (lat >= binnedlats - n_deg) & (lat <= binnedlats + n_deg))
+
+            latlon_idx = [latidx[0][0],lonidx[0][0]]
+
+            # calculate stats if there is data at this grid point, else append np.nan        
+            if len(data_idx[0]) > 0:
+                u = data['u'][data_idx]
+                v = data['v'][data_idx]
+                p = pressure[data_idx]
+
+                binned_u_data[latlon_idx[0], latlon_idx[1]] = u
+                binned_v_data[latlon_idx[0], latlon_idx[1]] = v
+                binned_pressure[latlon_idx[0], latlon_idx[1]] = p
+                
+                
+        return binned_u_data, binned_v_data, binned_pressure
+        
+    else:
+        binned_data = np.full((latbin,lonbin), np.nan, dtype=object)
+        binned_pressure = np.full((latbin,lonbin), np.nan, dtype=object)
     
-    # Loop through all combinations in paramlist to find data values within
-    # a 1x1 lat lon map. Get appropriate indexes and calculate statistics and
-    # append them to above 2D arrays
-    for val in paramlist:
-        # Get index of 1x1 grid lat and lon
-        latidx = np.where(ll_lats == val[0])
-        lonidx = np.where(ll_lons == val[1])
-        # values of the 1x1 grid lat and lon
-        binnedlons = val[1]
-        binnedlats = val[0]
+        for val in paramlist:
+            # Get index of grid lat and lon
+            latidx = np.where(ll_lats == val[0])
+            lonidx = np.where(ll_lons == val[1])
+            # values of the 1x1 grid lat and lon
+            binnedlons = val[1]
+            binnedlats = val[0]
 
-        n_deg=0.5
+            # find instances where data is within 1x1 grid point of orginal data
+            data_idx = np.where((lon >= binnedlons - n_deg) & (lon <= binnedlons + n_deg) & \
+                                (lat >= binnedlats - n_deg) & (lat <= binnedlats + n_deg))
 
-        # find instances where data is within 1x1 grid point of orginal data
-        data_idx = np.where((lon >= binnedlons - n_deg) & (lon <= binnedlons + n_deg) & \
-                            (lat >= binnedlats - n_deg) & (lat <= binnedlats + n_deg))
+            latlon_idx = [latidx[0][0],lonidx[0][0]]
 
-        latlon_idx = [latidx[0][0],lonidx[0][0]]
+            # calculate stats if there is data at this grid point
+            if len(data_idx[0]) > 0:
+                d = data[data_idx]
+                try:
+                    p = pressure[data_idx]
+                except:
+                    print(data_idx)
+                    print(pressure)
 
-        # calculate stats if there is data at this grid point, else append np.nan
-        if len(data_idx[0]) > 0:
-            try:
-                n = len(data[data_idx])
-            except:
-                print(data[data_idx])
-            mean = np.mean(data[data_idx])
-            mx = np.max(data[data_idx])
-            mn = np.min(data[data_idx])
-            std = np.std(data[data_idx])
-            rmse = np.std(data[data_idx])
-
-            binned_nobs[latlon_idx[0], latlon_idx[1]] = n
-            binned_mean[latlon_idx[0], latlon_idx[1]] = mean
-            binned_max[latlon_idx[0], latlon_idx[1]] = mx
-            binned_min[latlon_idx[0], latlon_idx[1]] = mn
-            binned_std[latlon_idx[0], latlon_idx[1]] = std
-            binned_rmse[latlon_idx[0], latlon_idx[1]] = rmse
-
-        else:
-            binned_nobs[latlon_idx[0], latlon_idx[1]] = np.nan
-            binned_mean[latlon_idx[0], latlon_idx[1]] = np.nan
-            binned_max[latlon_idx[0], latlon_idx[1]] = np.nan
-            binned_min[latlon_idx[0], latlon_idx[1]] = np.nan
-            binned_std[latlon_idx[0], latlon_idx[1]] = np.nan
-            binned_rmse[latlon_idx[0], latlon_idx[1]] = np.nan
+                binned_data[latlon_idx[0], latlon_idx[1]] = d
+                binned_pressure[latlon_idx[0], latlon_idx[1]] = p
             
-    binnedData = {'binned_nobs': binned_nobs,
-                  'binned_mean': binned_mean,
-                  'binned_max': binned_max,
-                  'binned_min': binned_min,
-                  'binned_std': binned_std,
-                  'binned_rmse': binned_rmse
-                 }
 
-    return binnedData
+        return binned_data, binned_pressure
+
+
+def spatialBin(data, lat, lon, pressure, binsize='1x1', uvData=False):
+    
+    if uvData == True:
+        binned_u_data, binned_v_data, binned_pressure = binData(data, lat, lon,
+                                                                pressure,
+                                                                binsize=binsize,
+                                                                uvData=True)
+        
+        rows = binned_u_data.shape[0]
+        cols = binned_u_data.shape[1]
+
+        binned_u_nobs = np.full((rows,cols, 9), np.nan)
+        binned_u_mean = np.full((rows,cols, 9), np.nan)
+        binned_u_max = np.full((rows,cols, 9), np.nan)
+        binned_u_min = np.full((rows,cols, 9), np.nan)
+        binned_u_std = np.full((rows,cols, 9), np.nan)
+        binned_u_rmse = np.full((rows,cols, 9), np.nan)
+        
+        binned_v_nobs = np.full((rows,cols, 9), np.nan)
+        binned_v_mean = np.full((rows,cols, 9), np.nan)
+        binned_v_max = np.full((rows,cols, 9), np.nan)
+        binned_v_min = np.full((rows,cols, 9), np.nan)
+        binned_v_std = np.full((rows,cols, 9), np.nan)
+        binned_v_rmse = np.full((rows,cols, 9), np.nan)
+
+        pressure_list = [None, 0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+
+        for i, pressure in enumerate(pressure_list[:-1]):
+            for x in range(0, rows):
+                for y in range(0, cols):
+                    if np.isnan(binned_u_data[x,y]).any() == False:
+                        if i == 0:
+                            binned_u_nobs[x,y,i] = len(binned_u_data[x,y])
+                            binned_u_mean[x,y,i] = np.mean(binned_u_data[x,y])
+                            binned_u_max[x,y,i] = np.max(binned_u_data[x,y])
+                            binned_u_min[x,y,i] = np.min(binned_u_data[x,y])
+                            binned_u_std[x,y,i] = np.std(binned_u_data[x,y])
+                            binned_u_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_u_data[x,y])))
+                            
+                            binned_v_nobs[x,y,i] = len(binned_v_data[x,y])
+                            binned_v_mean[x,y,i] = np.mean(binned_v_data[x,y])
+                            binned_v_max[x,y,i] = np.max(binned_v_data[x,y])
+                            binned_v_min[x,y,i] = np.min(binned_v_data[x,y])
+                            binned_v_std[x,y,i] = np.std(binned_v_data[x,y])
+                            binned_v_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_v_data[x,y])))
+                        else:
+                            pressure_idx = np.where((binned_pressure[x,y] > pressure_list[i]) & (binned_pressure[x,y] < pressure_list[i+1]))
+                            if len(pressure_idx[0]) > 0:
+                                binned_u_nobs[x,y,i] = len(binned_u_data[x,y][pressure_idx])
+                                binned_u_mean[x,y,i] = np.mean(binned_u_data[x,y][pressure_idx])
+                                binned_u_max[x,y,i] = np.max(binned_u_data[x,y][pressure_idx])
+                                binned_u_min[x,y,i] = np.min(binned_u_data[x,y][pressure_idx])
+                                binned_u_std[x,y,i] = np.std(binned_u_data[x,y][pressure_idx])
+                                binned_u_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_u_data[x,y][pressure_idx])))
+                                
+                                binned_v_nobs[x,y,i] = len(binned_v_data[x,y][pressure_idx])
+                                binned_v_mean[x,y,i] = np.mean(binned_v_data[x,y][pressure_idx])
+                                binned_v_max[x,y,i] = np.max(binned_v_data[x,y][pressure_idx])
+                                binned_v_min[x,y,i] = np.min(binned_v_data[x,y][pressure_idx])
+                                binned_v_std[x,y,i] = np.std(binned_v_data[x,y][pressure_idx])
+                                binned_v_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_v_data[x,y][pressure_idx])))
+                                
+        binnedData = {'u': {'binned_nobs': binned_u_nobs,
+                            'binned_mean': binned_u_mean,
+                            'binned_max':  binned_u_max,
+                            'binned_min':  binned_u_min,
+                            'binned_std':  binned_u_std,
+                            'binned_rmse': binned_u_rmse
+                           },
+                      'v': {'binned_nobs': binned_v_nobs,
+                            'binned_mean': binned_v_mean,
+                            'binned_max':  binned_v_max,
+                            'binned_min':  binned_v_min,
+                            'binned_std':  binned_v_std,
+                            'binned_rmse': binned_v_rmse
+                           }
+                     }
+        
+        return binnedData
+    
+    else:
+        binned_data, binned_pressure = binData(data, lat, lon,
+                                               pressure,
+                                               binsize=binsize, 
+                                               uvData=False)
+        rows = binned_data.shape[0]
+        cols = binned_data.shape[1]
+
+        binned_nobs = np.full((rows, cols, 9), np.nan)
+        binned_mean = np.full((rows, cols, 9), np.nan)
+        binned_max = np.full((rows, cols, 9), np.nan)
+        binned_min = np.full((rows, cols, 9), np.nan)
+        binned_std = np.full((rows, cols, 9), np.nan)
+        binned_rmse = np.full((rows, cols, 9), np.nan)
+
+        pressure_list = [None, 0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+
+        for i, pressure in enumerate(pressure_list[:-1]):
+            for x in range(0, rows):
+                for y in range(0, cols):
+                    if np.isnan(binned_data[x,y]).any() == False:
+                        if i == 0:
+                            binned_nobs[x,y,i] = len(binned_data[x,y])
+                            binned_mean[x,y,i] = np.mean(binned_data[x,y])
+                            binned_max[x,y,i] = np.max(binned_data[x,y])
+                            binned_min[x,y,i] = np.min(binned_data[x,y])
+                            binned_std[x,y,i] = np.std(binned_data[x,y])
+                            binned_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_data[x,y])))
+                        else:
+                            pressure_idx = np.where((binned_pressure[x,y] > pressure_list[i]) & (binned_pressure[x,y] < pressure_list[i+1]))
+                            if len(pressure_idx[0]) > 0:
+                                binned_nobs[x,y,i] = len(binned_data[x,y][pressure_idx])
+                                binned_mean[x,y,i] = np.mean(binned_data[x,y][pressure_idx])
+                                binned_max[x,y,i] = np.max(binned_data[x,y][pressure_idx])
+                                binned_min[x,y,i] = np.min(binned_data[x,y][pressure_idx])
+                                binned_std[x,y,i] = np.std(binned_data[x,y][pressure_idx])
+                                binned_rmse[x,y,i] = np.sqrt(np.nanmean(np.square(binned_data[x,y][pressure_idx])))
+    
+        binnedData = {'binned_nobs': binned_nobs,
+                      'binned_mean': binned_mean,
+                      'binned_max': binned_max,
+                      'binned_min': binned_min,
+                      'binned_std': binned_std,
+                      'binned_rmse': binned_rmse
+                     }
+        
+        return binnedData
 
 
 def createNetCDF(YAML):
@@ -133,6 +307,8 @@ def createNetCDF(YAML):
             data = data['assimilated']
 
         lats, lons = diag.get_lat_lon(obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
+        pressure = diag.get_pressure(obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
+        pressure = pressure['assimilated']
 
         metadata = diag.get_metadata()
 
@@ -146,8 +322,10 @@ def createNetCDF(YAML):
         lon = lons['assimilated']
 
         # Get binned data
-        print(diagFile, ObsID, Subtype)
-        binnedData = spatialBin(data, lat, lon)
+        if diagComponents[1] == 'conv' and diagComponents[2] == 'uv':
+            binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1', uvData=True)
+        else:
+            binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1')
 
 
         writeNetCDF(data, binnedData, metadata, lat, lon) 
@@ -165,6 +343,7 @@ def createNetCDF(YAML):
             data = diag.getData(DataType, obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
 
         lats, lons = diag.get_lat_lon(obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
+        pressure = diag.get_pressure(obsid=ObsID, subtype=Subtype, analysis_use=AnlUse)
 
         metadata = diag.get_metadata()
 
@@ -174,7 +353,11 @@ def createNetCDF(YAML):
         metadata['outDir'] = outDir
 
         # Get binned data
-        binnedData = spatialBin(data, lats, lons)
+        print('Binning..')
+        if diagComponents[1] == 'conv' and diagComponents[2] == 'uv':
+            binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1', uvData=True)
+        else:
+            binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1')
 
         writeNetCDF(data, binnedData, metadata, lats, lons)
     
@@ -214,8 +397,7 @@ condition = True
 
 while condition == True:
     worklist, repeatinglist = first_occurrence(worklist)
-#     print('Working list: ', len(worklist))
-#     print("Repeating list: ", len(repeatinglist))
+
     #run multiprocessing pool with worklist
     p = Pool(processes=nprocs)
     p.map(createNetCDF, worklist)
