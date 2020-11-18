@@ -19,7 +19,7 @@ class gsidiag:
         
     def get_metadata(self):
         """
-        Grabs metadata from the diagnostic filename **NEED TO ADDRESS STILL**
+        Grabs metadata from the diagnostic filename
         """
         
         dtype = self.path.split('/')[-1].split('.')[0].split('_')[1]
@@ -51,7 +51,7 @@ class gsidiag:
         Query the data type being requested and returns
         the appropriate indexed data
         """
-        if dtype == 'O-F':
+        if dtype == 'O-F' or dtype == 'o-f':
             if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
                 u = self.u_omf[idx]
                 v = self.v_omf[idx]
@@ -73,38 +73,37 @@ class gsidiag:
                 data = self.o[idx]
                 return data
         
-        elif dtype == 'O-A':
-            # Not sure if I need to do this because 'ges' and 'anl' files are both f.variable['Obs_Minus_Forecast_adjusted'][:]
-            # but I will leave it for now
+        elif dtype == 'O-A' or dtype == 'o-a':
             check = self.check_o_minus_a()
             if check:
                 data = self.omf[idx]
                 return data
             else:
                 print('File type does not support O-A')
+                return None
         
-        elif dtype == 'H(x)':
+        elif dtype == 'H(x)' or dtype == 'h(x)' or dtype == 'hofx':
             Hx = self.o - self.omf
             data = Hx[idx]
             return data
         
-        elif dtype == 'Water_Fraction':
+        elif dtype == 'Water_Fraction' or dtype == 'water_fraction':
             data = self.water_frac[idx]
             return data
         
-        elif dtype == 'Land_Fraction':
+        elif dtype == 'Land_Fraction' or dtype == 'land_fraction':
             data = self.land_frac[idx]
             return data
         
-        elif dtype == 'Ice_Fraction':
+        elif dtype == 'Ice_Fraction' or dtype == 'ice_fraction':
             data = self.ice_frac[idx]
             return data
         
-        elif dtype == 'Snow_Fraction':
+        elif dtype == 'Snow_Fraction' or dtype == 'snow_fraction':
             data = self.snow_frac[idx]
             return data
         
-        elif dtype == 'Cloud_Fraction':
+        elif dtype == 'Cloud_Fraction' or dtype == 'cloud_fraction':
             data = self.cloud_frac[idx]
             return data
         
@@ -158,7 +157,6 @@ class conventional(gsidiag):
         self.press = f.variables['Pressure'][:]
         self.time = f.variables['Time'][:]
         self.anl_use = f.variables['Analysis_Use_Flag'][:]
-#         self.prepqc = f.variables['Prep_QC_Mark'][:]
         try:
             self.stnelev = f.variables['Station_Elevation'][:]
         except:
@@ -178,7 +176,7 @@ class conventional(gsidiag):
         f.close()
 
             
-    def getData(self, dtype, obsid=None, subtype=None, analysis_use=False):
+    def getData(self, dtype, obsid=None, subtype=None, analysis_use=False, plvls=False):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
@@ -187,47 +185,112 @@ class conventional(gsidiag):
                 
             optional:    
                 obsid        : observation measurement ID number; default=None
+                subtype      : observation measurement ID subtype number, default=None
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
+                plvls        : if True, will return a dictionary of data subsetting 
+                               into pressure levels
                 
         OUTPUT:
             data   : requested data
         """
-        if analysis_use == True:
-            assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)
-            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
-                u_assimilated, v_assimilated = self.query_dataType(dtype, assimilated_idx)
-                u_monitored, v_monitored = self.query_dataType(dtype, monitored_idx)
-                
-                u = {'assimilated': u_assimilated,
-                     'monitored': u_monitored}
-                v = {'assimilated': v_assimilated,
-                     'monitored': v_monitored}
-                
-                return u, v
-            else:
-                assimilated_data = self.query_dataType(dtype, assimilated_idx)
-                monitored_data = self.query_dataType(dtype, monitored_idx)
-                
-                data = {'assimilated': assimilated_data,
-                        'monitored'  : monitored_data
-                       }
-                
-                return data
+        
+        if plvls == True:
+            pressure_list = [0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+            binnedPressure = {}
             
+            if analysis_use == True:
+                assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                
+                for i, pressure in enumerate(pressure_list[:-1]):
+                    pres_idx = np.where((self.press > pressure_list[i]) & (self.press < pressure_list[i+1]))
+                    valid_assimilated_idx = np.isin(assimilated_idx[0],pres_idx[0])
+                    valid_monitored_idx = np.isin(monitored_idx[0],pres_idx[0])
+                    
+                    assimilated_pidx = np.where(valid_assimilated_idx)
+                    monitored_pidx = np.where(valid_monitored_idx)
+                    
+                    if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                        u_assimilated, v_assimilated = self.query_dataType(dtype, assimilated_pidx)
+                        u_monitored, v_monitored = self.query_dataType(dtype, monitored_pidx)
+
+                        u = {'assimilated': u_assimilated,
+                             'monitored': u_monitored}
+                        v = {'assimilated': v_assimilated,
+                             'monitored': v_monitored}
+                        
+                        binnedPressure[pressure]['u'] = u
+                        binnedPressure[pressure]['v'] = v
+                    
+                    else:
+                        assimilated_data = self.query_dataType(dtype, assimilated_pidx)
+                        monitored_data = self.query_dataType(dtype, monitored_pidx)
+
+                        data = {'assimilated': assimilated_data,
+                                'monitored'  : monitored_data
+                               }
+                        
+                        binnedPressure[pressure] = data
+                
+                return binnedPressure
+                        
+            
+            else:
+                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+
+                for i, pressure in enumerate(pressure_list[:-1]):
+                    pres_idx = np.where((self.press > pressure_list[i]) & (self.press < pressure_list[i+1]))
+                    valid_idx = np.isin(idx[0],pres_idx[0])
+                    pidx = np.where(valid_idx)
+
+                    if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                        u, v = self.query_dataType(dtype, pidx)
+                        binnedPressure[pressure]['u'] = u
+                        binnedPressure[pressure]['v'] = v
+                    else:
+                        data = self.query_dataType(dtype, pidx)
+                        binnedPressure[pressure] = data
+                        
+                return binnedPressure
+                       
         else:
-            idx = self.get_idx_conv(obsid, subtype, analysis_use)
+        
+            if analysis_use == True:
+                assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)                  
 
-            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
-                u, v = self.query_dataType(dtype, idx)
+                if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                    u_assimilated, v_assimilated = self.query_dataType(dtype, assimilated_idx)
+                    u_monitored, v_monitored = self.query_dataType(dtype, monitored_idx)
 
-                return u, v
+                    u = {'assimilated': u_assimilated,
+                         'monitored': u_monitored}
+                    v = {'assimilated': v_assimilated,
+                         'monitored': v_monitored}
+
+                    return u, v
+                else:
+                    assimilated_data = self.query_dataType(dtype, assimilated_idx)
+                    monitored_data = self.query_dataType(dtype, monitored_idx)
+
+                    data = {'assimilated': assimilated_data,
+                            'monitored'  : monitored_data
+                           }
+
+                    return data
 
             else:
-                data = self.query_dataType(dtype, idx)
+                idx = self.get_idx_conv(obsid, subtype, analysis_use)
 
-                return data
+                if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                    u, v = self.query_dataType(dtype, idx)
+
+                    return u, v
+
+                else:
+                    data = self.query_dataType(dtype, idx)
+
+                    return data
     
     
     def get_idx_conv(self, obsid=None, subtype=None, analysis_use=False):
@@ -287,22 +350,74 @@ class conventional(gsidiag):
             monitored_idx = np.where(valid_monitored_idx)
             
             return assimilated_idx, monitored_idx
-            
-    
-    def get_lat_lon(self, obsid=None, subtype=None, analysis_use=False):
+
+        
+    def get_lat_lon(self, obsid=None, subtype=None, analysis_use=False, plvls=False):
         """
         Gets lats and lons with desired indices
         """
+        
+        if plvls == True:
+            pressure_list = [0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+            pressureLats = {}
+            pressureLons = {}
+            
+            if analysis_use == True:
+                assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                
+                for i, pressure in enumerate(pressure_list[:-1]):
+                    pres_idx = np.where((self.press > pressure_list[i]) & (self.press < pressure_list[i+1]))
+                    valid_assimilated_idx = np.isin(assimilated_idx[0],pres_idx[0])
+                    valid_monitored_idx = np.isin(monitored_idx[0],pres_idx[0])
+                    
+                    assimilated_pidx = np.where(valid_assimilated_idx)
+                    monitored_pidx = np.where(valid_monitored_idx)
+                
+                    lats = {'assimilated': self.lats[assimilated_pidx],
+                            'monitored': self.lats[monitored_pidx]}
+                    lons = {'assimilated': self.lons[assimilated_pidx],
+                            'monitored': self.lons[monitored_pidx]}
+                    
+                    pressureLats[pressure] = lats
+                    pressureLons[pressure] = lons
+                
+                return pressureLats, pressureLons
+            
+            else:
+                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+
+                for i, pressure in enumerate(pressure_list[:-1]):
+                    pres_idx = np.where((self.press > pressure_list[i]) & (self.press < pressure_list[i+1]))
+                    valid_idx = np.isin(idx[0],pres_idx[0])
+                    pidx = np.where(valid_idx)
+                    
+                    pressureLats[pressure] = self.lats[pidx]
+                    pressureLons[pressure] = self.lons[pidx]
+                
+                return pressureLats, pressureLons
+            
+        else:
+            if analysis_use == True:
+                assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                lats = {'assimilated': self.lats[assimilated_idx],
+                        'monitored': self.lats[monitored_idx]}
+                lons = {'assimilated': self.lons[assimilated_idx],
+                        'monitored': self.lons[monitored_idx]}
+                return lats, lons
+            else:
+                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                return self.lats[idx], self.lons[idx]
+            
+    def get_pressure(self, obsid=None, subtype=None, analysis_use=False):
         if analysis_use == True:
             assimilated_idx, monitored_idx = self.get_idx_conv(obsid, subtype, analysis_use)
-            lats = {'assimilated': self.lats[assimilated_idx],
-                    'monitored': self.lats[monitored_idx]}
-            lons = {'assimilated': self.lons[assimilated_idx],
-                    'monitored': self.lons[monitored_idx]}
-            return lats, lons
+            pressure = {'assimilated': self.press[assimilated_idx],
+                        'monitored': self.press[monitored_idx]}
+            
+            return pressure
         else:
-            idx = self.get_idx_conv(obsid, analysis_use)
-            return self.lats[idx], self.lons[idx]
+            idx = self.get_idx_conv(obsid, subtype, analysis_use)
+            return self.press[idx]
     
     def metadata(self):
         dic = self.get_metadata()
@@ -413,7 +528,7 @@ class radiance(gsidiag):
                 print('Channel specified not in sensor_chan, using relative index')
             valid_idx_ch = np.isin(self.channel_idx, channel)
             valid_idx = np.logical_and(valid_idx, valid_idx_ch)
-        if errcheck and 0 in qcflag:
+        if errcheck and qcflag == 0:
             valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True) 
             valid_idx = np.logical_and(valid_idx, valid_idx_err)
 
@@ -467,10 +582,7 @@ class radiance(gsidiag):
                     
             return data_dict
                     
-                    
-    
-    # How can we get this method to be used for both conv
-    # and radiance
+     
     def get_lat_lon(self, channel=None, qcflag=None, errcheck=True):
         """
         Gets lats and lons with desired indices
