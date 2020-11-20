@@ -492,3 +492,85 @@ def plot_spatial(data, metadata, lats, lons, outDir='./'):
             plt.close('all')
     
     return
+
+def plot_timeseries(ncfile, oneplot=False):
+    
+    #Get metadata
+    metadata = {}
+    
+    meta = ncfile.split('/')[-1].split('_')
+    diag_type = meta[0]
+
+    if diag_type == 'conv':
+        metadata['Diag_type'] = meta[0]
+        metadata['Variable'] = meta[1]
+        metadata['ObsID'] = [int(meta[2])]
+        metadata['Data_Type'] = meta[3].split('.')[0]
+        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+
+    f = Dataset(ncfile, 'r', format='NETCDF4')
+    date = f.variables['date'][:]
+    mean = f.variables['mean'][:]
+    n = f.variables['obscount'][:]
+    std = f.variables['std'][:]
+    f.close()
+
+    dates = [datetime.strptime(str(d), '%Y%m%d%H') for d in date]
+    dates = [datetime.strftime(d, '%d %b %Y\n %H:00Z') for d in dates]
+    dates
+
+    title = '{Data_Type} for Variable {Variable}\n{ObsID[0]}: {Obs_Type[0]}'.format(**metadata)
+
+    if oneplot == True:
+        fig, ax = plt.subplots(3,1, sharex=True)
+        fig.set_figheight(8)
+        fig.set_figwidth(8)
+        fig.suptitle(title, x=0.5, y=0.95)
+
+        ax[0].plot(dates, n)
+        ax[0].set_ylabel('Observations')
+        ax[0].grid()
+
+        ax[1].plot(dates, mean)
+        ax[1].set_ylabel('Mean')
+        ax[1].grid()
+
+        ax[2].plot(dates, std)
+        ax[2].set_ylabel('Std Dev')
+        ax[2].grid()
+
+        plt.setp(ax[2].xaxis.get_majorticklabels(), rotation=40)
+        plt.savefig('timeseries_3plot.png', bbox_inches='tight', pad_inches=0.1)
+        plt.close('all')
+
+    else:
+        fig = plt.figure(figsize=(10,5))
+        ax = plt.axes()
+        plt.plot(dates, n)
+        plt.ylabel('Observations')
+        plt.grid()
+        plt.ylim(bottom=0)
+        plt.title('Observation Count: %s' % title)
+        plt.savefig('timeseries_obscount.png', bbox_inches='tight', pad_inches=0.1)
+
+        fig = plt.figure(figsize=(10,5))
+        ax = plt.axes()
+        plt.plot(dates, mean)
+        plt.ylabel('O-F')
+        plt.grid()
+        plt.ylim(bottom=0)
+        plt.title('Mean: %s' % title)
+        plt.savefig('timeseries_mean.png', bbox_inches='tight', pad_inches=0.1)
+
+        fig = plt.figure(figsize=(10,5))
+        ax = plt.axes()
+        plt.plot(dates, std)
+        plt.ylabel('O-F')
+        plt.grid()
+        plt.ylim(bottom=0)
+        plt.title('Standard Deviation: %s' % title)
+        plt.savefig('timeseries_stddev.png', bbox_inches='tight', pad_inches=0.1)
+        
+        plt.close('all')
+    
+    return 
