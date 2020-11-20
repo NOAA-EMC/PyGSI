@@ -519,7 +519,6 @@ def plot_timeseries(ncfile, oneplot=False):
 
     dates = [datetime.strptime(str(d), '%Y%m%d%H') for d in date]
     dates = [datetime.strftime(d, '%d %b %Y\n %H:00Z') for d in dates]
-    dates
 
     title = '{Data_Type} for Variable {Variable}\n{ObsID[0]}: {Obs_Type[0]}'.format(**metadata)
 
