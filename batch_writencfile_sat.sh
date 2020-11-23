@@ -14,4 +14,4 @@ OUTDIR=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI/ncfiles/radiance
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
-python create_satNetCDF.py -n 20 -y /scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI/sat_test_yaml.yaml -o $OUTDIR
+python $PyGSIdir/scripts/create_satNetCDF.py -n 20 -y $PyGSIdir/sat_test_yaml.yaml -o $OUTDIR
