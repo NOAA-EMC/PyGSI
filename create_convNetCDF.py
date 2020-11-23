@@ -328,7 +328,7 @@ def createNetCDF(YAML):
             binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1')
 
 
-        writeNetCDF(data, binnedData, metadata, lat, lon) 
+        writeNetCDF(data, binnedData, metadata) 
 
     else:
         diagComponents = diagFile.split('/')[-1].split('.')[0].split('_')
@@ -359,7 +359,7 @@ def createNetCDF(YAML):
         else:
             binnedData = spatialBin(data, lat, lon, pressure, binsize='1x1')
 
-        writeNetCDF(data, binnedData, metadata, lats, lons)
+        writeNetCDF(data, binnedData, metadata)
     
     return
         
