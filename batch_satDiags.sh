@@ -1,3 +1,4 @@
+  
 #!/bin/bash
 #SBATCH -J plot_gsi_diags
 #SBATCH -A da-cpu

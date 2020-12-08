@@ -14,4 +14,4 @@ OUTDIR=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI/ncfiles
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
-python $PyGSIdir/scripts/create_convNetCDF.py -n 20 -y $PyGSIdir/conv_2020092118_yaml.yaml -o $OUTDIR
+python $PyGSIdir/scripts/create_convNetCDF.py -n 20 -y $PyGSIdir/test_conv_yaml.yaml -o $OUTDIR
