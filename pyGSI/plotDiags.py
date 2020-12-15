@@ -407,6 +407,69 @@ def plot_histogram(data, metadata, outDir='./'):
     
     return
 
+def plot_binned_spatial(data, metadata, binsize='1x1', outDir='./'):
+    
+    if metadata['Diag_type'] == 'conv':
+        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+    
+    # Create lats and lons based on binsize
+    lonlen = 360
+    latlen = 180
+
+    lon_lowerlim = 0
+    lon_upperlim = 360
+
+    lat_lowerlim = -90
+    lat_upperlim = 90
+
+    if binsize.split('x')[0] != binsize.split('x')[1]:
+        print('ERROR: Binsize must be square i.e. 1x1, 2x2, 5x5 etc. Please use different binsize.')
+
+    binsize = int(binsize.split('x')[0])
+
+    if latlen % binsize == 0 and lonlen % binsize == 0:
+        latbin = int(latlen/binsize)
+        lonbin = int(lonlen/binsize)
+        n_deg = binsize/2
+
+        ll_lats = np.linspace(lat_lowerlim+(n_deg),
+                              lat_upperlim-(n_deg),
+                              latbin)
+
+        ll_lons = np.linspace(lon_lowerlim+(n_deg),
+                              lon_upperlim-(n_deg),
+                              lonbin)
+
+    xx, yy = np.meshgrid(ll_lons, ll_lats)
+    
+    stats = calculate_stats(data)
+    
+    cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
+    
+    fig = plt.figure(figsize=(15,12))
+    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
+
+    ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+    ax.set_extent([-180, 180, -90, 90])
+            
+    cs = plt.pcolormesh(xx, yy, data,
+                        norm=norm, cmap=cmap,
+                        transform=ccrs.PlateCarree())
+
+    labels = plot_labels(metadata, stats)
+
+    ax.text(185, 55, labels['statText'], fontsize=14)
+
+    cb = plt.colorbar(cs, orientation='horizontal', shrink=0.5, pad=.04, extend=extend)
+    cb.set_label(labels['xLabel'], fontsize=12)
+
+    plt.title(labels['leftTitle'], loc='left', fontsize=14)
+    plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+
+    plt.savefig(outDir+'/%s_binned_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
+    plt.close('all')
+    
+    
 
 def plot_spatial(data, metadata, lats, lons, outDir='./'):
     
@@ -439,6 +502,7 @@ def plot_spatial(data, metadata, lats, lons, outDir='./'):
 
                 ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
                 ax.set_extent([-180, 180, -90, 90])
+                
 
                 cs = plt.scatter(lons, lats, c=data[i], s=30,
                                  norm=norm, cmap=cmap,
@@ -476,7 +540,7 @@ def plot_spatial(data, metadata, lats, lons, outDir='./'):
 
             ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
             ax.set_extent([-180, 180, -90, 90])
-
+            
             cs = plt.scatter(lons, lats, c=data, s=30,
                              norm=norm, cmap=cmap,
                              transform=ccrs.PlateCarree())
@@ -489,7 +553,8 @@ def plot_spatial(data, metadata, lats, lons, outDir='./'):
             cb.set_label(labels['xLabel'], fontsize=12)
 
             plt.title(labels['leftTitle'], loc='left', fontsize=14)
-            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)           
+            plt.title(labels['dateTitle'], loc='right', fontweight='semibold', fontsize=14)
+
             plt.savefig(outDir+'/%s_spatial.png' % labels['saveFile'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
     
