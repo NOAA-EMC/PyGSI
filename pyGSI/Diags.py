@@ -326,11 +326,8 @@ class conventional(gsidiag):
             return idx
         
         else:
-            assimilated = np.isin(self.anl_use, 1)
-            monitored = np.isin(self.anl_use, -1)
-
-            valid_assimilated_idx = np.full_like(assimilated, True, dtype=bool)
-            valid_monitored_idx = np.full_like(monitored, True, dtype=bool)
+            valid_assimilated_idx = np.isin(self.anl_use, 1)
+            valid_monitored_idx = np.isin(self.anl_use, -1)
 
             if obsid != None:
                 idxobs = self.o_type
