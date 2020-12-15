@@ -1,0 +1,1419 @@
+diagnostic:
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 112
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_tcp_ges.2020092000.nc4
+    plot type: &id001
+    - histogram
+    - spatial
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 120
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 1
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 181
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 182
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 187
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_ps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 120
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 130
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 131
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 132
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 133
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 134
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 135
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 1
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 182
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_t_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 120
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 132
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 133
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 180
+    observation subtype:
+    - 1
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 182
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 181
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 182
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 183
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 184
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 185
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 186
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 187
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 188
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 189
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 190
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 191
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 192
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 193
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 194
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 195
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 196
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 197
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 198
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 199
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_sst_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 220
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 221
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 223
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 224
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 229
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 230
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 231
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 232
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 233
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 234
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 235
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 242
+    observation subtype:
+    - 171
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 242
+    observation subtype:
+    - 172
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 242
+    observation subtype:
+    - 173
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 242
+    observation subtype:
+    - 174
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 243
+    observation subtype:
+    - 55
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 243
+    observation subtype:
+    - 70
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 3
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 4
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 206
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 207
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 209
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 244
+    observation subtype:
+    - 223
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 245
+    observation subtype:
+    - 270
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 245
+    observation subtype:
+    - 271
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 246
+    observation subtype:
+    - 270
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 246
+    observation subtype:
+    - 271
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 247
+    observation subtype:
+    - 270
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 247
+    observation subtype:
+    - 271
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 250
+    observation subtype:
+    - 171
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 250
+    observation subtype:
+    - 172
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 250
+    observation subtype:
+    - 173
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 250
+    observation subtype:
+    - 174
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 252
+    observation subtype:
+    - 171
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 252
+    observation subtype:
+    - 172
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 252
+    observation subtype:
+    - 173
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 252
+    observation subtype:
+    - 174
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 253
+    observation subtype:
+    - 55
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 253
+    observation subtype:
+    - 70
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 254
+    observation subtype:
+    - 55
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 254
+    observation subtype:
+    - 70
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 257
+    observation subtype:
+    - 783
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 257
+    observation subtype:
+    - 784
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 258
+    observation subtype:
+    - 783
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 258
+    observation subtype:
+    - 784
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 259
+    observation subtype:
+    - 783
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 259
+    observation subtype:
+    - 784
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 260
+    observation subtype:
+    - 224
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 260
+    observation subtype:
+    - 225
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 280
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 280
+    observation subtype:
+    - 1
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 282
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 289
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 290
+    observation subtype:
+    - 4
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 290
+    observation subtype:
+    - 3
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 4
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 722
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 723
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 740
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 741
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 742
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 743
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 744
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 745
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 820
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 42
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 43
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 786
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 3
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 825
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 750
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 751
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 752
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 753
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 754
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
+- conventional input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    observation id:
+    - 755
+    observation subtype:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4
+    plot type: *id001
