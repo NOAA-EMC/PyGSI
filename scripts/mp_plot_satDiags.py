@@ -65,10 +65,10 @@ else:
 
 YAML = MyArgs.yaml
 outDir = MyArgs.outdir
-print(outDir)
     
 file = open(YAML)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+
 
 work = (parsed_yaml_file['diagnostic'])
 
