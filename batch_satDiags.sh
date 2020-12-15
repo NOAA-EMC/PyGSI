@@ -11,6 +11,7 @@
 # PyGSIdir=path/to/PyGSI_Directory
 PyGSIdir=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI
 OUTDIR=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI/
+YAML=$PyGSIdir/test_sat_yaml.yaml
 
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
