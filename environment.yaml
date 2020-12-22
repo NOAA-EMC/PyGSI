@@ -1,0 +1,16 @@
+name: PyGSI
+channels:
+  - defaults
+dependencies:
+  - python=3
+  - numpy
+  - scipy
+  - matplotlib
+  - netcdf4
+  - xarray
+  - pandas
+  - cartopy
+  - cython
+  - jupyter
+  - pyyaml
+  - autopep8
