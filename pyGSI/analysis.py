@@ -3,7 +3,7 @@ import numpy as np
 import datetime as dt
 
 
-class increment:
+class Increment:
 
     def __init__(self, path):
         """

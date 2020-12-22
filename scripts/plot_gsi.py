@@ -2,21 +2,21 @@ import numpy as np
 import sys
 import argparse
 import yaml
-from pyGSI.diags import conventional, radiance
+from pyGSI.diags import Conventional, Radiance
 from pyGSI.plot_diags import plot_spatial, plot_histogram
 from datetime import datetime
 
 
-def plotting_conventional(YAML):
+def plotting_conventional(conv_config):
 
-    diagfile = YAML['conventional input']['path'][0]
-    data_type = YAML['conventional input']['data type'][0]
-    obsid = YAML['conventional input']['observation id']
-    analysis_use = YAML['conventional input']['analysis use'][0]
-    plot_type = YAML['conventional input']['plot type']
-    outdir = YAML['outDir']
+    diagfile = conv_config['conventional input']['path'][0]
+    data_type = conv_config['conventional input']['data type'][0]
+    obsid = conv_config['conventional input']['observation id']
+    analysis_use = conv_config['conventional input']['analysis use'][0]
+    plot_type = conv_config['conventional input']['plot type']
+    outdir = conv_config['outDir']
 
-    diag = conventional(diagfile)
+    diag = Conventional(diagfile)
 
     if analysis_use == True:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
@@ -90,16 +90,16 @@ def plotting_conventional(YAML):
             plot_spatial(data, metadata, lats, lons, outdir)
 
 
-def plotting_radiance(YAML):
+def plotting_radiance(rad_config):
 
-    diagfile = YAML['radiance input']['path'][0]
-    data_type = YAML['radiance input']['data type'][0]
-    channel = YAML['radiance input']['channel']
-    qcflag = YAML['radiance input']['qc flag']
-    plot_type = YAML['radiance input']['plot type']
-    outdir = YAML['outDir']
+    diagfile = rad_config['radiance input']['path'][0]
+    data_type = rad_config['radiance input']['data type'][0]
+    channel = rad_config['radiance input']['channel']
+    qcflag = rad_config['radiance input']['qc flag']
+    plot_type = rad_config['radiance input']['plot type']
+    outdir = rad_config['outDir']
 
-    diag = radiance(diagfile)
+    diag = Radiance(diagfile)
 
     data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
@@ -127,13 +127,13 @@ ap.add_argument("-o", "--outdir",
 
 myargs = ap.parse_args()
 
-YAML = myargs.yaml
+input_yaml = myargs.yaml
 outdir = myargs.outdir
 
 if outdir == None:
     outdir = './'
 
-file = open(YAML)
+file = open(input_yaml)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 work = (parsed_yaml_file['diagnostic'])

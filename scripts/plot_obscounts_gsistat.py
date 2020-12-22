@@ -2,7 +2,7 @@
 # generate bar graphs of obs counts
 # from GSI stat ASCII files
 import argparse
-from pyGSI.GSIStat import GSIstat
+from pyGSI.gsi_stat import GSIstat
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt

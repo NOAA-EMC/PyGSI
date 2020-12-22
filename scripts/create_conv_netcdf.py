@@ -6,7 +6,7 @@ import yaml
 import sys
 import itertools
 from multiprocessing import Pool
-from pyGSI.diags import conventional
+from pyGSI.diags import Conventional
 from pyGSI.netcdf_diags import write_netcdf
 from pyGSI.spatial_bin import spatial_bin
 from datetime import datetime
@@ -32,16 +32,16 @@ def first_occurrence(worklist):
     return firstlist, repeatinglist
 
 
-def create_netcdf(YAML):
+def create_netcdf(conv_config):
 
-    diagfile = YAML['conventional input']['path'][0]
-    data_type = YAML['conventional input']['data type'][0]
-    obsid = YAML['conventional input']['observation id']
-    subtype = YAML['conventional input']['observation subtype']
-    analysis_use = YAML['conventional input']['analysis use'][0]
-    outdir = YAML['outDir']
+    diagfile = conv_config['conventional input']['path'][0]
+    data_type = conv_config['conventional input']['data type'][0]
+    obsid = conv_config['conventional input']['observation id']
+    subtype = conv_config['conventional input']['observation subtype']
+    analysis_use = conv_config['conventional input']['analysis use'][0]
+    outdir = conv_config['outDir']
 
-    diag = conventional(diagfile)
+    diag = Conventional(diagfile)
 
     if analysis_use == True:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
@@ -145,10 +145,10 @@ if myargs.nprocs:
 else:
     nprocs = 1
 
-YAML = myargs.yaml
+input_yaml = myargs.yaml
 outdir = myargs.outdir
 
-file = open(YAML)
+file = open(input_yaml)
 parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 worklist = (parsed_yaml_file['diagnostic'])
