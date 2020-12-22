@@ -284,7 +284,6 @@ def plot_features(dtype, stats, metadata):
                 (np.round(stats['Std']*2)/2)*2
             bins = (upperbound - lowerbound)/20
         
-        print(lowerbound, upperbound, bins)
         norm = mcolors.BoundaryNorm(boundaries=np.arange(
             lowerbound, upperbound+bins, bins), ncolors=256)
 
