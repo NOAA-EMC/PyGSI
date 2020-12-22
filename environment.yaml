@@ -13,3 +13,4 @@ dependencies:
   - cython
   - jupyter
   - pyyaml
+  - autopep8

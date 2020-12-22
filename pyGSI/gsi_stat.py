@@ -89,7 +89,8 @@ class GSIstat(object):
             otype = self.extract(rtype)
             instruments = sorted(
                 otype.index.get_level_values('instrument').unique())
-            satellites = sorted(otype.index.get_level_values('satellite').unique())
+            satellites = sorted(
+                otype.index.get_level_values('satellite').unique())
 
             print(f'Available {rtype} instruments:')
             print(' '.join(instruments))
@@ -222,14 +223,15 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                #if any(x in line for x in ['mon', 'rej']):
+                # if any(x in line for x in ['mon', 'rej']):
                 #    continue
                 tmp.append(line.strip().split())
 
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
         df[['it', 'typ', 'count']] = df[['it', 'typ', 'count']].astype(np.int)
-        df[['bias', 'rms', 'cpen', 'qcpen']] = df[['bias', 'rms', 'cpen', 'qcpen']].astype(np.float)
+        df[['bias', 'rms', 'cpen', 'qcpen']] = df[[
+            'bias', 'rms', 'cpen', 'qcpen']].astype(np.float)
         df.set_index(columns[:5], inplace=True)
 
         return df
@@ -274,7 +276,7 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                #if any(x in line for x in ['mon', 'rej']):
+                # if any(x in line for x in ['mon', 'rej']):
                 #    continue
                 # don't add cpen or qcpen either
                 # careful here, cpen here also removes qcpen
@@ -314,18 +316,21 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                #if any(x in line for x in ['mon', 'rej']):
+                # if any(x in line for x in ['mon', 'rej']):
                 #    continue
                 line = re.sub('oz', ' ', line)
                 tmp.append(line.strip().split())
 
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
-        df[['it', 'read', 'keep', 'assim']] = df[['it', 'read', 'keep', 'assim']].astype(np.int)
-        df[['penalty', 'cpen', 'qcpen', 'qcfail']] = df[['penalty', 'cpen', 'qcpen', 'qcfail']].astype(np.float)
+        df[['it', 'read', 'keep', 'assim']] = df[[
+            'it', 'read', 'keep', 'assim']].astype(np.int)
+        df[['penalty', 'cpen', 'qcpen', 'qcfail']] = df[[
+            'penalty', 'cpen', 'qcpen', 'qcfail']].astype(np.float)
         df.set_index(columns[:4], inplace=True)
         df = df.swaplevel('sat', 'inst')
-        df.index.rename(['satellite', 'instrument'], level=['sat', 'inst'], inplace=True)
+        df.index.rename(['satellite', 'instrument'], level=[
+                        'sat', 'inst'], inplace=True)
 
         return df
 
@@ -352,7 +357,7 @@ class GSIstat(object):
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
-                #if any(x in line for x in ['mon', 'rej']):
+                # if any(x in line for x in ['mon', 'rej']):
                 #    continue
                 line = re.sub('rad', ' ', line)
                 tmp.append(line.strip().split())

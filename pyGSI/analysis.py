@@ -2,6 +2,7 @@ import netCDF4 as nc
 import numpy as np
 import datetime as dt
 
+
 class increment:
 
     def __init__(self, path):
@@ -25,7 +26,7 @@ class increment:
         # if these don't exist, just return dummy vars
         try:
             anltimeint = inc.getncattr('analysis_time')
-            anltime = dt.datetime.strptime(str(anltimeint),'%Y%m%d%H')
+            anltime = dt.datetime.strptime(str(anltimeint), '%Y%m%d%H')
             IAUhr = int(inc.getncattr('IAU_hour_from_guess'))
             tdiff = 6-IAUhr
             if tdiff > 0:
@@ -35,8 +36,8 @@ class increment:
             else:
                 validtime = anltime
         except:
-            validtime = dt.datetime(2000,1,1)
-            anltime = dt.datetime(2000,1,1)
+            validtime = dt.datetime(2000, 1, 1)
+            anltime = dt.datetime(2000, 1, 1)
             IAUhr = -9999
         inc.close()
         self.validtime = validtime
@@ -50,8 +51,8 @@ class increment:
         inc = nc.Dataset(self.path, 'r')
         lat = inc.variables['lat'][:]
         lon = inc.variables['lon'][:]
-        lon[lon>180.] = lon[lon>180.]-360.
-        lon = np.roll(lon,int(len(lon)/2),axis=0)
+        lon[lon > 180.] = lon[lon > 180.]-360.
+        lon = np.roll(lon, int(len(lon)/2), axis=0)
         lons, lats = np.meshgrid(lon, lat)
         levs = inc.variables['lev'][:]
         inc.close()
@@ -72,6 +73,5 @@ class increment:
         else:
             vardata = inc.variables[varname][:]
         lon = inc.variables['lon'][:]
-        vardata = np.roll(vardata,int(len(lon)/2),axis=1)
+        vardata = np.roll(vardata, int(len(lon)/2), axis=1)
         return vardata
-
