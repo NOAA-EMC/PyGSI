@@ -143,7 +143,6 @@ class Conventional(GSIdiag):
         super().__init__(path)
 
         self.read_conv_obs()
-        self.variable
 
     def __str__(self):
         return "Conventional object"
