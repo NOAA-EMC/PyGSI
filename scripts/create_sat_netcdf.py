@@ -60,8 +60,8 @@ else:
 input_yaml = myargs.yaml
 outdir = myargs.outdir
 
-file = open(input_yaml)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 for w in parsed_yaml_file['diagnostic']:
     w['outDir'] = outdir

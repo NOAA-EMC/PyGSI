@@ -133,8 +133,8 @@ outdir = myargs.outdir
 if outdir == None:
     outdir = './'
 
-file = open(input_yaml)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 work = (parsed_yaml_file['diagnostic'])
 for w in work:

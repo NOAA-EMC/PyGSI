@@ -58,8 +58,8 @@ else:
 YAML = myargs.yaml
 outdir = myargs.outdir
 
-file = open(YAML)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 
 work = (parsed_yaml_file['diagnostic'])
