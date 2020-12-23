@@ -6,7 +6,7 @@ import yaml
 import sys
 import itertools
 from multiprocessing import Pool
-from pyGSI.diags import radiance
+from pyGSI.diags import Radiance
 from pyGSI.netcdf_diags import write_netcdf
 from pyGSI.spatial_bin import spatial_bin
 from datetime import datetime
@@ -14,15 +14,15 @@ from datetime import datetime
 start_time = datetime.now()
 
 
-def create_netcdf(YAML):
+def create_netcdf(sat_config):
 
-    diagfile = YAML['radiance input']['path'][0]
-    data_type = YAML['radiance input']['data type'][0]
-    channel = YAML['radiance input']['channel']
-    qcflag = YAML['radiance input']['qc flag']
-    outdir = YAML['outDir']
+    diagfile = sat_config['radiance input']['path'][0]
+    data_type = sat_config['radiance input']['data type'][0]
+    channel = sat_config['radiance input']['channel']
+    qcflag = sat_config['radiance input']['qc flag']
+    outdir = sat_config['outDir']
 
-    diag = radiance(diagfile)
+    diag = Radiance(diagfile)
 
     data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
@@ -57,11 +57,11 @@ if myargs.nprocs:
 else:
     nprocs = 1
 
-YAML = myargs.yaml
+input_yaml = myargs.yaml
 outdir = myargs.outdir
 
-file = open(YAML)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 for w in parsed_yaml_file['diagnostic']:
     w['outDir'] = outdir

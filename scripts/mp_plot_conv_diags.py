@@ -5,23 +5,23 @@ import numpy as np
 import yaml
 from multiprocessing import Pool
 import sys
-from pyGSI.diags import conventional
+from pyGSI.diags import Conventional
 from pyGSI.plot_diags import plot_spatial, plot_histogram
 from datetime import datetime
 
 start_time = datetime.now()
 
 
-def plotting(YAML):
+def plotting(conv_config):
 
-    diagfile = YAML['conventional input']['path'][0]
-    data_type = YAML['conventional input']['data type'][0]
-    obsid = YAML['conventional input']['observation id']
-    analysis_use = YAML['conventional input']['analysis use'][0]
-    plot_type = YAML['conventional input']['plot type']
-    outdir = YAML['outdir']
+    diagfile = conv_config['conventional input']['path'][0]
+    data_type = conv_config['conventional input']['data type'][0]
+    obsid = conv_config['conventional input']['observation id']
+    analysis_use = conv_config['conventional input']['analysis use'][0]
+    plot_type = conv_config['conventional input']['plot type']
+    outdir = conv_config['outdir']
 
-    diag = conventional(diagfile)
+    diag = Conventional(diagfile)
 
     if analysis_use == True:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
@@ -95,15 +95,6 @@ def plotting(YAML):
             plot_spatial(data, metadata, lat, lon, outdir)
 
 
-def work_log(YAML):
-    plotting(YAML)
-
-
-def pool_handler(nprocs):
-    p = Pool(processes=nprocs)
-    p.map(work_log, work)
-
-
 ###############################################
 
 
@@ -123,17 +114,18 @@ if myargs.nprocs:
 else:
     nprocs = 1
 
-YAML = myargs.yaml
+input_yaml = myargs.yaml
 outdir = MyArgs.outdir
 
-file = open(YAML)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 work = (parsed_yaml_file['diagnostic'])
 
 for w in work:
     w['outdir'] = outdir
 
-pool_handler(nprocs)
+p = Pool(processes=nprocs)
+p.map(plotting, work)
 
 print(datetime.now() - start_time)

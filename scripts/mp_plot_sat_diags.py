@@ -5,23 +5,23 @@ import numpy as np
 import yaml
 from multiprocessing import Pool
 import sys
-from pyGSI.diags import radiance
+from pyGSI.diags import Radiance
 from pyGSI.plot_diags import plot_spatial, plot_histogram
 from datetime import datetime
 
 start_time = datetime.now()
 
 
-def plotting(YAML):
+def plotting(sat_config):
 
-    diagfile = YAML['radiance input']['path'][0]
-    data_type = YAML['radiance input']['data type'][0]
-    channel = YAML['radiance input']['channel']
-    qcflag = YAML['radiance input']['qc flag']
-    plot_type = YAML['radiance input']['plot type']
-    outdir = YAML['outdir']
+    diagfile = sat_config['radiance input']['path'][0]
+    data_type = sat_config['radiance input']['data type'][0]
+    channel = sat_config['radiance input']['channel']
+    qcflag = sat_config['radiance input']['qc flag']
+    plot_type = sat_config['radiance input']['plot type']
+    outdir = sat_config['outdir']
 
-    diag = radiance(diagfile)
+    diag = Radiance(diagfile)
 
     data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
@@ -34,15 +34,6 @@ def plotting(YAML):
         plot_histogram(data, metadata, outdir)
     if np.isin('spatial', plot_type):
         plot_spatial(data, metadata, lats, lons, outdir)
-
-
-def work_log(YAML):
-    plotting(YAML)
-
-
-def pool_handler(nprocs):
-    p = Pool(processes=nprocs)
-    p.map(work_log, work)
 
 
 ###############################################
@@ -67,8 +58,8 @@ else:
 YAML = myargs.yaml
 outdir = myargs.outdir
 
-file = open(YAML)
-parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+with open(input_yaml, 'r') as file:
+    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 
 work = (parsed_yaml_file['diagnostic'])
@@ -77,6 +68,7 @@ work = (parsed_yaml_file['diagnostic'])
 for w in work:
     w['outdir'] = outdir
 
-pool_handler(nprocs)
+p = Pool(processes=nprocs)
+p.map(plotting, work)
 
 print(datetime.now() - start_time)

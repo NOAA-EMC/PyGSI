@@ -13,6 +13,7 @@ class GSIdiag:
         """
 
         self.path = path
+        self.variable = path.split('/')[-1].split('.')[0].split('_')[2]
 
     def __len__(self):
         return len(self.lats)
@@ -28,15 +29,13 @@ class GSIdiag:
         ftype = self.path.split('/')[-1].split('.')[0].split('_')[-1]
 
         if dtype == 'conv':
-            variable = self.path.split('/')[-1].split('.')[0].split('_')[2]
-
             metadata = {'Diag_type': dtype,
-                        'Variable': variable,
+                        'Variable': self.variable,
                         'Date': date,
                         'File_type': ftype
                         }
         else:
-            satellite = self.path.split('/')[-1].split('.')[0].split('_')[2]
+            satellite = self.variable
 
             metadata = {'Diag_type': dtype,
                         'Satellite': satellite,
@@ -52,7 +51,7 @@ class GSIdiag:
         the appropriate indexed data
         """
         if dtype == 'O-F' or dtype == 'o-f':
-            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+            if self.variable == 'uv':
                 u = self.u_omf[idx]
                 v = self.v_omf[idx]
 
@@ -63,7 +62,7 @@ class GSIdiag:
                 return data
 
         elif dtype == 'Observation' or dtype == 'observation':
-            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+            if self.variable == 'uv':
                 u = self.u_o[idx]
                 v = self.v_o[idx]
 
@@ -83,7 +82,7 @@ class GSIdiag:
                 return None
 
         elif dtype == 'H(x)' or dtype == 'h(x)' or dtype == 'hofx':
-            if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+            if self.variable == 'uv':
                 u = self.u_o[idx] - self.u_omf[idx]
                 v = self.v_o[idx] - self.v_omf[idx]
                 
@@ -120,7 +119,7 @@ class GSIdiag:
 
     def check_o_minus_a(self):
         """
-        Checks if the diasnostic file is an analyses file.
+        Checks if the diagnostic file is an analysis file.
         """
 
         ftype = self.path.split('/')[-1].split('.')[0].split('_')[-1]
@@ -131,7 +130,7 @@ class GSIdiag:
             return False
 
 
-class conventional(GSIdiag):
+class Conventional(GSIdiag):
 
     def __init__(self, path):
         """
@@ -446,7 +445,7 @@ class conventional(GSIdiag):
         return dic
 
 
-class radiance(GSIdiag):
+class Radiance(GSIdiag):
 
     def __init__(self, path):
         """
