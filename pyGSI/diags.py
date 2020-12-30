@@ -351,7 +351,7 @@ class Conventional(GSIdiag):
                 valid_stnid_idx = np.isin(stnididx, station_id)
                 valid_idx = np.logical_and(valid_idx, valid_stnid_idx)
 
-                idx = np.where(valid_idx)
+            idx = np.where(valid_idx)
 
             return idx
 
