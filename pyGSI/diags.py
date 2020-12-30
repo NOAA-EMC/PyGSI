@@ -161,6 +161,7 @@ class Conventional(GSIdiag):
         self.press = f.variables['Pressure'][:]
         self.time = f.variables['Time'][:]
         self.anl_use = f.variables['Analysis_Use_Flag'][:]
+        self.stnid = f.variables['Station_ID'][:]
         try:
             self.stnelev = f.variables['Station_Elevation'][:]
         except:
@@ -179,7 +180,7 @@ class Conventional(GSIdiag):
 
         f.close()
 
-    def get_data(self, dtype, obsid=None, subtype=None, analysis_use=False, plvls=False):
+    def get_data(self, dtype, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
@@ -189,23 +190,24 @@ class Conventional(GSIdiag):
             optional:    
                 obsid        : observation measurement ID number; default=None
                 subtype      : observation measurement ID subtype number, default=None
+                station_id   : station id, default=None
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
-                plvls        : if True, will return a dictionary of data subsetting 
+                plvls        : if list given, will return a dictionary of data subsetting 
                                into pressure levels
 
         OUTPUT:
             data   : requested data
         """
 
-        if plvls == True:
-            pressure_list = [0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+        if plvls is not None:
+            pressure_list=plvls
             binned_pressure = {}
 
             if analysis_use == True:
                 assimilated_idx, monitored_idx = self.get_idx_conv(
-                    obsid, subtype, analysis_use)
+                    obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -218,19 +220,20 @@ class Conventional(GSIdiag):
                     assimilated_pidx = np.where(valid_assimilated_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
 
-                    if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                    if self.variable == 'uv':
                         u_assimilated, v_assimilated = self.query_data_type(
                             dtype, assimilated_pidx)
                         u_monitored, v_monitored = self.query_data_type(
                             dtype, monitored_pidx)
+                        
+                        data = {'u': {'assimilated': u_assimilated,
+                                      'monitored': u_monitored},
+                                'v': {'assimilated': v_assimilated,
+                                      'monitored': v_monitored}
+                               }
+                        
+                        binned_pressure[pressure] = data
 
-                        u = {'assimilated': u_assimilated,
-                             'monitored': u_monitored}
-                        v = {'assimilated': v_assimilated,
-                             'monitored': v_monitored}
-
-                        binned_pressure[pressure]['u'] = u
-                        binned_pressure[pressure]['v'] = v
 
                     else:
                         assimilated_data = self.query_data_type(
@@ -247,7 +250,7 @@ class Conventional(GSIdiag):
                 return binned_pressure
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -255,10 +258,14 @@ class Conventional(GSIdiag):
                     valid_idx = np.isin(idx[0], pres_idx[0])
                     pidx = np.where(valid_idx)
 
-                    if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                    if self.variable == 'uv':
                         u, v = self.query_data_type(dtype, pidx)
-                        binned_pressure[pressure]['u'] = u
-                        binned_pressure[pressure]['v'] = v
+                        
+                        data = {'u': u,
+                                'v': v}
+                        
+                        binned_pressure[pressure] = data
+                        
                     else:
                         data = self.query_data_type(dtype, pidx)
                         binned_pressure[pressure] = data
@@ -269,9 +276,9 @@ class Conventional(GSIdiag):
 
             if analysis_use == True:
                 assimilated_idx, monitored_idx = self.get_idx_conv(
-                    obsid, subtype, analysis_use)
+                    obsid, subtype, station_id, analysis_use)
 
-                if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                if self.variable == 'uv':
                     u_assimilated, v_assimilated = self.query_data_type(
                         dtype, assimilated_idx)
                     u_monitored, v_monitored = self.query_data_type(
@@ -295,9 +302,9 @@ class Conventional(GSIdiag):
                     return data
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
 
-                if self.path.split('/')[-1].split('.')[0].split('_')[2] == 'uv':
+                if self.variable == 'uv':
                     u, v = self.query_data_type(dtype, idx)
 
                     return u, v
@@ -307,7 +314,7 @@ class Conventional(GSIdiag):
 
                     return data
 
-    def get_idx_conv(self, obsid=None, subtype=None, analysis_use=False):
+    def get_idx_conv(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
         """
         Given parameters, get the indices of the observation
         locations from a conventional diagnostic file
@@ -315,14 +322,18 @@ class Conventional(GSIdiag):
             obsid   : observation measurement ID number
             qcflag  : qc flag (default: None) i.e. 0, 1
             subtype : subtype number (default: None)
+            station_id : station id (default: None)
         OUTPUT:
             idx    : indices of the requested data in the file
         """
 
+        
         if not obsid or obsid == [None]:
             obsid = None
         if not subtype or subtype == [None]:
             subtype = None
+        if not station_id or station_id == [None]:
+            station_id = None
 
         if analysis_use == False:
             idxobs = self.o_type
@@ -332,10 +343,15 @@ class Conventional(GSIdiag):
                 valid_idx = np.logical_and(valid_idx, valid_obs_idx)
             if subtype != None:
                 subtypeidx = self.o_stype
-                valid_idx_subtype = np.isin(subtypeidx, subtype)
-                valid_idx = np.logical_and(valid_idx, valid_idx_subtype)
+                valid_subtype_idx = np.isin(subtypeidx, subtype)
+                valid_idx = np.logical_and(valid_idx, valid_subtype_idx)
+            if station_id != None:
+                stnididx = self.stnid
+                stnididx = np.array([''.join(i.tostring().decode().split()) for i in stnididx])
+                valid_stnid_idx = np.isin(stnididx, station_id)
+                valid_idx = np.logical_and(valid_idx, valid_stnid_idx)
 
-            idx = np.where(valid_idx)
+                idx = np.where(valid_idx)
 
             return idx
 
@@ -360,25 +376,37 @@ class Conventional(GSIdiag):
                     valid_assimilated_idx, valid_subtype_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_subtype_idx)
+                
+            if station_id != None:
+                stnididx = self.stnid
+                stnididx = np.array([''.join(i.tostring().decode().split()) for i in stnididx])
+                valid_stnid_idx = np.isin(stnididx, station_id)
+                
+                valid_assimilated_idx = np.logical_and(
+                    valid_assimilated_idx, valid_stnid_idx)
+                valid_monitored_idx = np.logical_and(
+                    valid_monitored_idx, valid_stnid_idx)
+                
+                
 
             assimilated_idx = np.where(valid_assimilated_idx)
             monitored_idx = np.where(valid_monitored_idx)
 
             return assimilated_idx, monitored_idx
 
-    def get_lat_lon(self, obsid=None, subtype=None, analysis_use=False, plvls=False):
+    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
         """
         Gets lats and lons with desired indices
         """
 
-        if plvls == True:
-            pressure_list = [0, 100, 250, 500, 700, 850, 925, 1000, 1100]
+        if plvls is not None:
+            pressure_list = plvls
             pressure_lats = {}
             pressure_lons = {}
 
             if analysis_use == True:
                 assimilated_idx, monitored_idx = self.get_idx_conv(
-                    obsid, subtype, analysis_use)
+                    obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -402,7 +430,7 @@ class Conventional(GSIdiag):
                 return pressure_lats, pressure_lons
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -418,26 +446,26 @@ class Conventional(GSIdiag):
         else:
             if analysis_use == True:
                 assimilated_idx, monitored_idx = self.get_idx_conv(
-                    obsid, subtype, analysis_use)
+                    obsid, subtype, station_id, analysis_use)
                 lats = {'assimilated': self.lats[assimilated_idx],
                         'monitored': self.lats[monitored_idx]}
                 lons = {'assimilated': self.lons[assimilated_idx],
                         'monitored': self.lons[monitored_idx]}
                 return lats, lons
             else:
-                idx = self.get_idx_conv(obsid, subtype, analysis_use)
+                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
                 return self.lats[idx], self.lons[idx]
 
-    def get_pressure(self, obsid=None, subtype=None, analysis_use=False):
+    def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
         if analysis_use == True:
             assimilated_idx, monitored_idx = self.get_idx_conv(
-                obsid, subtype, analysis_use)
+                obsid, subtype, station_id, analysis_use)
             pressure = {'assimilated': self.press[assimilated_idx],
                         'monitored': self.press[monitored_idx]}
 
             return pressure
         else:
-            idx = self.get_idx_conv(obsid, subtype, analysis_use)
+            idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
             return self.press[idx]
 
     def metadata(self):
