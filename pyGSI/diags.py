@@ -190,12 +190,17 @@ class Conventional(GSIdiag):
             optional:    
                 obsid        : observation measurement ID number; default=None
                 subtype      : observation measurement ID subtype number, default=None
-                station_id   : station id, default=None
+                station      : station id, default=None
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
-                plvls        : if list given, will return a dictionary of data subsetting 
-                               into pressure levels
+                plvls        : List of pressure levels i.e. [250,500,750,1000]. Will 
+                               return a dictionary with subsetted pressure levels where
+                               data is seperated within those levels:
+                               
+                               dict = {250-500: <data>,
+                                       500-750: <data>,
+                                       750-100: <data>}
 
         OUTPUT:
             data   : requested data
@@ -232,7 +237,7 @@ class Conventional(GSIdiag):
                                       'monitored': v_monitored}
                                }
                         
-                        binned_pressure[pressure] = data
+                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
 
 
                     else:
@@ -245,7 +250,7 @@ class Conventional(GSIdiag):
                                 'monitored': monitored_data
                                 }
 
-                        binned_pressure[pressure] = data
+                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
 
                 return binned_pressure
 
@@ -264,11 +269,11 @@ class Conventional(GSIdiag):
                         data = {'u': u,
                                 'v': v}
                         
-                        binned_pressure[pressure] = data
+                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
                         
                     else:
                         data = self.query_data_type(dtype, pidx)
-                        binned_pressure[pressure] = data
+                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
 
                 return binned_pressure
 
@@ -302,6 +307,7 @@ class Conventional(GSIdiag):
                     return data
 
             else:
+                print(station_id)
                 idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
 
                 if self.variable == 'uv':
@@ -322,7 +328,7 @@ class Conventional(GSIdiag):
             obsid   : observation measurement ID number
             qcflag  : qc flag (default: None) i.e. 0, 1
             subtype : subtype number (default: None)
-            station_id : station id (default: None)
+            station_id : station id tag (default: None)
         OUTPUT:
             idx    : indices of the requested data in the file
         """
