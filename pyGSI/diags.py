@@ -190,7 +190,7 @@ class Conventional(GSIdiag):
             optional:    
                 obsid        : observation measurement ID number; default=None
                 subtype      : observation measurement ID subtype number, default=None
-                station      : station id, default=None
+                station_id   : station id, default=None
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
