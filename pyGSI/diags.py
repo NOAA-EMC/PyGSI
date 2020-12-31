@@ -307,7 +307,6 @@ class Conventional(GSIdiag):
                     return data
 
             else:
-                print(station_id)
                 idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
 
                 if self.variable == 'uv':
