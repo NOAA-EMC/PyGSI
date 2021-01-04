@@ -69,7 +69,7 @@ def create_netcdf(conv_config):
         metadata = diag.get_metadata()
 
         metadata['Data_type'] = data_type
-        metadata['Obsid'] = obsid
+        metadata['ObsID'] = obsid
         metadata['Subtype'] = subtype
         metadata['outDir'] = outdir
 
@@ -79,10 +79,10 @@ def create_netcdf(conv_config):
 
         # Get binned data
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            binned_data = spatialBin(
-                data, lat, lon, binsize='1x1', uvData=True, pressure=pressure)
+            binned_data = spatial_bin(
+                data, lat, lon, binsize='1x1', uv_data=True, pressure=pressure)
         else:
-            binned_data = spatialBin(
+            binned_data = spatial_bin(
                 data, lat, lon, binsize='1x1', pressure=pressure)
 
         write_netcdf(data, binned_data, metadata)
@@ -117,7 +117,7 @@ def create_netcdf(conv_config):
         print('Binning..')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             binned_data = spatial_bin(
-                data, lat, lon, binsize='1x1', uvData=True, pressure=pressure)
+                data, lat, lon, binsize='1x1', uv_data=True, pressure=pressure)
         else:
             binned_data = spatial_bin(
                 data, lat, lon, binsize='1x1', pressure=pressure)
