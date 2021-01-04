@@ -8,13 +8,13 @@ import glob
 import csv
 
 
-def main(config):
+def read_convinfo(infofile):
     # read in convinfo file
     obtype = []  # string used in the filename
     typeint = []  # integer value of observation type
     subtypeint = []  # integer value of observation subtype
     obuse = []  # use 1, monitor -1
-    cv = open(config['convinfo'])
+    cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
     cv.close()
     for row in rdcv:
@@ -27,6 +27,10 @@ def main(config):
         except IndexError:
             pass  # end of file
 
+
+def main(config):
+    # call function to get lists from convinfo file
+    obtype, typeint, subtypeint, obuse = read_convinfo(config['convinfo'])
     # get list of conventional diagnostic files available
     diagpath = (f"{config['diagdir']}/diag_conv_*_",
                 f"{config['loop']}.{config['cycle']}.nc4")
@@ -43,19 +47,19 @@ def main(config):
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
-    for i in range(len(obtype)):
+    for iobtype, itype, isub, iuse in zip(obtype, otypeint, subtypeint, obuse):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir'].rstrip('/')}/",
-                    f"diag_conv_{obtype[i]}_{config['loop']}",
+        diagfile = (f"{config['diagdir']}/",
+                    f"diag_conv_{iobtype}_{config['loop']}",
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if obuse[i] != 1:
+        if iuse != 1:
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
-                   'observation id': [typeint[i]],
-                   'observation subtype': [subtypeint[i]],
+                   'observation id': [itype],
+                   'observation subtype': [isub],
                    'analysis use': [True],
                    'data type': [diagtype],
                    'plot type': figs,
@@ -89,7 +93,7 @@ parser.add_argument('-v', '--variable', type=str,
 args = parser.parse_args()
 
 config = {}
-config['diagdir'] = args.diagdir
+config['diagdir'] = args.diagdir.rstrip('/')
 config['cycle'] = args.cycle
 config['convinfo'] = args.convinfo
 config['yaml'] = args.yaml

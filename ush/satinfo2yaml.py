@@ -8,12 +8,12 @@ import glob
 import csv
 
 
-def main(config):
+def read_satinfo(infofile):
     # read in satinfo file
     sensor = []  # string used in the filename
     channel = []  # integer value of channel
     obuse = []  # use 1, monitor -1
-    cv = open(config['satinfo'])
+    cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
     cv.close()
     for row in rdcv:
@@ -25,6 +25,10 @@ def main(config):
         except IndexError:
             pass  # end of file
 
+
+def main(config):
+    # call function to get lists from satinfo file
+    sensor, channel, obuse = read_satinfo(config['satinfo'])
     # get list of diagnostic files available
     diagpath = '%s/diag_*_%s.%s.nc4' % (config['diagdir'], config['loop'],
                                         config['cycle'])
@@ -43,18 +47,18 @@ def main(config):
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
-    for i in range(len(sensor)):
+    for isensor, iuse, ichan in zip(sensor, obuse, channel):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir'].rstrip('/')}/",
-                    f"diag_{sensor[i]}_{config['loop']}",
+        diagfile = (f"{config['diagdir']}/",
+                    f"diag_{isensor}_{config['loop']}",
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if obuse[i] != 1:
+        if iuse != 1:
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
-                   'channel': [channel[i]],
+                   'channel': [ichan],
                    'qc flag': [0],
                    'data type': [diagtype],
                    'plot type': figs,
@@ -87,7 +91,7 @@ parser.add_argument('-v', '--variable', type=str,
 args = parser.parse_args()
 
 config = {}
-config['diagdir'] = args.diagdir
+config['diagdir'] = args.diagdir.rstrip('/')
 config['cycle'] = args.cycle
 config['satinfo'] = args.satinfo
 config['yaml'] = args.yaml
