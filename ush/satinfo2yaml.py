@@ -19,9 +19,9 @@ def main(config):
     for row in rdcv:
         try:
             rowsplit = row[0].split()
-            sensor.append(rowsplit[0])
-            channel.append(rowsplit[1])
-            obuse.append(rowsplit[2])
+            sensor.append(int(rowsplit[0]))
+            channel.append(int(rowsplit[1]))
+            obuse.append(int(rowsplit[2]))
         except IndexError:
             pass  # end of file
 
@@ -50,11 +50,11 @@ def main(config):
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if int(obuse[i]) != 1:
+        if obuse[i] != 1:
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
-                   'channel': [int(channel[i])],
+                   'channel': [channel[i]],
                    'qc flag': [0],
                    'data type': [diagtype],
                    'plot type': figs,
