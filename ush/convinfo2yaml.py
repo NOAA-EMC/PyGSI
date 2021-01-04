@@ -26,6 +26,7 @@ def read_convinfo(infofile):
             obuse.append(int(rowsplit[3]))
         except IndexError:
             pass  # end of file
+    return obtype, typeint, subtypeint, obuse
 
 
 def main(config):

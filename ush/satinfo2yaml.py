@@ -24,6 +24,7 @@ def read_satinfo(infofile):
             obuse.append(int(rowsplit[2]))
         except IndexError:
             pass  # end of file
+    return sensor, channel, obuse
 
 
 def main(config):
