@@ -16,6 +16,7 @@ def main(config):
     obuse = []  # use 1, monitor -1
     cv = open(config['convinfo'])
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
+    cv.close()
     for row in rdcv:
         try:
             rowsplit = row[0].split()
@@ -25,25 +26,28 @@ def main(config):
             obuse.append(rowsplit[3])
         except IndexError:
             pass  # end of file
-    cv.close()
 
     # get list of conventional diagnostic files available
-    diagpath = '%s/diag_conv_*_%s.%s.nc4' % (config['diagdir'],
-                                             config['loop'], config['cycle'])
+    diagpath = (f"{config['diagdir']}/diag_conv_*_",
+                f"{config['loop']}.{config['cycle']}.nc4"
     diagfiles = glob.glob(diagpath)
 
     # initialize YAML dictionary for output
     yamlout = {'diagnostic': []}
-    diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
+    if config['variable'] == 'obs':
+        diagtype = 'observation'
+    else if config['variable'] == 'hofx':
+        diagtype = 'hofx'
+    else:
+        diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
     for i in range(len(obtype)):
         # first get filename and verify it exists
-        diagfile = '%s/%s_%s_%s.%s.nc4' % ('diag_conv',
-                                           config['diagdir'].rstrip('/'),
-                                           obtype[i], config['loop'],
-                                           config['cycle'])
+        diagfile = (f"{config['diagdir'].rstrip('/')}/",
+                    f"diag_conv_{obtype[i]}_{config['loop']}",
+                    f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
         if int(obuse[i]) != 1:
@@ -79,6 +83,9 @@ parser.add_argument('-y', '--yaml', type=str,
                     help='path to output YAML file', required=True)
 parser.add_argument('-l', '--loop', type=str,
                     help='ges|anl default ges', default='ges')
+parser.add_argument('-v', '--variable', type=str,
+                    help='read departures, obs, or H(x): omf | obs | hofx',
+                    default='omf')
 args = parser.parse_args()
 
 config = {}
@@ -87,5 +94,6 @@ config['cycle'] = args.cycle
 config['convinfo'] = args.convinfo
 config['yaml'] = args.yaml
 config['loop'] = args.loop
+config['variable'] = args.variable
 
 main(config)

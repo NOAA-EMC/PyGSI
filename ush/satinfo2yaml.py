@@ -15,6 +15,7 @@ def main(config):
     obuse = []  # use 1, monitor -1
     cv = open(config['satinfo'])
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
+    cv.close()
     for row in rdcv:
         try:
             rowsplit = row[0].split()
@@ -23,25 +24,30 @@ def main(config):
             obuse.append(rowsplit[2])
         except IndexError:
             pass  # end of file
-    cv.close()
 
     # get list of diagnostic files available
     diagpath = '%s/diag_*_%s.%s.nc4' % (config['diagdir'], config['loop'],
                                         config['cycle'])
+    diagpath = (f"{config['diagdir']}/diag_*_",
+                f"{config['loop']}.{config['cycle']}.nc4"
     diagfiles = glob.glob(diagpath)
 
     # initialize YAML dictionary for output
     yamlout = {'diagnostic': []}
-    diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
+    if config['variable'] == 'obs':
+        diagtype = 'observation'
+    else if config['variable'] == 'hofx':
+        diagtype = 'hofx'
+    else:
+        diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
     for i in range(len(sensor)):
         # first get filename and verify it exists
-        diagfile = '%s/%s_%s_%s.%s.nc4' % (config['diagdir'].rstrip('/'),
-                                           'diag',
-                                           sensor[i], config['loop'],
-                                           config['cycle'])
+        diagfile = (f"{config['diagdir'].rstrip('/')}/",
+                    f"diag_{sensor[i]}_{config['loop']}",
+                    f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
         if int(obuse[i]) != 1:
@@ -75,6 +81,9 @@ parser.add_argument('-y', '--yaml', type=str,
                     help='path to output YAML file', required=True)
 parser.add_argument('-l', '--loop', type=str,
                     help='ges|anl default ges', default='ges')
+parser.add_argument('-v', '--variable', type=str,
+                    help='read departures, obs, or H(x): omf | obs | hofx',
+                    default='omf')
 args = parser.parse_args()
 
 config = {}
@@ -83,5 +92,6 @@ config['cycle'] = args.cycle
 config['satinfo'] = args.satinfo
 config['yaml'] = args.yaml
 config['loop'] = args.loop
+config['variable'] = args.variable
 
 main(config)
