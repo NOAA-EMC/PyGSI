@@ -29,7 +29,7 @@ def main(config):
     diagpath = '%s/diag_*_%s.%s.nc4' % (config['diagdir'], config['loop'],
                                         config['cycle'])
     diagpath = (f"{config['diagdir']}/diag_*_",
-                f"{config['loop']}.{config['cycle']}.nc4"
+                f"{config['loop']}.{config['cycle']}.nc4")
     diagfiles = glob.glob(diagpath)
 
     # initialize YAML dictionary for output

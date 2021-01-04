@@ -29,7 +29,7 @@ def main(config):
 
     # get list of conventional diagnostic files available
     diagpath = (f"{config['diagdir']}/diag_conv_*_",
-                f"{config['loop']}.{config['cycle']}.nc4"
+                f"{config['loop']}.{config['cycle']}.nc4")
     diagfiles = glob.glob(diagpath)
 
     # initialize YAML dictionary for output
