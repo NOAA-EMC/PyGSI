@@ -41,7 +41,7 @@ def main(config):
     yamlout = {'diagnostic': []}
     if config['variable'] == 'obs':
         diagtype = 'observation'
-    else if config['variable'] == 'hofx':
+    elif config['variable'] == 'hofx':
         diagtype = 'hofx'
     else:
         diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
