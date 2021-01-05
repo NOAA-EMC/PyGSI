@@ -53,7 +53,7 @@ def main(config):
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if iuse != 1:
+        if iuse != 1 and not config['monitor']:
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
@@ -87,6 +87,9 @@ parser.add_argument('-l', '--loop', type=str,
 parser.add_argument('-v', '--variable', type=str,
                     help='read departures, obs, or H(x): omf | obs | hofx',
                     default='omf')
+parser.add_argument('-m', '--monitor', type=str,
+                    help='include monitored obs, yes or no?',
+                    default='no')
 args = parser.parse_args()
 
 config = {}
@@ -96,5 +99,6 @@ config['satinfo'] = args.satinfo
 config['yaml'] = args.yaml
 config['loop'] = args.loop
 config['variable'] = args.variable
+config['monitor'] = True if args.monitor == 'yes' else False
 
 main(config)
