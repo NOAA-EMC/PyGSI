@@ -15,19 +15,19 @@ def read_ozinfo(infofile):
     obuse = []  # use 1, monitor -1
     cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
-    cv.close()
     for row in rdcv:
         try:
             rowsplit = row[0].split()
-            sensor.append(int(rowsplit[0]))
+            sensor.append(rowsplit[0])
             layer.append(int(rowsplit[1]))
             obuse.append(int(rowsplit[2]))
         except IndexError:
             pass  # end of file
+    cv.close()
     # loop through and set the last layer to 0, assuming total column
     # for sensors with multiple layers
     for i in range(len(layer)-1):
-        if layer[i] <= layer[i+1]:
+        if layer[i+1] <= layer[i]:
             layer[i] = 0  # indicates total column value
     return sensor, layer, obuse
 
@@ -36,9 +36,7 @@ def main(config):
     # call function to get lists from ozinfo file
     sensor, layer, obuse = read_ozinfo(config['ozinfo'])
     # get list of diagnostic files available
-    diagpath = '%s/diag_*_%s.%s.nc4' % (config['diagdir'], config['loop'],
-                                        config['cycle'])
-    diagpath = (f"{config['diagdir']}/diag_*_",
+    diagpath = (f"{config['diagdir']}/diag_*_"
                 f"{config['loop']}.{config['cycle']}.nc4")
     diagfiles = glob.glob(diagpath)
 
@@ -55,12 +53,12 @@ def main(config):
     # loop through obtypes
     for isensor, iuse, ichan in zip(sensor, obuse, layer):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir']}/",
-                    f"diag_{isensor}_{config['loop']}",
+        diagfile = (f"{config['diagdir']}/"
+                    f"diag_{isensor}_{config['loop']}"
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if iuse != 1:
+        if iuse != 1 and not config['monitor']:
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
@@ -94,6 +92,9 @@ parser.add_argument('-l', '--loop', type=str,
 parser.add_argument('-v', '--variable', type=str,
                     help='read departures, obs, or H(x): omf | obs | hofx',
                     default='omf')
+parser.add_argument('-m', '--monitor', type=str,
+                    help='include monitored obs, yes or no?',
+                    default='no')
 args = parser.parse_args()
 
 config = {}
@@ -103,5 +104,6 @@ config['ozinfo'] = args.ozinfo
 config['yaml'] = args.yaml
 config['loop'] = args.loop
 config['variable'] = args.variable
+config['monitor'] = True if args.monitor == 'yes' else False
 
 main(config)
