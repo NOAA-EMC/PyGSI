@@ -92,13 +92,11 @@ parser.add_argument('-l', '--loop', type=str,
 parser.add_argument('-v', '--variable', type=str,
                     help='read departures, obs, or H(x): omf | obs | hofx',
                     default='omf')
-parser.add_argument('-m', '--monitor', type=str,
-                    help='include monitored obs, yes or no?',
-                    default='no')
+parser.add_argument('-m', '--monitor', action='store_true',
+                    help='include monitored obs?')
 args = parser.parse_args()
 
 config = vars(args)
 config['diagdir'] = config['diagdir'].rstrip('/')
-config['monitor'] = True if args.monitor == 'yes' else False
 
 main(config)
