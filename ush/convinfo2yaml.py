@@ -16,16 +16,16 @@ def read_convinfo(infofile):
     obuse = []  # use 1, monitor -1
     cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
-    cv.close()
     for row in rdcv:
         try:
             rowsplit = row[0].split()
-            obtype.append(int(rowsplit[0]))
+            obtype.append(rowsplit[0])
             typeint.append(int(rowsplit[1]))
             subtypeint.append(int(rowsplit[2]))
             obuse.append(int(rowsplit[3]))
         except IndexError:
             pass  # end of file
+    cv.close()
     return obtype, typeint, subtypeint, obuse
 
 
@@ -33,7 +33,7 @@ def main(config):
     # call function to get lists from convinfo file
     obtype, typeint, subtypeint, obuse = read_convinfo(config['convinfo'])
     # get list of conventional diagnostic files available
-    diagpath = (f"{config['diagdir']}/diag_conv_*_",
+    diagpath = (f"{config['diagdir']}/diag_conv_*_"
                 f"{config['loop']}.{config['cycle']}.nc4")
     diagfiles = glob.glob(diagpath)
 
@@ -48,10 +48,10 @@ def main(config):
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
-    for iobtype, itype, isub, iuse in zip(obtype, otypeint, subtypeint, obuse):
+    for iobtype, itype, isub, iuse in zip(obtype, typeint, subtypeint, obuse):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir']}/",
-                    f"diag_conv_{iobtype}_{config['loop']}",
+        diagfile = (f"{config['diagdir']}/"
+                    f"diag_conv_{iobtype}_{config['loop']}"
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing

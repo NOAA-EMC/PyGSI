@@ -15,15 +15,15 @@ def read_satinfo(infofile):
     obuse = []  # use 1, monitor -1
     cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
-    cv.close()
     for row in rdcv:
         try:
             rowsplit = row[0].split()
-            sensor.append(int(rowsplit[0]))
+            sensor.append(rowsplit[0])
             channel.append(int(rowsplit[1]))
             obuse.append(int(rowsplit[2]))
         except IndexError:
             pass  # end of file
+    cv.close()
     return sensor, channel, obuse
 
 
@@ -31,9 +31,7 @@ def main(config):
     # call function to get lists from satinfo file
     sensor, channel, obuse = read_satinfo(config['satinfo'])
     # get list of diagnostic files available
-    diagpath = '%s/diag_*_%s.%s.nc4' % (config['diagdir'], config['loop'],
-                                        config['cycle'])
-    diagpath = (f"{config['diagdir']}/diag_*_",
+    diagpath = (f"{config['diagdir']}/diag_*_"
                 f"{config['loop']}.{config['cycle']}.nc4")
     diagfiles = glob.glob(diagpath)
 
@@ -50,8 +48,8 @@ def main(config):
     # loop through obtypes
     for isensor, iuse, ichan in zip(sensor, obuse, channel):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir']}/",
-                    f"diag_{isensor}_{config['loop']}",
+        diagfile = (f"{config['diagdir']}/"
+                    f"diag_{isensor}_{config['loop']}"
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
