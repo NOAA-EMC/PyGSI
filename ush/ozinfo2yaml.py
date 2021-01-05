@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-# satinfo2yaml.py
-# generate YAML from input satinfo file
+# ozinfo2yaml.py
+# generate YAML from input ozinfo file
 # for specified input GSI diag file(s)
 import argparse
 import yaml
@@ -9,10 +9,10 @@ import csv
 import os
 
 
-def read_satinfo(infofile):
-    # read in satinfo file
+def read_ozinfo(infofile):
+    # read in ozinfo file
     sensor = []  # string used in the filename
-    channel = []  # integer value of channel
+    layer = []  # integer value of layer
     obuse = []  # use 1, monitor -1
     cv = open(infofile)
     rdcv = csv.reader(filter(lambda row: row[0] != '!', cv))
@@ -20,17 +20,22 @@ def read_satinfo(infofile):
         try:
             rowsplit = row[0].split()
             sensor.append(rowsplit[0])
-            channel.append(int(rowsplit[1]))
+            layer.append(int(rowsplit[1]))
             obuse.append(int(rowsplit[2]))
         except IndexError:
             pass  # end of file
     cv.close()
-    return sensor, channel, obuse
+    # loop through and set the last layer to 0, assuming total column
+    # for sensors with multiple layers
+    for i in range(len(layer)-1):
+        if layer[i+1] <= layer[i]:
+            layer[i] = 0  # indicates total column value
+    return sensor, layer, obuse
 
 
 def main(config):
-    # call function to get lists from satinfo file
-    sensor, channel, obuse = read_satinfo(config['satinfo'])
+    # call function to get lists from ozinfo file
+    sensor, layer, obuse = read_ozinfo(config['ozinfo'])
     # get list of diagnostic files available
     diagpath = os.path.join(config['diagdir'], 'diag_*')
     diagfiles = glob.glob(diagpath)
@@ -49,7 +54,7 @@ def main(config):
     figs = ['histogram', 'spatial']
 
     # loop through obtypes
-    for isensor, iuse, ichan in zip(sensor, obuse, channel):
+    for isensor, iuse, ichan in zip(sensor, obuse, layer):
         # first get filename and verify it exists
         diagfile = os.path.join(f"{config['diagdir']}",
                                 (f"diag_{isensor}_{config['loop']}"
@@ -60,12 +65,12 @@ def main(config):
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
-                   'channel': [ichan],
+                   'layer': [ichan],
                    'qc flag': [0],
                    'data type': [diagtype],
                    'plot type': figs,
                    }
-        yamlout['diagnostic'].append({'radiance input': dictloop})
+        yamlout['diagnostic'].append({'ozone input': dictloop})
 
     # write out the YAML
     with open(config['yaml'], 'w') as file:
@@ -73,7 +78,7 @@ def main(config):
     print('YAML written to '+config['yaml'])
 
 
-parser = argparse.ArgumentParser(description=('Given an input satinfo ',
+parser = argparse.ArgumentParser(description=('Given an input ozinfo ',
                                               'GSI file and path to ',
                                               'GSI diags, generate an output ',
                                               'YAML file for use by PyGSI'))
@@ -81,8 +86,8 @@ parser.add_argument('-d', '--diagdir', type=str,
                     help='path to GSI netCDF diags', required=True)
 parser.add_argument('-c', '--cycle', type=str,
                     help='cycle YYYYMMDDHH', required=True)
-parser.add_argument('-i', '--satinfo', type=str,
-                    help='path to GSI satinfo file', required=True)
+parser.add_argument('-i', '--ozinfo', type=str,
+                    help='path to GSI ozinfo file', required=True)
 parser.add_argument('-y', '--yaml', type=str,
                     help='path to output YAML file', required=True)
 parser.add_argument('-l', '--loop', type=str,
