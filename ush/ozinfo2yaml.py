@@ -97,13 +97,8 @@ parser.add_argument('-m', '--monitor', type=str,
                     default='no')
 args = parser.parse_args()
 
-config = {}
-config['diagdir'] = args.diagdir.rstrip('/')
-config['cycle'] = args.cycle
-config['ozinfo'] = args.ozinfo
-config['yaml'] = args.yaml
-config['loop'] = args.loop
-config['variable'] = args.variable
+config = vars(args)
+config['diagdir'] = config['diagdir'].rstrip('/')
 config['monitor'] = True if args.monitor == 'yes' else False
 
 main(config)
