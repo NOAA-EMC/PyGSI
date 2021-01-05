@@ -53,7 +53,11 @@ def main(config):
                     f".{config['cycle']}.nc4")
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
+<<<<<<< HEAD
         if iuse != 1 and not config['monitor']:
+=======
+        if iuse != 1:
+>>>>>>> main
             continue  # only process assimilated obs for now
         dictloop = {
                    'path': [diagfile],
