@@ -110,12 +110,12 @@ ap.add_argument("-o", "--outdir",
 myargs = ap.parse_args()
 
 if myargs.nprocs:
-    nprocs = int(MyArgs.nprocs)
+    nprocs = int(myargs.nprocs)
 else:
     nprocs = 1
 
 input_yaml = myargs.yaml
-outdir = MyArgs.outdir
+outdir = myargs.outdir
 
 with open(input_yaml, 'r') as file:
     parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)

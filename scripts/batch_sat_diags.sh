@@ -1,4 +1,3 @@
-  
 #!/bin/bash
 #SBATCH -J plot_gsi_diags
 #SBATCH -A da-cpu
@@ -9,11 +8,11 @@
 #SBATCH --mail-user=$LOGNAME@noaa.gov
 
 # PyGSIdir=path/to/PyGSI_Directory
-PyGSIdir=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI
-OUTDIR=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI/
+PyGSIdir=../
+OUTDIR=../
 YAML=$PyGSIdir/test_sat_yaml.yaml
 
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
-python $PyGSIdir/scripts/mp_plot_satDiags.py -n 20 -y $PyGSIdir/sat_test_yaml.yaml -o $OUTDIR
+python $PyGSIdir/scripts/mp_plot_sat_diags.py -n 20 -y $YAML -o $OUTDIR
