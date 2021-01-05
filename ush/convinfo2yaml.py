@@ -6,6 +6,7 @@ import argparse
 import yaml
 import glob
 import csv
+import os
 
 
 def read_convinfo(infofile):
@@ -33,9 +34,11 @@ def main(config):
     # call function to get lists from convinfo file
     obtype, typeint, subtypeint, obuse = read_convinfo(config['convinfo'])
     # get list of conventional diagnostic files available
-    diagpath = (f"{config['diagdir']}/diag_conv_*_"
-                f"{config['loop']}.{config['cycle']}.nc4")
+    diagpath = os.path.join(config['diagdir'], 'diag_conv*')
     diagfiles = glob.glob(diagpath)
+    # compute suffix for files
+    tmpsuffix = os.path.basename(diagfiles[0]).split('.')
+    suffix = '.'.join((tmpsuffix[-2][10:], tmpsuffix[-1]))
 
     # initialize YAML dictionary for output
     yamlout = {'diagnostic': []}
@@ -50,9 +53,9 @@ def main(config):
     # loop through obtypes
     for iobtype, itype, isub, iuse in zip(obtype, typeint, subtypeint, obuse):
         # first get filename and verify it exists
-        diagfile = (f"{config['diagdir']}/"
-                    f"diag_conv_{iobtype}_{config['loop']}"
-                    f".{config['cycle']}.nc4")
+        diagfile = os.path.join(f"{config['diagdir']}",
+                                (f"diag_conv_{iobtype}_{config['loop']}"
+                                 f".{config['cycle']}{suffix}"))
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
         if iuse != 1 and not config['monitor']:
@@ -87,15 +90,17 @@ parser.add_argument('-i', '--convinfo', type=str,
 parser.add_argument('-y', '--yaml', type=str,
                     help='path to output YAML file', required=True)
 parser.add_argument('-l', '--loop', type=str,
-                    help='ges|anl default ges', default='ges')
+                    help='guess or analysis?',
+                    choices=['ges', 'anl'], default='ges',
+                    required=False)
 parser.add_argument('-v', '--variable', type=str,
-                    help='read departures, obs, or H(x): omf | obs | hofx',
-                    default='omf')
+                    help='read departures, obs, or H(x)',
+                    choices=['omf', 'obs', 'hofx'],
+                    default='omf', required=False)
 parser.add_argument('-m', '--monitor', action='store_true',
-                    help='include monitored obs?')
+                    help='include monitored obs?', required=False)
 args = parser.parse_args()
 
 config = vars(args)
-config['diagdir'] = config['diagdir'].rstrip('/')
 
 main(config)
