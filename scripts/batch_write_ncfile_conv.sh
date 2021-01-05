@@ -8,11 +8,11 @@
 #SBATCH --mail-user=$LOGNAME@noaa.gov
 
 # PyGSIdir=path/to/PyGSI_Directory
-PyGSIdir=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI
-OUTDIR=/scratch1/NCEPDEV/da/$LOGNAME/PyGSI/ncfiles
+PyGSIdir=../
+OUTDIR=../
 YAML=$PyGSIdir/test_conv_yaml.yaml
 
 # load environment needed to run python scripts
 source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
-python $PyGSIdir/scripts/create_convNetCDF.py -n 20 -y $YAML -o $OUTDIR
+python $PyGSIdir/scripts/create_conv_netcdf.py -n 20 -y $YAML -o $OUTDIR

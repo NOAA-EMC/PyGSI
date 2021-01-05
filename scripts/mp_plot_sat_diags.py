@@ -28,7 +28,7 @@ def plotting(sat_config):
 
     metadata = diag.get_metadata()
     metadata['Data_type'] = data_type
-    metadata['channels'] = channel
+    metadata['Channels'] = channel
 
     if np.isin('histogram', plot_type):
         plot_histogram(data, metadata, outdir)
@@ -55,7 +55,7 @@ if myargs.nprocs:
 else:
     nprocs = 1
 
-YAML = myargs.yaml
+input_yaml = myargs.yaml
 outdir = myargs.outdir
 
 with open(input_yaml, 'r') as file:
