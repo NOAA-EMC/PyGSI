@@ -646,7 +646,7 @@ class Ozone(GSIdiag):
         """
         Initialize a conventional GSI diagnostic object
         INPUT:
-            path   : path to conventional GSI diagnostic object
+            path   : path to ozone GSI diagnostic object
         RESULT:
             self   : GSIdiag object containing the path to extract data
         """
@@ -677,23 +677,18 @@ class Ozone(GSIdiag):
 
     def get_data(self, dtype, analysis_use=False):
         """
-        Given parameters, get the data from a conventional diagnostic file
+        Given parameters, get the data from an ozone diagnostic file
         INPUT:
             required:
                 dtype  : type of data to extract i.e. Observation, O-F, O-A, H(x)
 
             optional:    
-                obsid        : observation measurement ID number; default=None
-                subtype      : observation measurement ID subtype number, default=None
-                station      : station id, default=None
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
-                plvls        : if list given, will return a dictionary of data subsetting 
-                               into pressure levels
 
         OUTPUT:
-            data   : requested data
+            data   : requested data as a dictionary
         """
 
         data_dict = {}
@@ -774,15 +769,14 @@ class Ozone(GSIdiag):
     
     def analysis_use_idx(self, index):
         """
-        Given parameters, get the indices of the observation
-        locations from a conventional diagnostic file
+        Returns the index of data that was assimilated
+        and monitored. 
         INPUT:
-            obsid   : observation measurement ID number
-            qcflag  : qc flag (default: None) i.e. 0, 1
-            subtype : subtype number (default: None)
-            station_id : station id tag (default: None)
+            index : array of booleans that is used to
+                    to find where they match assimilated
+                    or monitored data
         OUTPUT:
-            idx    : indices of the requested data in the file
+            assimilated_idx, monitored_idx
         """
         
         valid_assimilated_idx = np.isin(self.anl_use, 1)
