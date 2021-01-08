@@ -473,10 +473,6 @@ class Conventional(GSIdiag):
             idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
             return self.press[idx]
 
-    def metadata(self):
-        dic = self.get_metadata()
-        return dic
-
 
 class Radiance(GSIdiag):
 
@@ -642,3 +638,246 @@ class Radiance(GSIdiag):
         """
         idx = self.get_idx_sat(channel, qcflag, errcheck=errcheck)
         return self.lats[idx], self.lons[idx]
+    
+
+class Ozone(GSIdiag):
+
+    def __init__(self, path):
+        """
+        Initialize a conventional GSI diagnostic object
+        INPUT:
+            path   : path to conventional GSI diagnostic object
+        RESULT:
+            self   : GSIdiag object containing the path to extract data
+        """
+        super().__init__(path)
+
+        self.read_ozone_obs()
+
+    def __str__(self):
+        return "Ozone object"
+
+    def read_ozone_obs(self):
+        """
+        Reads the data from the ozone diagnostic file during initialization.
+        """
+
+        f = Dataset(self.path, mode='r')
+
+        self.lons = f.variables['Longitude'][:]
+        self.lats = f.variables['Latitude'][:]
+        self.ref_pressure = f.variables['Reference_Pressure'][:]
+        self.time = f.variables['Time'][:]
+        self.anl_use = f.variables['Analysis_Use_Flag'][:]
+        self.o = f.variables['Observation'][:]
+        self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+
+        f.close()
+        
+
+    def get_data(self, dtype, analysis_use=False):
+        """
+        Given parameters, get the data from a conventional diagnostic file
+        INPUT:
+            required:
+                dtype  : type of data to extract i.e. Observation, O-F, O-A, H(x)
+
+            optional:    
+                obsid        : observation measurement ID number; default=None
+                subtype      : observation measurement ID subtype number, default=None
+                station      : station id, default=None
+                analysis_use : if True, will return two sets of data: assimlated
+                               (analysis_use_flag=1), and monitored (analysis_use
+                               _flag=-1); default = False
+                plvls        : if list given, will return a dictionary of data subsetting 
+                               into pressure levels
+
+        OUTPUT:
+            data   : requested data
+        """
+
+        data_dict = {}
+        
+        if analysis_use == False:
+
+            column_total_idx = np.where(self.ref_pressure == 0)
+            layer_idx = np.where(self.ref_pressure != 0)
+
+            if layer_idx[0].size == 0:
+                data = self.query_data_type(dtype, column_total_idx)
+                data_dict['column_total'] = data
+
+                return data_dict
+
+            else:
+                for layer in self.ref_pressure:
+                    if layer != 0:
+                        idx = np.where(self.ref_pressure == layer)
+                        data = self.query_data_type(dtype, idx)
+
+                        data_dict[layer] = data
+                    else:
+                        break
+
+                data = self.query_data_type(dtype, column_total_idx)
+                data_dict['column_total'] = data
+
+                return data_dict
+        
+        else:
+            layer_idx = np.where(self.ref_pressure != 0)
+            
+            if layer_idx[0].size == 0:
+                column_total_idx = np.isin(self.ref_pressure, 0)
+                
+                assimilated_idx, monitored_idx = self.analysis_use_idx(column_total_idx)
+                
+                assimilated_data = self.query_data_type(dtype, assimilated_idx)
+                monitored_data = self.query_data_type(dtype, monitored_idx)
+                
+                data_dict['column_total'] = {'assimilated': assimilated_data,
+                                             'monitored': monitored_data
+                                            }
+                
+                return data_dict
+            
+            else:
+                for layer in self.ref_pressure:                    
+                    if layer != 0.:
+                        layer_idx = np.isin(self.ref_pressure, layer)
+                        
+                        assimilated_idx, monitored_idx = self.analysis_use_idx(layer_idx)
+                        
+                        assimilated_data = self.query_data_type(dtype, assimilated_idx)
+                        monitored_data = self.query_data_type(dtype, monitored_idx)
+                        
+                        data_dict[layer] = {'assimilated': assimilated_data,
+                                            'monitored': monitored_data
+                                           }                       
+                        
+                    else:
+                        break
+                        
+                column_total_idx = np.isin(self.ref_pressure, 0)
+                
+                assimilated_idx, monitored_idx = self.analysis_use_idx(column_total_idx)
+                
+                assimilated_data = self.query_data_type(dtype, assimilated_idx)
+                monitored_data = self.query_data_type(dtype, monitored_idx)
+                
+                data_dict['column_total'] = {'assimilated': assimilated_data,
+                                             'monitored': monitored_data
+                                            }
+                
+                return data_dict
+                
+    
+    def analysis_use_idx(self, index):
+        """
+        Given parameters, get the indices of the observation
+        locations from a conventional diagnostic file
+        INPUT:
+            obsid   : observation measurement ID number
+            qcflag  : qc flag (default: None) i.e. 0, 1
+            subtype : subtype number (default: None)
+            station_id : station id tag (default: None)
+        OUTPUT:
+            idx    : indices of the requested data in the file
+        """
+        
+        valid_assimilated_idx = np.isin(self.anl_use, 1)
+        valid_monitored_idx = np.isin(self.anl_use, -1)
+        
+        valid_assimilated_idx = np.logical_and(
+            valid_assimilated_idx, index)
+        valid_monitored_idx = np.logical_and(
+            valid_monitored_idx, index)
+
+        assimilated_idx = np.where(valid_assimilated_idx)
+        monitored_idx = np.where(valid_monitored_idx)
+        
+        return assimilated_idx, monitored_idx
+    
+    
+    def get_lat_lon(self, analysis_use=False):
+        """
+        Gets lats and lons with desired indices
+        """
+        
+        if analysis_use == False:
+            column_total_idx = np.where(self.ref_pressure == 0)
+            layer_idx = np.where(self.ref_pressure != 0)
+            
+            if layer_idx[0].size == 0:
+                return self.lats[column_total_idx], self.lons[column_total_idx]
+
+            else:
+                lats={}
+                lons={}
+                for layer in self.ref_pressure:
+                    if layer != 0:
+                        idx = np.where(self.ref_pressure == layer)
+                        lats[layer] = self.lats[idx]
+                        lons[layer] = self.lons[idx]
+                    else:
+                        break
+
+                data = self.query_data_type(dtype, column_total_idx)
+                lats['column_total'] = self.lats[column_total_idx]
+                lons['column_total'] = self.lons[column_total_idx]
+
+                return lats, lons
+            
+        
+        else:
+            lats = {}
+            lons = {}
+            
+            layer_idx = np.where(self.ref_pressure != 0)
+            
+            if layer_idx[0].size == 0:
+                column_total_idx = np.isin(self.ref_pressure, 0)
+                
+                assimilated_idx, monitored_idx = self.analysis_use_idx(column_total_idx)
+                
+                lats['column_total'] = {'assimilated': self.lats[assimilated_idx],
+                                        'monitored': self.lats[monitored_idx]
+                                       }
+                
+                lons['column_total'] = {'assimilated': self.lons[assimilated_idx],
+                                        'monitored': self.lons[monitored_idx]
+                                       }
+
+                return lats, lons
+            
+            else:
+                for layer in self.ref_pressure:                    
+                    if layer != 0.:
+                        layer_idx = np.isin(self.ref_pressure, layer)
+                        
+                        assimilated_idx, monitored_idx = self.analysis_use_idx(layer_idx)
+                        
+                        lats[layer] = {'assimilated': self.lats[assimilated_idx],
+                                       'monitored': self.lats[monitored_idx]
+                                      }
+
+                        lons[layer] = {'assimilated': self.lons[assimilated_idx],
+                                       'monitored': self.lons[monitored_idx]
+                                      }                      
+                        
+                    else:
+                        break
+                        
+                column_total_idx = np.isin(self.ref_pressure, 0)
+                
+                assimilated_idx, monitored_idx = self.analysis_use_idx(column_total_idx)
+                
+                lats['column_total'] = {'assimilated': self.lats[assimilated_idx],
+                                        'monitored': self.lats[monitored_idx]
+                                       }
+                
+                lons['column_total'] = {'assimilated': self.lons[assimilated_idx],
+                                        'monitored': self.lons[monitored_idx]
+                                       }
+                
+                return lats, lons
