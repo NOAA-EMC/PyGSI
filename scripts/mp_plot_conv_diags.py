@@ -15,7 +15,7 @@ start_time = datetime.now()
 def plotting(conv_config):
 
     diagfile = conv_config['conventional input']['path'][0]
-    data_type = conv_config['conventional input']['data type'][0]
+    diag_type = conv_config['conventional input']['data type'][0].lower()
     obsid = conv_config['conventional input']['observation id']
     analysis_use = conv_config['conventional input']['analysis use'][0]
     plot_type = conv_config['conventional input']['plot type']
@@ -26,7 +26,7 @@ def plotting(conv_config):
     if analysis_use == True:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
+            u, v = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
 
             assimilated_data = {'u': u['assimilated'],
@@ -39,7 +39,7 @@ def plotting(conv_config):
                               'windspeed': np.sqrt(np.square(u['monitored']) + np.square(v['monitored']))
                               }
         else:
-            data = diag.get_data(data_type, obsid=obsid,
+            data = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
 
             assimilated_data = data['assimilated']
@@ -49,9 +49,9 @@ def plotting(conv_config):
 
         for i, data in enumerate([assimilated_data, monitored_data]):
             for plot in plot_type:
-                metadata = diag.get_metadata()
+                metadata = diag.metadata
 
-                metadata['Data_type'] = data_type
+                metadata['Diag Type'] = diag_type
                 metadata['ObsID'] = obsid
 
                 if i == 0:
@@ -72,21 +72,21 @@ def plotting(conv_config):
 
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
+            u, v = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
             data = {'u': u,
                     'v': v,
                     'windspeed': np.sqrt(np.square(u) + np.square(v))
                     }
         else:
-            data = diag.get_data(data_type, obsid=obsid)
+            data = diag.get_data(diag_type, obsid=obsid)
 
         lats, lons = diag.get_lat_lon(obsid=obsid)
 
         metadata = diag.get_metadata()
 
-        metadata['Data_type'] = data_type
-        metadata['obsid'] = obsid
+        metadata['Diag Type'] = diag_type
+        metadata['ObsID'] = obsid
         metadata['assimilated'] = 'n/a'
 
         if np.isin('histogram', plot_type):

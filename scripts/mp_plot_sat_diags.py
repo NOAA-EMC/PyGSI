@@ -15,7 +15,7 @@ start_time = datetime.now()
 def plotting(sat_config):
 
     diagfile = sat_config['radiance input']['path'][0]
-    data_type = sat_config['radiance input']['data type'][0]
+    diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
     qcflag = sat_config['radiance input']['qc flag']
     plot_type = sat_config['radiance input']['plot type']
@@ -23,11 +23,11 @@ def plotting(sat_config):
 
     diag = Radiance(diagfile)
 
-    data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
+    data = diag.get_data(diag_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
 
-    metadata = diag.get_metadata()
-    metadata['Data_type'] = data_type
+    metadata = diag.metadata
+    metadata['Diag Type'] = diag_type
     metadata['Channels'] = channel
 
     if np.isin('histogram', plot_type):

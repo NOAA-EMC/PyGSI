@@ -89,12 +89,12 @@ def get_xlabel(metadata):
                    'windspeed': "Windspeed (m/s)"
                    }
 
-    if metadata['Diag_type'] == 'conv':
+    if metadata['Obs Type'] == 'conv':
         xlabel = conv_xlabel[metadata['Variable']]
     else:
-        if metadata['Data_type'].split('_')[-1] == 'Fraction':
-            xlabel = '%s %s' % (metadata['Data_type'].split(
-                '_')[0], metadata['Data_type'].split('_')[-1])
+        if metadata['Diag Type'].split('_')[-1] == 'Fraction':
+            xlabel = '%s %s' % (metadata['Diag Type'].split(
+                '_')[0], metadata['Diag Type'].split('_')[-1])
         else:
             xlabel = "Brightness Temperature (K)"
 
@@ -107,7 +107,7 @@ def plot_labels(metadata, stats):
     if stats == None:
         t = None
     else:
-        if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'q':
+        if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'q':
             roundnum = 6
         else:
             roundnum = 3
@@ -125,49 +125,49 @@ def plot_labels(metadata, stats):
     date_title = metadata['Date'].strftime("%d %b %Y %Hz")
 
     # X label
-    if metadata['Data_type'] == 'O-F':
+    if metadata['Diag Type'] in ['omf', 'o-f', 'omb', 'o-b']:
         xlabel = "Observation - Forecast"
-        dataType = 'OmF'
-    elif metadata['Data_type'] == 'O-A':
+        diag_type = 'OmF'
+    elif metadata['Diag Type'] in ['oma', 'o-a']:
         xlabel = "Observation - Analysis"
-        dataType = 'OmA'
-    elif metadata['Data_type'] == 'H(x)':
+        diag_type = 'OmA'
+    elif metadata['Diag Type'] in ['hofx']:
         xlabel = get_xlabel(metadata)
-        dataType = 'hofx'
+        diag_type = 'hofx'
     else:
         xlabel = get_xlabel(metadata)
-        dataType = metadata['Data_type']
+        diag_type = metadata['Diag Type']
 
     # Save file label
-    if metadata['Diag_type'] == 'conv':
-        save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Variable}_'.format(
-            **metadata) + '%s_' % dataType + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
+    if metadata['Obs Type'] == 'conv':
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_'.format(
+            **metadata) + '%s_' % diag_type + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
     else:
-        save_file = '{Date:%Y%m%d%H}_{Diag_type}_{Satellite}_'.format(
-            **metadata) + '%s_' % dataType + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_'.format(
+            **metadata) + '%s_' % diag_type + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
 
     # Left Title label
-    if metadata['Diag_type'] == 'conv':
-        conv_title_dict = {'yes': {'left_title': '{Data_type}: {Variable} - Data Assimilated\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                                  'save_file':  save_file + '_assimilated'},
-                          'no': {'left_title': '{Data_type}: {Variable} - Data Monitored\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                                 'save_file':  save_file + '_monitored'},
-                          'n/a': {'left_title': '{Data_type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['Obs_Type']),
-                                  'save_file':  save_file}
+    if metadata['Obs Type'] == 'conv':
+        conv_title_dict = {'yes': {'left title': '{Obs Type}: {Variable} - Data Assimilated\n'.format(**metadata) + '%s' % '\n'.join(metadata['ObsID Name']),
+                                  'save file':  save_file + '_assimilated'},
+                          'no': {'left title': '{Obs Type}: {Variable} - Data Monitored\n'.format(**metadata) + '%s' % '\n'.join(metadata['ObsID Name']),
+                                 'save file':  save_file + '_monitored'},
+                          'n/a': {'left title': '{Obs Type}: {Variable}\n'.format(**metadata) + '%s' % '\n'.join(metadata['ObsID Name']),
+                                  'save file':  save_file}
                           }
 
-        left_title = conv_title_dict[metadata['assimilated']]['left_title']
-        save_file = conv_title_dict[metadata['assimilated']]['save_file']
+        left_title = conv_title_dict[metadata['assimilated']]['left title']
+        save_file = conv_title_dict[metadata['assimilated']]['save file']
 
     else:
-        left_title = '{Data_type}: {Diag_type} {Satellite}\n'.format(
+        left_title = '{Obs Type}: {Diag Type} {Satellite}\n'.format(
             **metadata) + 'Channels: %s' % ' '.join(str(x) for x in metadata['Channels'])
 
-    labels = {'stat_text': t,
-              'x_label': xlabel,
-              'left_title': left_title,
-              'date_title': date_title,
-              'save_file': save_file
+    labels = {'stat text': t,
+              'x label': xlabel,
+              'left title': left_title,
+              'date title': date_title,
+              'save file': save_file
               }
 
     return labels
@@ -200,7 +200,7 @@ def calculate_stats(data):
     return stats
 
 
-def plot_features(dtype, stats, metadata):
+def plot_features(diag_type, stats, metadata):
 
     conv_features_dict = {'t': {'cmap': 'jet',
                                'extend': 'both',
@@ -252,7 +252,7 @@ def plot_features(dtype, stats, metadata):
                          }
 
     # Get cmap, bins, norm and extend for O-F and O-A
-    if dtype in ['O-F', 'O-A']:
+    if diag_type in ['omf', 'o-f', 'omb', 'o-b', 'oma', 'o-a']:
         cmap = 'bwr'
 
         upperbound = (np.round(stats['Std']*2)/2)*5
@@ -268,8 +268,8 @@ def plot_features(dtype, stats, metadata):
         extend = 'both'
 
     # Get cmap, bins, norm and extend for O-F and O-A
-    elif dtype in ['Observation', 'H(x)', 'windspeed']:
-        if metadata['Diag_type'] == 'conv':
+    elif diag_type in ['observation', 'hofx', 'windspeed']:
+        if metadata['Obs Type'] == 'conv':
             cmap = conv_features_dict[metadata['Variable']]['cmap']
             extend = conv_features_dict[metadata['Variable']]['extend']
             upperbound = conv_features_dict[metadata['Variable']]['upperbound']
@@ -309,7 +309,7 @@ def no_data_spatial(metadata, outdir='./'):
     """
 
     stats = None
-    if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
+    if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in ['u','v','windspeed']:
             metadata['Variable'] = i
             labels = plot_labels(metadata, stats)
@@ -322,11 +322,11 @@ def no_data_spatial(metadata, outdir='./'):
             ax.set_extent([-180, 180, -90, 90])
 
             ax.text(0, 0, 'No Data', fontsize=32, alpha=0.6, ha='center')
-            plt.title(labels['left_title'], loc='left', fontsize=14)
-            plt.title(labels['date_title'], loc='right',
+            plt.title(labels['left title'], loc='left', fontsize=14)
+            plt.title(labels['date title'], loc='right',
                       fontweight='semibold', fontsize=14)
             plt.savefig(outdir+'/%s_spatial.png' %
-                labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                labels['save file'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
             
     else:
@@ -339,21 +339,21 @@ def no_data_spatial(metadata, outdir='./'):
         ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
         ax.set_extent([-180, 180, -90, 90])
         ax.text(0, 0, 'No Data', fontsize=32, alpha=0.6, ha='center')
-        plt.title(labels['left_title'], loc='left', fontsize=14)
-        plt.title(labels['date_title'], loc='right',
+        plt.title(labels['left title'], loc='left', fontsize=14)
+        plt.title(labels['date title'], loc='right',
                   fontweight='semibold', fontsize=14)        
         plt.savefig(outdir+'/%s_spatial.png' %
-                    labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                    labels['save file'], bbox_inches='tight', pad_inches=0.1)
         plt.close('all')
 
     return
 
 
 def plot_histogram(data, metadata, outdir='./'):
-    if metadata['Diag_type'] == 'conv':
-        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+    if metadata['Obs Type'] == 'conv':
+        metadata['ObsID Name'] = get_obs_type(metadata['ObsID'])
 
-    if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
+    if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
             fig = plt.figure(figsize=(8, 6))
             ax = fig.add_subplot(111)
@@ -371,7 +371,7 @@ def plot_histogram(data, metadata, outdir='./'):
                     stats = calculate_stats(data[i])
                     labels = plot_labels(metadata, stats)
 
-                    ax.text(0.75, .7, labels['stat_text'],
+                    ax.text(0.75, .7, labels['stat text'],
                             fontsize=14, transform=ax.transAxes)
                     ax.text(0.5, 0.5, 'Single Observation',
                             fontsize=32, alpha=0.6, ha='center')
@@ -392,26 +392,26 @@ def plot_histogram(data, metadata, outdir='./'):
                 plt.hist(data[i], bins=bins)
                 plt.axvline(stats['Mean'], color='r',
                             linestyle='solid', linewidth=1)
-                if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
+                if metadata['Diag Type'] == 'O-F' or metadata['Diag Type'] == 'O-A':
                     plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
 
                 labels = plot_labels(metadata, stats)
 
-                ax.text(0.75, .7, labels['stat_text'],
+                ax.text(0.75, .7, labels['stat text'],
                         fontsize=14, transform=ax.transAxes)
 
-            plt.xlabel(labels['x_label'])
+            plt.xlabel(labels['x label'])
             plt.ylabel('Count')
 
             wrapper = TextWrapper(
                 width=70, break_long_words=False, replace_whitespace=False)
-            left_title = '\n'.join(wrapper.wrap(labels['left_title']))
+            left_title = '\n'.join(wrapper.wrap(labels['left title']))
 
             plt.title(left_title, loc='left', fontsize=14)
-            plt.title(labels['date_title'], loc='right',
+            plt.title(labels['date title'], loc='right',
                       fontweight='semibold', fontsize=14)
             plt.savefig(outdir+'/%s_histogram.png' %
-                        labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                        labels['save file'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
 
     else:
@@ -428,7 +428,7 @@ def plot_histogram(data, metadata, outdir='./'):
                 stats = calculate_stats(data)
                 labels = plot_labels(metadata, stats)
 
-                ax.text(0.75, .7, labels['stat_text'],
+                ax.text(0.75, .7, labels['stat text'],
                         fontsize=14, transform=ax.transAxes)
                 ax.text(0.5, 0.5, 'Single Observation',
                         fontsize=32, alpha=0.6, ha='center')
@@ -437,7 +437,7 @@ def plot_histogram(data, metadata, outdir='./'):
             stats = calculate_stats(data)
 
             binsize = (stats['Max']-stats['Min'])/np.sqrt(stats['N'])
-            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
+            if metadata['Diag Type'] == 'O-F' or metadata['Diag Type'] == 'O-A':
                 bins = np.arange(0-(4*stats['Std']),
                                  0+(4*stats['Std']), binsize)
             else:
@@ -447,26 +447,26 @@ def plot_histogram(data, metadata, outdir='./'):
             plt.hist(data, bins=bins)
             plt.axvline(stats['Mean'], color='r',
                         linestyle='solid', linewidth=1)
-            if metadata['Data_type'] == 'O-F' or metadata['Data_type'] == 'O-A':
+            if metadata['Diag Type'] == 'O-F' or metadata['Diag Type'] == 'O-A':
                 plt.axvline(0, color='k', linestyle='dashed', linewidth=1)
 
             labels = plot_labels(metadata, stats)
 
-            ax.text(0.75, .7, labels['stat_text'],
+            ax.text(0.75, .7, labels['stat text'],
                     fontsize=14, transform=ax.transAxes)
 
-        plt.xlabel(labels['x_label'])
+        plt.xlabel(labels['x label'])
         plt.ylabel('Count')
 
         wrapper = TextWrapper(
             width=70, break_long_words=False, replace_whitespace=False)
-        left_title = '\n'.join(wrapper.wrap(labels['left_title']))
+        left_title = '\n'.join(wrapper.wrap(labels['left title']))
 
         plt.title(left_title, loc='left', fontsize=14)
-        plt.title(labels['date_title'], loc='right',
+        plt.title(labels['date title'], loc='right',
                   fontweight='semibold', fontsize=14)
         plt.savefig(outdir+'/%s_histogram.png' %
-                    labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                    labels['save file'], bbox_inches='tight', pad_inches=0.1)
         plt.close('all')
 
     return
@@ -474,8 +474,8 @@ def plot_histogram(data, metadata, outdir='./'):
 
 def plot_binned_spatial(data, metadata, binsize='1x1', outdir='./'):
 
-    if metadata['Diag_type'] == 'conv':
-        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+    if metadata['Obs Type'] == 'conv':
+        metadata['ObsID Name'] = get_obs_type(metadata['ObsID'])
 
     # Create lats and lons based on binsize
     lonlen = 360
@@ -509,7 +509,7 @@ def plot_binned_spatial(data, metadata, binsize='1x1', outdir='./'):
 
     stats = calculate_stats(data)
 
-    cmap, norm, extend = plot_features(metadata['Data_type'], stats, metadata)
+    cmap, norm, extend = plot_features(metadata['Diag Type'], stats, metadata)
 
     fig = plt.figure(figsize=(15, 12))
     ax = fig.add_subplot(
@@ -524,27 +524,27 @@ def plot_binned_spatial(data, metadata, binsize='1x1', outdir='./'):
 
     labels = plot_labels(metadata, stats)
 
-    ax.text(185, 55, labels['stat_text'], fontsize=14)
+    ax.text(185, 55, labels['stat text'], fontsize=14)
 
     cb = plt.colorbar(cs, orientation='horizontal',
                       shrink=0.5, pad=.04, extend=extend)
-    cb.set_label(labels['x_label'], fontsize=12)
+    cb.set_label(labels['x label'], fontsize=12)
 
-    plt.title(labels['left_title'], loc='left', fontsize=14)
-    plt.title(labels['date_title'], loc='right',
+    plt.title(labels['left title'], loc='left', fontsize=14)
+    plt.title(labels['date title'], loc='right',
               fontweight='semibold', fontsize=14)
 
     plt.savefig(outdir+'/%s_binned_spatial.png' %
-                labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                labels['save file'], bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
 
 
 def plot_spatial(data, metadata, lats, lons, outdir='./'):
 
-    if metadata['Diag_type'] == 'conv':
-        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+    if metadata['Obs Type'] == 'conv':
+        metadata['ObsID Name'] = get_obs_type(metadata['ObsID'])
 
-    if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
+    if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
         for i in data.keys():
             if len(data[i]) == 0:
                 no_data_spatial(metadata, outdir)
@@ -564,7 +564,7 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
                         'windspeed', stats, metadata)
                 else:
                     cmap, norm, extend = plot_features(
-                        metadata['Data_type'], stats, metadata)
+                        metadata['Diag Type'], stats, metadata)
 
                 fig = plt.figure(figsize=(15, 12))
                 ax = fig.add_subplot(
@@ -579,17 +579,17 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
 
                 labels = plot_labels(metadata, stats)
 
-                ax.text(185, 55, labels['stat_text'], fontsize=14)
+                ax.text(185, 55, labels['stat text'], fontsize=14)
 
                 cb = plt.colorbar(cs, orientation='horizontal',
                                   shrink=0.5, pad=.04, extend=extend)
-                cb.set_label(labels['x_label'], fontsize=12)
+                cb.set_label(labels['x label'], fontsize=12)
 
-                plt.title(labels['left_title'], loc='left', fontsize=14)
-                plt.title(labels['date_title'], loc='right',
+                plt.title(labels['left title'], loc='left', fontsize=14)
+                plt.title(labels['date title'], loc='right',
                           fontweight='semibold', fontsize=14)
                 plt.savefig(outdir+'/%s_spatial.png' %
-                            labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                            labels['save file'], bbox_inches='tight', pad_inches=0.1)
                 plt.close('all')
 
     else:
@@ -606,7 +606,7 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
                 extend = 'neither'
             else:
                 cmap, norm, extend = plot_features(
-                    metadata['Data_type'], stats, metadata)
+                    metadata['Diag Type'], stats, metadata)
 
             fig = plt.figure(figsize=(15, 12))
             ax = fig.add_subplot(
@@ -621,18 +621,18 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
 
             labels = plot_labels(metadata, stats)
 
-            ax.text(185, 55, labels['stat_text'], fontsize=14)
+            ax.text(185, 55, labels['stat text'], fontsize=14)
 
             cb = plt.colorbar(cs, orientation='horizontal',
                               shrink=0.5, pad=.04, extend=extend)
-            cb.set_label(labels['x_label'], fontsize=12)
+            cb.set_label(labels['x label'], fontsize=12)
 
-            plt.title(labels['left_title'], loc='left', fontsize=14)
-            plt.title(labels['date_title'], loc='right',
+            plt.title(labels['left title'], loc='left', fontsize=14)
+            plt.title(labels['date title'], loc='right',
                       fontweight='semibold', fontsize=14)
 
             plt.savefig(outdir+'/%s_spatial.png' %
-                        labels['save_file'], bbox_inches='tight', pad_inches=0.1)
+                        labels['save file'], bbox_inches='tight', pad_inches=0.1)
             plt.close('all')
 
     return
@@ -647,11 +647,11 @@ def plot_timeseries(ncfile, oneplot=False):
     diag_type = meta[0]
 
     if diag_type == 'conv':
-        metadata['Diag_type'] = meta[0]
+        metadata['Obs Type'] = meta[0]
         metadata['Variable'] = meta[1]
         metadata['ObsID'] = [int(meta[2])]
         metadata['Data_Type'] = meta[3].split('.')[0]
-        metadata['Obs_Type'] = get_obs_type(metadata['ObsID'])
+        metadata['ObsID Name'] = get_obs_type(metadata['ObsID'])
 
     f = Dataset(ncfile, 'r', format='NETCDF4')
     date = f.variables['date'][:]
