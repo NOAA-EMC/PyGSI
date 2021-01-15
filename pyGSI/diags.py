@@ -25,7 +25,7 @@ class GSIdiag:
         self.date = _str_date.split('_')[0]
         
         _var_key_name = 'Variable' if self.obs_type == 'conv' else 'Satellite'
-        self.metadata = {'Diag Type': self.obs_type,
+        self.metadata = {'Obs Type': self.obs_type,
                          _var_key_name: self.variable,
                          'Date': self.date,
                          'File Type': self.ftype
