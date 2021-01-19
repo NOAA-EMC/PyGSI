@@ -23,7 +23,7 @@ def plotting(conv_config):
 
     diag = Conventional(diagfile)
 
-    if analysis_use == True:
+    if analysis_use:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             u, v = diag.get_data(diag_type, obsid=obsid,

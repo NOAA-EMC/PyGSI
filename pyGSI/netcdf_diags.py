@@ -511,37 +511,22 @@ def append_ncfile_uv(uv_stat_dict, binned_data, ncfilename):
 
 
 def get_filename(metadata):
-
-    if metadata['Data_type'] == 'O-F':
-        if metadata['Diag_type'] == 'conv':
-            ncfilename = '{Diag_type}_{Variable}_{ObsID[0]}_OmF.nc'.format(
+    
+    omf = True if metadata['Diag Type'] in ['omf', 'o-f', 'omb', 'o-b'] else False
+    oma = True if metadata['Diag Type'] in ['oma', 'o-a'] else False
+    
+    if omf:
+        metadata['Diag Type'] = 'OmF'
+    
+    if oma:
+        metadata['Diag Type'] = 'OmA'
+        
+        
+    if metadata['Obs Type'] == 'conv':
+        ncfilename = '{Obs Type}_{Variable}_{ObsID[0]}_{Diag Type}.nc'.format(
                 **metadata)
-        else:
-            ncfilename = '{Diag_type}_{Satellite}_Ch{Channel[0]}_OmF.nc'.format(
-                **metadata)
-
-    elif metadata['Data_type'] == 'O-A':
-        if metadata['Diag_type'] == 'conv':
-            ncfilename = '{Diag_type}_{Variable}_{ObsID[0]}_OmA.nc'.format(
-                **metadata)
-        else:
-            ncfilename = '{Diag_type}_{Satellite}_Ch{Channel[0]}_OmA.nc'.format(
-                **metadata)
-
-    elif metadata['Data_type'] == 'H(x)':
-        if metadata['Diag_type'] == 'conv':
-            ncfilename = '{Diag_type}_{Variable}_{ObsID[0]}_HofX.nc'.format(
-                **metadata)
-        else:
-            ncfilename = '{Diag_type}_{Satellite}_Ch{Channel[0]}_HofX.nc'.format(
-                **metadata)
-
     else:
-        if metadata['Diag_type'] == 'conv':
-            ncfilename = '{Diag_type}_{Variable}_{ObsID[0]}_{Diag_type}.nc'.format(
-                **metadata)
-        else:
-            ncfilename = '{Diag_type}_{Satellite}_Ch{Channel[0]}_{Diag_type}.nc'.format(
+        ncfilename = '{Obs Type}_{Satellite}_Ch{Channel[0]}_{Diag Type}.nc'.format(
                 **metadata)
 
     return ncfilename
@@ -549,7 +534,7 @@ def get_filename(metadata):
 
 def write_netcdf(data, binned_data, metadata):
 
-    if metadata['Diag_type'] == 'conv' and metadata['Variable'] == 'uv':
+    if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
 
         uv_stat_dict = {}
 
@@ -565,7 +550,7 @@ def write_netcdf(data, binned_data, metadata):
         # Get the filename based on metadata
         ncfilename = get_filename(metadata)
 
-        ncpath = metadata['outDir']+'/'+ncfilename
+        ncpath = metadata['Outdir']+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
         if os.path.isfile(ncpath) != True:
@@ -582,20 +567,20 @@ def write_netcdf(data, binned_data, metadata):
         stat_dict['Date'] = int(metadata['Date'].strftime("%Y%m%d%H"))
         stat_dict['epoch'] = metadata['Date'].timestamp()
 
-        if metadata['Diag_type'] == 'conv':
+        if metadata['Obs Type'] == 'conv':
             stat_dict['Subtype'] = int(metadata['Subtype'][0])
 
         # Get the filename based on metadata
         ncfilename = get_filename(metadata)
 
-        ncpath = metadata['outDir']+'/'+ncfilename
+        ncpath = metadata['Outdir']+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
         if os.path.isfile(ncpath) != True:
-            write_ncfile(stat_dict, binned_data, ncpath, metadata['Diag_type'])
+            write_ncfile(stat_dict, binned_data, ncpath, metadata['Obs Type'])
 
         # else, append data to that file
         else:
-            append_ncfile(stat_dict, binned_data, ncpath, metadata['Diag_type'])
+            append_ncfile(stat_dict, binned_data, ncpath, metadata['Obs Type'])
 
     return

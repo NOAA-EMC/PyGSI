@@ -15,22 +15,22 @@ start_time = datetime.now()
 
 
 def create_netcdf(sat_config):
-
+    
     diagfile = sat_config['radiance input']['path'][0]
-    data_type = sat_config['radiance input']['data type'][0]
+    diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
     qcflag = sat_config['radiance input']['qc flag']
-    outdir = sat_config['outDir']
+    outdir = sat_config['outdir']
 
     diag = Radiance(diagfile)
 
-    data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
+    data = diag.get_data(diag_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
 
-    metadata = diag.get_metadata()
-    metadata['Data_type'] = data_type
+    metadata = diag.metadata
+    metadata['Diag Type'] = diag_type
     metadata['Channel'] = channel
-    metadata['outDir'] = outdir
+    metadata['Outdir'] = outdir
 
     binned_data = spatial_bin(data, lats, lons, binsize='1x1')
 
@@ -64,7 +64,7 @@ with open(input_yaml, 'r') as file:
     parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
 for w in parsed_yaml_file['diagnostic']:
-    w['outDir'] = outdir
+    w['outdir'] = outdir
 
 work = (parsed_yaml_file['diagnostic'])
 
