@@ -13,24 +13,23 @@ class GSIdiag:
         INPUT:
             path : path to GSI diagnostic object
         """
-        
+
         self.path = path
         self.filename = os.path.splitext(Path(self.path).stem)[0]
         self.obs_type = self.filename.split('_')[1]
         self.variable = self.filename.split('_')[2]
         self.ftype = self.filename.split('_')[-1]
-        
+
         _str_date = os.path.basename(self.path).split('.')[1]
         # Checks if '_ensmean' is included in file name
         self.date = _str_date.split('_')[0]
-        
+
         _var_key_name = 'Variable' if self.obs_type == 'conv' else 'Satellite'
         self.metadata = {'Obs Type': self.obs_type,
                          _var_key_name: self.variable,
                          'Date': self.date,
                          'File Type': self.ftype
-                        }
-        
+                         }
 
     def __len__(self):
         return len(self.lats)
@@ -40,10 +39,10 @@ class GSIdiag:
         Query the data type being requested and returns
         the appropriate indexed data
         """
-        
+
         diag_type = diag_type.lower()
-        
-        #Determines the diagnostic type
+
+        # Determines the diagnostic type
         omf = True if diag_type in ['omf', 'o-f', 'omb', 'o-b'] else False
         oma = True if diag_type in ['oma', 'o-a'] else False
         obs = True if diag_type in ['observation'] else False
@@ -53,11 +52,11 @@ class GSIdiag:
         cloud_fraction = True if diag_type in ['cloud_fraction'] else False
         snow_fraction = True if diag_type in ['snow_fraction'] else False
         ice_fraction = True if diag_type in ['ice_fraction'] else False
-        
+
         # Determines the file type
         is_ges = True if self.ftype == 'ges' else False
         is_anl = True if self.ftype == 'anl' else False
-        
+
         if omf and is_ges:
             if self.variable == 'uv':
                 u = self.u_omf[idx]
@@ -68,7 +67,7 @@ class GSIdiag:
             else:
                 data = self.omf[idx]
                 return data
-            
+
         if oma and is_anl:
             if self.variable == 'uv':
                 u = self.u_omf[idx]
@@ -95,9 +94,9 @@ class GSIdiag:
             if self.variable == 'uv':
                 u = self.u_o[idx] - self.u_omf[idx]
                 v = self.v_o[idx] - self.v_omf[idx]
-                
-                return u,v
-            
+
+                return u, v
+
             else:
                 hx = self.o - self.omf
                 data = hx[idx]
@@ -136,14 +135,14 @@ class Conventional(GSIdiag):
         INPUT:
             path   : path to conventional GSI diagnostic object
         RESULT:
-            self   : GSIdiag object containing the path to extract data
+            self   : GSI diag conventional object containing the path to extract data
         """
         super().__init__(path)
 
         self.read_conv_obs()
 
     def __str__(self):
-        return "Conventional object"
+        return "Conventional GSI diagnostic object"
 
     def read_conv_obs(self):
         """
@@ -175,13 +174,12 @@ class Conventional(GSIdiag):
                 self.o = f.variables['Observation'][:]
                 self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
-
     def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
             required:
-                diag_type  : type of data to extract i.e. Observation, O-F, O-A, H(x)
+                diag_type  : type of data to extract i.e. observation, omf, oma, hofx
 
             optional:    
                 obsid        : observation measurement ID number; default=None
@@ -193,7 +191,7 @@ class Conventional(GSIdiag):
                 plvls        : List of pressure levels i.e. [250,500,750,1000]. Will 
                                return a dictionary with subsetted pressure levels where
                                data is seperated within those levels:
-                               
+
                                dict = {250-500: <data>,
                                        500-750: <data>,
                                        750-100: <data>}
@@ -203,7 +201,7 @@ class Conventional(GSIdiag):
         """
 
         if plvls is not None:
-            pressure_list=plvls
+            pressure_list = plvls
             binned_pressure = {}
 
             if analysis_use:
@@ -226,15 +224,15 @@ class Conventional(GSIdiag):
                             diag_type, assimilated_pidx)
                         u_monitored, v_monitored = self.query_diag_type(
                             diag_type, monitored_pidx)
-                        
+
                         data = {'u': {'assimilated': u_assimilated,
                                       'monitored': u_monitored},
                                 'v': {'assimilated': v_assimilated,
                                       'monitored': v_monitored}
-                               }
-                        
-                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
+                                }
 
+                        binned_pressure['%s-%s' %
+                                        (pressure_list[i], pressure_list[i+1])] = data
 
                     else:
                         assimilated_data = self.query_diag_type(
@@ -246,12 +244,14 @@ class Conventional(GSIdiag):
                                 'monitored': monitored_data
                                 }
 
-                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
+                        binned_pressure['%s-%s' %
+                                        (pressure_list[i], pressure_list[i+1])] = data
 
                 return binned_pressure
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
+                idx = self.get_idx_conv(
+                    obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -261,15 +261,17 @@ class Conventional(GSIdiag):
 
                     if self.variable == 'uv':
                         u, v = self.query_diag_type(diag_type, pidx)
-                        
+
                         data = {'u': u,
                                 'v': v}
-                        
-                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
-                        
+
+                        binned_pressure['%s-%s' %
+                                        (pressure_list[i], pressure_list[i+1])] = data
+
                     else:
                         data = self.query_diag_type(diag_type, pidx)
-                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
+                        binned_pressure['%s-%s' %
+                                        (pressure_list[i], pressure_list[i+1])] = data
 
                 return binned_pressure
 
@@ -294,7 +296,8 @@ class Conventional(GSIdiag):
                 else:
                     assimilated_data = self.query_diag_type(
                         diag_type, assimilated_idx)
-                    monitored_data = self.query_diag_type(diag_type, monitored_idx)
+                    monitored_data = self.query_diag_type(
+                        diag_type, monitored_idx)
 
                     data = {'assimilated': assimilated_data,
                             'monitored': monitored_data
@@ -303,7 +306,8 @@ class Conventional(GSIdiag):
                     return data
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
+                idx = self.get_idx_conv(
+                    obsid, subtype, station_id, analysis_use)
 
                 if self.variable == 'uv':
                     u, v = self.query_diag_type(diag_type, idx)
@@ -328,7 +332,6 @@ class Conventional(GSIdiag):
             idx    : indices of the requested data in the file
         """
 
-        
         if not obsid or obsid == [None]:
             obsid = None
         if not subtype or subtype == [None]:
@@ -348,7 +351,8 @@ class Conventional(GSIdiag):
                 valid_idx = np.logical_and(valid_idx, valid_subtype_idx)
             if station_id != None:
                 stnididx = self.stnid
-                stnididx = np.array([''.join(i.tostring().decode().split()) for i in stnididx])
+                stnididx = np.array(
+                    [''.join(i.tostring().decode().split()) for i in stnididx])
                 valid_stnid_idx = np.isin(stnididx, station_id)
                 valid_idx = np.logical_and(valid_idx, valid_stnid_idx)
 
@@ -377,18 +381,17 @@ class Conventional(GSIdiag):
                     valid_assimilated_idx, valid_subtype_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_subtype_idx)
-                
+
             if station_id != None:
                 stnididx = self.stnid
-                stnididx = np.array([''.join(i.tostring().decode().split()) for i in stnididx])
+                stnididx = np.array(
+                    [''.join(i.tostring().decode().split()) for i in stnididx])
                 valid_stnid_idx = np.isin(stnididx, station_id)
-                
+
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_stnid_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_stnid_idx)
-                
-                
 
             assimilated_idx = np.where(valid_assimilated_idx)
             monitored_idx = np.where(valid_monitored_idx)
@@ -431,7 +434,8 @@ class Conventional(GSIdiag):
                 return pressure_lats, pressure_lons
 
             else:
-                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
+                idx = self.get_idx_conv(
+                    obsid, subtype, station_id, analysis_use)
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
@@ -454,7 +458,8 @@ class Conventional(GSIdiag):
                         'monitored': self.lons[monitored_idx]}
                 return lats, lons
             else:
-                idx = self.get_idx_conv(obsid, subtype, station_id, analysis_use)
+                idx = self.get_idx_conv(
+                    obsid, subtype, station_id, analysis_use)
                 return self.lats[idx], self.lons[idx]
 
     def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
@@ -478,14 +483,14 @@ class Radiance(GSIdiag):
         INPUT:
             path   : path to conventional GSI diagnostic object
         RESULT:
-            self   : GSIdiag object containing the path to extract data
+            self   : GSI diag radiance object containing the path to extract data
         """
         super().__init__(path)
 
         self.read_radiance_obs()
 
     def __str__(self):
-        return "radiance object"
+        return "Radiance GSI diagnostic object"
 
     def read_radiance_obs(self):
         """
@@ -509,16 +514,15 @@ class Radiance(GSIdiag):
             self.cloud_frac = f.variables['Cloud_Frac'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
 
-
     def get_data(self, diag_type, channel=None, qcflag=None,
-                separate_channels=False, separate_qc=False, errcheck=True):
+                 separate_channels=False, separate_qc=False, errcheck=True):
         """
         Given parameters, get the data from a radiance 
         diagnostic file.
         INPUT:
             required:
-                diag_type : type of data to extract i.e. observation, O-F, O-A, H(x), Water_Fraction,
-                        Land_Fraction, Ice_Fraction, Snow_Fraction
+                diag_type : type of data to extract i.e. observation, omf, oma, hofx, water_fraction,
+                        land_fraction, ice_fraction, snow_fraction, cloud_fraction
 
             optional:  
                 channel           : observation channel number
@@ -580,7 +584,7 @@ class Radiance(GSIdiag):
         return idx
 
     def get_data_special(self, diag_type, channel, qcflag,
-                        separate_channels, separate_qc, errcheck=True):
+                         separate_channels, separate_qc, errcheck=True):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
@@ -632,7 +636,7 @@ class Radiance(GSIdiag):
         """
         idx = self.get_idx_sat(channel, qcflag, errcheck=errcheck)
         return self.lats[idx], self.lons[idx]
-    
+
 
 class Ozone(GSIdiag):
 
@@ -642,14 +646,14 @@ class Ozone(GSIdiag):
         INPUT:
             path   : path to ozone GSI diagnostic object
         RESULT:
-            self   : GSIdiag object containing the path to extract data
+            self   : GSI ozone diag object containing the path to extract data
         """
         super().__init__(path)
 
         self.read_ozone_obs()
 
     def __str__(self):
-        return "Ozone object"
+        return "Ozone GSI diagnostic object"
 
     def read_ozone_obs(self):
         """
@@ -665,14 +669,13 @@ class Ozone(GSIdiag):
             self.o = f.variables['Observation'][:]
             self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
-        
 
     def get_data(self, diag_type, analysis_use=False, errcheck=True):
         """
         Given parameters, get the data from an ozone diagnostic file
         INPUT:
             required:
-                data_type  : type of data to extract i.e. Observation, O-F, O-A, H(x)
+                data_type  : type of data to extract i.e. observation, omf, oma, hofx
 
             optional:    
                 analysis_use : if True, will return two sets of data: assimlated
@@ -684,11 +687,11 @@ class Ozone(GSIdiag):
         OUTPUT:
             data   : requested data as a dictionary
         """
-        
+
         data_dict = {}
-        
+
         if not analysis_use:
-            
+
             for layer in self.ref_pressure:
                 if layer != 0:
                     layer_idx = np.isin(self.ref_pressure, layer)
@@ -698,27 +701,29 @@ class Ozone(GSIdiag):
                     data_dict[layer] = data
                 else:
                     break
-                    
+
             column_total_idx = np.isin(self.ref_pressure, 0)
             idx = self.get_idx_ozone(column_total_idx, errcheck=errcheck)
 
             data = self.query_diag_type(diag_type, idx)
             data_dict['column total'] = data
-        
+
         else:
-            for layer in self.ref_pressure:                    
+            for layer in self.ref_pressure:
                 if layer != 0.:
                     layer_idx = np.isin(self.ref_pressure, layer)
 
                     assimilated_idx, monitored_idx = self.get_idx_ozone(
                         layer_idx, analysis_use=analysis_use, errcheck=errcheck)
 
-                    assimilated_data = self.query_diag_type(diag_type, assimilated_idx)
-                    monitored_data = self.query_diag_type(diag_type, monitored_idx)
+                    assimilated_data = self.query_diag_type(
+                        diag_type, assimilated_idx)
+                    monitored_data = self.query_diag_type(
+                        diag_type, monitored_idx)
 
                     data_dict[layer] = {'assimilated': assimilated_data,
                                         'monitored': monitored_data
-                                       }
+                                        }
                 else:
                     break
 
@@ -732,11 +737,10 @@ class Ozone(GSIdiag):
 
             data_dict['column total'] = {'assimilated': assimilated_data,
                                          'monitored': monitored_data
-                                        }
+                                         }
 
         return data_dict
-    
-    
+
     def get_idx_ozone(self, index, analysis_use=False, errcheck=True):
         """
         Returns the index of data that was assimilated
@@ -751,16 +755,16 @@ class Ozone(GSIdiag):
             assimilated_idx, monitored_idx : if analysis_use is True
             index : if analysis_use is False
         """
-        
+
         if analysis_use:
-            
+
             valid_assimilated_idx = np.isin(self.anl_use, 1)
             valid_monitored_idx = np.isin(self.anl_use, -1)
 
             if errcheck:
                 valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
                 index = np.logical_and(index, valid_idx_err)
-            
+
             valid_assimilated_idx = np.logical_and(
                 valid_assimilated_idx, index)
             valid_monitored_idx = np.logical_and(
@@ -770,23 +774,23 @@ class Ozone(GSIdiag):
             monitored_idx = np.where(valid_monitored_idx)
 
             return assimilated_idx, monitored_idx
-        
+
         else:
             if errcheck:
                 valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
                 index = np.logical_and(index, valid_idx_err)
-            
+
             return index
-            
+
     def get_lat_lon(self, errcheck=True):
         """
         Gets lats and lons with desired indices. Returns dictionary for
         each level in the ozone data.
         """
-        
+
         lats_dict = {}
         lons_dict = {}
-        
+
         for layer in self.ref_pressure:
             if layer != 0:
                 layer_idx = np.isin(self.ref_pressure, layer)
@@ -798,14 +802,14 @@ class Ozone(GSIdiag):
                 lons_dict[layer] = lons
             else:
                 break
-                    
+
             column_total_idx = np.isin(self.ref_pressure, 0)
             idx = self.get_idx_ozone(column_total_idx, errcheck=errcheck)
 
             lats = self.lats[idx]
             lons = self.lons[idx]
-            
+
             lats_dict['total column'] = lats
             lons_dict['total column'] = lons
-        
+
         return lats_dict, lons_dict
