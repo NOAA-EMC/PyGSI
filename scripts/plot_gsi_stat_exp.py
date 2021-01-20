@@ -106,7 +106,7 @@ if __name__ == '__main__':
                                                   'statistics for ',
                                                   'experiments compared to a ',
                                                   'reference control run.'))
-    parser.add_argument('-g', '--gsistats',
+    parser.add_argument('-d', '--gsistats',
                         help='list of directories containing GSI stat files',
                         nargs='+', required=True)
     parser.add_argument('-l', '--label',
@@ -154,9 +154,8 @@ if __name__ == '__main__':
             try:
                 gdas = GSIstat(inputfile, cycle)
             except FileNotFoundError:
-                print('Error: One or more expected gsistat files missing, ',
-                      'check dates and paths!')
-                sys.exit(1)
+                raise FileNotFoundError(
+                      f'Unable to find {inputfile} for cycle {cycle}')
             # now loop through variables
             for var in obvars:
                 stat = gdas.extract(var)  # t, uv, q, etc.
