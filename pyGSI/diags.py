@@ -70,13 +70,13 @@ class GSIdiag:
 
         if oma and is_anl:
             if self.variable == 'uv':
-                u = self.u_omf[idx]
-                v = self.v_omf[idx]
+                u = self.u_oma[idx]
+                v = self.v_oma[idx]
 
                 return u, v
 
             else:
-                data = self.omf[idx]
+                data = self.oma[idx]
                 return data
 
         if obs:
@@ -139,12 +139,12 @@ class Conventional(GSIdiag):
         """
         super().__init__(path)
 
-        self.read_conv_obs()
+        self._read_obs()
 
     def __str__(self):
         return "Conventional GSI diagnostic object"
 
-    def read_conv_obs(self):
+    def _read_obs(self):
         """
         Reads the data from the conventional diagnostic file during initialization.
         """
@@ -167,12 +167,20 @@ class Conventional(GSIdiag):
                 self.u_o = f.variables['u_Observation'][:]
                 self.v_o = f.variables['v_Observation'][:]
 
-                self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
-                self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
+                if self.ftype == 'ges':
+                    self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
+                    self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
+                else:
+                    self.u_oma = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
+                    self.v_oma = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
 
             else:
                 self.o = f.variables['Observation'][:]
-                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+
+                if self.ftype == 'ges':
+                    self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+                else:
+                    self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
     def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
         """
@@ -487,12 +495,12 @@ class Radiance(GSIdiag):
         """
         super().__init__(path)
 
-        self.read_radiance_obs()
+        self._read_obs()
 
     def __str__(self):
         return "Radiance GSI diagnostic object"
 
-    def read_radiance_obs(self):
+    def _read_obs(self):
         """
         Reads the data from the radiance diagnostic file during initialization.
         """
@@ -505,7 +513,10 @@ class Radiance(GSIdiag):
             self.lats = f.variables['Latitude'][:]
             self.time = f.variables['Obs_Time'][:]
             self.o = f.variables['Observation'][:]
-            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            if self.ftype == 'ges':
+                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            else:
+                self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.qc_flag = f.variables['QC_Flag'][:]
             self.water_frac = f.variables['Water_Fraction'][:]
             self.land_frac = f.variables['Land_Fraction'][:]
@@ -650,12 +661,12 @@ class Ozone(GSIdiag):
         """
         super().__init__(path)
 
-        self.read_ozone_obs()
+        self._read_obs()
 
     def __str__(self):
         return "Ozone GSI diagnostic object"
 
-    def read_ozone_obs(self):
+    def _read_obs(self):
         """
         Reads the data from the ozone diagnostic file during initialization.
         """
@@ -667,7 +678,10 @@ class Ozone(GSIdiag):
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.o = f.variables['Observation'][:]
-            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            if self.ftype == 'ges':
+                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            else:
+                self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
 
     def get_data(self, diag_type, analysis_use=False, errcheck=True):
