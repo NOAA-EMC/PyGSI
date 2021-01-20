@@ -19,20 +19,6 @@ class GSIdiag:
         self.obs_type = self.filename.split('_')[1]
         self.variable = self.filename.split('_')[2]
         self.ftype = self.filename.split('_')[-1]
-<<<<<<< HEAD
-        
-        _str_date = os.path.basename(self.path).split('.')[1]
-        # Checks if '_ensmean' is included in file name
-        self.date = _str_date.split('_')[0]
-        
-        _var_key_name = 'Variable' if self.obs_type == 'conv' else 'Satellite'
-        self.metadata = {'Diag Type': self.obs_type,
-                         _var_key_name: self.variable,
-                         'Date': self.date,
-                         'File Type': self.ftype
-                        }
-        
-=======
 
         _str_date = os.path.basename(self.path).split('.')[1]
         # Checks if '_ensmean' is included in file name
@@ -44,7 +30,6 @@ class GSIdiag:
                          'Date': self.date,
                          'File Type': self.ftype
                          }
->>>>>>> main
 
     def __len__(self):
         return len(self.lats)
@@ -54,17 +39,10 @@ class GSIdiag:
         Query the data type being requested and returns
         the appropriate indexed data
         """
-<<<<<<< HEAD
-        
-        diag_type = diag_type.lower()
-        
-        #Determines the diagnostic type
-=======
 
         diag_type = diag_type.lower()
 
         # Determines the diagnostic type
->>>>>>> main
         omf = True if diag_type in ['omf', 'o-f', 'omb', 'o-b'] else False
         oma = True if diag_type in ['oma', 'o-a'] else False
         obs = True if diag_type in ['observation'] else False
@@ -74,19 +52,11 @@ class GSIdiag:
         cloud_fraction = True if diag_type in ['cloud_fraction'] else False
         snow_fraction = True if diag_type in ['snow_fraction'] else False
         ice_fraction = True if diag_type in ['ice_fraction'] else False
-<<<<<<< HEAD
-        
-        # Determines the file type
-        is_ges = True if self.ftype == 'ges' else False
-        is_anl = True if self.ftype == 'anl' else False
-        
-=======
 
         # Determines the file type
         is_ges = True if self.ftype == 'ges' else False
         is_anl = True if self.ftype == 'anl' else False
 
->>>>>>> main
         if omf and is_ges:
             if self.variable == 'uv':
                 u = self.u_omf[idx]
@@ -97,11 +67,7 @@ class GSIdiag:
             else:
                 data = self.omf[idx]
                 return data
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> main
         if oma and is_anl:
             if self.variable == 'uv':
                 u = self.u_omf[idx]
@@ -200,10 +166,7 @@ class Conventional(GSIdiag):
             if self.variable == 'uv':
                 self.u_o = f.variables['u_Observation'][:]
                 self.v_o = f.variables['v_Observation'][:]
-<<<<<<< HEAD
 
-=======
->>>>>>> main
                 self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
                 self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
 
@@ -217,11 +180,7 @@ class Conventional(GSIdiag):
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
             required:
-<<<<<<< HEAD
-                diag_type  : type of data to extract i.e. Observation, O-F, O-A, H(x)
-=======
                 diag_type  : type of data to extract i.e. observation, omf, oma, hofx
->>>>>>> main
 
             optional:    
                 obsid        : observation measurement ID number; default=None
@@ -266,11 +225,7 @@ class Conventional(GSIdiag):
                             diag_type, assimilated_pidx)
                         u_monitored, v_monitored = self.query_diag_type(
                             diag_type, monitored_pidx)
-<<<<<<< HEAD
-                        
-=======
 
->>>>>>> main
                         data = {'u': {'assimilated': u_assimilated,
                                       'monitored': u_monitored},
                                 'v': {'assimilated': v_assimilated,
@@ -307,11 +262,7 @@ class Conventional(GSIdiag):
 
                     if self.variable == 'uv':
                         u, v = self.query_diag_type(diag_type, pidx)
-<<<<<<< HEAD
-                        
-=======
 
->>>>>>> main
                         data = {'u': u,
                                 'v': v}
 
@@ -320,12 +271,9 @@ class Conventional(GSIdiag):
 
                     else:
                         data = self.query_diag_type(diag_type, pidx)
-<<<<<<< HEAD
-                        binned_pressure['%s-%s' % (pressure_list[i], pressure_list[i+1])] = data
-=======
+
                         binned_pressure['%s-%s' %
                                         (pressure_list[i], pressure_list[i+1])] = data
->>>>>>> main
 
                 return binned_pressure
 
@@ -350,12 +298,9 @@ class Conventional(GSIdiag):
                 else:
                     assimilated_data = self.query_diag_type(
                         diag_type, assimilated_idx)
-<<<<<<< HEAD
-                    monitored_data = self.query_diag_type(diag_type, monitored_idx)
-=======
+
                     monitored_data = self.query_diag_type(
                         diag_type, monitored_idx)
->>>>>>> main
 
                     data = {'assimilated': assimilated_data,
                             'monitored': monitored_data
@@ -572,26 +517,16 @@ class Radiance(GSIdiag):
             self.cloud_frac = f.variables['Cloud_Frac'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
 
-<<<<<<< HEAD
 
     def get_data(self, diag_type, channel=None, qcflag=None,
-                separate_channels=False, separate_qc=False, errcheck=True):
-=======
-    def get_data(self, diag_type, channel=None, qcflag=None,
                  separate_channels=False, separate_qc=False, errcheck=True):
->>>>>>> main
         """
         Given parameters, get the data from a radiance 
         diagnostic file.
         INPUT:
             required:
-<<<<<<< HEAD
-                diag_type : type of data to extract i.e. observation, O-F, O-A, H(x), Water_Fraction,
-                        Land_Fraction, Ice_Fraction, Snow_Fraction
-=======
                 diag_type : type of data to extract i.e. observation, omf, oma, hofx, water_fraction,
                         land_fraction, ice_fraction, snow_fraction, cloud_fraction
->>>>>>> main
 
             optional:  
                 channel           : observation channel number
@@ -653,11 +588,7 @@ class Radiance(GSIdiag):
         return idx
 
     def get_data_special(self, diag_type, channel, qcflag,
-<<<<<<< HEAD
-                        separate_channels, separate_qc, errcheck=True):
-=======
                          separate_channels, separate_qc, errcheck=True):
->>>>>>> main
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
@@ -709,11 +640,6 @@ class Radiance(GSIdiag):
         """
         idx = self.get_idx_sat(channel, qcflag, errcheck=errcheck)
         return self.lats[idx], self.lons[idx]
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> main
 
 class Ozone(GSIdiag):
 
@@ -723,18 +649,6 @@ class Ozone(GSIdiag):
         INPUT:
             path   : path to ozone GSI diagnostic object
         RESULT:
-<<<<<<< HEAD
-            self   : GSIdiag object containing the path to extract data
-        """
-        super().__init__(path)
-
-        self.read_ozone_obs()
-
-    def __str__(self):
-        return "Ozone object"
-
-    def read_ozone_obs(self):
-=======
             self   : GSI ozone diag object containing the path to extract data
         """
         super().__init__(path)
@@ -745,7 +659,6 @@ class Ozone(GSIdiag):
         return "Ozone GSI diagnostic object"
 
     def _read_obs(self):
->>>>>>> main
         """
         Reads the data from the ozone diagnostic file during initialization.
         """
@@ -759,21 +672,13 @@ class Ozone(GSIdiag):
             self.o = f.variables['Observation'][:]
             self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
-<<<<<<< HEAD
-        
-=======
->>>>>>> main
 
     def get_data(self, diag_type, analysis_use=False, errcheck=True):
         """
         Given parameters, get the data from an ozone diagnostic file
         INPUT:
             required:
-<<<<<<< HEAD
-                data_type  : type of data to extract i.e. Observation, O-F, O-A, H(x)
-=======
                 data_type  : type of data to extract i.e. observation, omf, oma, hofx
->>>>>>> main
 
             optional:    
                 analysis_use : if True, will return two sets of data: assimlated
@@ -785,19 +690,11 @@ class Ozone(GSIdiag):
         OUTPUT:
             data   : requested data as a dictionary
         """
-<<<<<<< HEAD
-        
-        data_dict = {}
-        
-        if not analysis_use:
-            
-=======
 
         data_dict = {}
 
         if not analysis_use:
 
->>>>>>> main
             for layer in self.ref_pressure:
                 if layer != 0:
                     layer_idx = np.isin(self.ref_pressure, layer)
@@ -807,39 +704,21 @@ class Ozone(GSIdiag):
                     data_dict[layer] = data
                 else:
                     break
-<<<<<<< HEAD
-                    
-=======
 
->>>>>>> main
             column_total_idx = np.isin(self.ref_pressure, 0)
             idx = self.get_idx_ozone(column_total_idx, errcheck=errcheck)
 
             data = self.query_diag_type(diag_type, idx)
             data_dict['column total'] = data
-<<<<<<< HEAD
-        
-        else:
-            for layer in self.ref_pressure:                    
-=======
 
         else:
             for layer in self.ref_pressure:
->>>>>>> main
                 if layer != 0.:
                     layer_idx = np.isin(self.ref_pressure, layer)
 
                     assimilated_idx, monitored_idx = self.get_idx_ozone(
                         layer_idx, analysis_use=analysis_use, errcheck=errcheck)
 
-<<<<<<< HEAD
-                    assimilated_data = self.query_diag_type(diag_type, assimilated_idx)
-                    monitored_data = self.query_diag_type(diag_type, monitored_idx)
-
-                    data_dict[layer] = {'assimilated': assimilated_data,
-                                        'monitored': monitored_data
-                                       }
-=======
                     assimilated_data = self.query_diag_type(
                         diag_type, assimilated_idx)
                     monitored_data = self.query_diag_type(
@@ -848,7 +727,6 @@ class Ozone(GSIdiag):
                     data_dict[layer] = {'assimilated': assimilated_data,
                                         'monitored': monitored_data
                                         }
->>>>>>> main
                 else:
                     break
 
@@ -862,18 +740,10 @@ class Ozone(GSIdiag):
 
             data_dict['column total'] = {'assimilated': assimilated_data,
                                          'monitored': monitored_data
-<<<<<<< HEAD
-                                        }
-
-        return data_dict
-    
-    
-=======
                                          }
 
         return data_dict
 
->>>>>>> main
     def get_idx_ozone(self, index, analysis_use=False, errcheck=True):
         """
         Returns the index of data that was assimilated
@@ -888,26 +758,16 @@ class Ozone(GSIdiag):
             assimilated_idx, monitored_idx : if analysis_use is True
             index : if analysis_use is False
         """
-<<<<<<< HEAD
-        
-        if analysis_use:
-            
-=======
 
         if analysis_use:
 
->>>>>>> main
             valid_assimilated_idx = np.isin(self.anl_use, 1)
             valid_monitored_idx = np.isin(self.anl_use, -1)
 
             if errcheck:
                 valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
                 index = np.logical_and(index, valid_idx_err)
-<<<<<<< HEAD
             
-=======
-
->>>>>>> main
             valid_assimilated_idx = np.logical_and(
                 valid_assimilated_idx, index)
             valid_monitored_idx = np.logical_and(
@@ -917,40 +777,23 @@ class Ozone(GSIdiag):
             monitored_idx = np.where(valid_monitored_idx)
 
             return assimilated_idx, monitored_idx
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> main
         else:
             if errcheck:
                 valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
                 index = np.logical_and(index, valid_idx_err)
-<<<<<<< HEAD
-            
-            return index
-            
-=======
 
             return index
 
->>>>>>> main
     def get_lat_lon(self, errcheck=True):
         """
         Gets lats and lons with desired indices. Returns dictionary for
         each level in the ozone data.
         """
-<<<<<<< HEAD
-        
-        lats_dict = {}
-        lons_dict = {}
-        
-=======
 
         lats_dict = {}
         lons_dict = {}
 
->>>>>>> main
         for layer in self.ref_pressure:
             if layer != 0:
                 layer_idx = np.isin(self.ref_pressure, layer)
@@ -962,25 +805,14 @@ class Ozone(GSIdiag):
                 lons_dict[layer] = lons
             else:
                 break
-<<<<<<< HEAD
-                    
-=======
 
->>>>>>> main
             column_total_idx = np.isin(self.ref_pressure, 0)
             idx = self.get_idx_ozone(column_total_idx, errcheck=errcheck)
 
             lats = self.lats[idx]
             lons = self.lons[idx]
-<<<<<<< HEAD
-            
-            lats_dict['total column'] = lats
-            lons_dict['total column'] = lons
-        
-=======
 
             lats_dict['total column'] = lats
             lons_dict['total column'] = lons
 
->>>>>>> main
         return lats_dict, lons_dict
