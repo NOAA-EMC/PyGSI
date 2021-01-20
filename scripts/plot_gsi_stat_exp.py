@@ -6,7 +6,6 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams, ticker
 from matplotlib import gridspec as gspec
 import os
-import sys
 import numpy as np
 from pyGSI.gsi_stat import GSIstat
 
