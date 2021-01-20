@@ -70,13 +70,13 @@ class GSIdiag:
 
         if oma and is_anl:
             if self.variable == 'uv':
-                u = self.u_oma[idx]
-                v = self.v_oma[idx]
+                u = self.u_omf[idx]
+                v = self.v_omf[idx]
 
                 return u, v
 
             else:
-                data = self.oma[idx]
+                data = self.omf[idx]
                 return data
 
         if obs:
@@ -166,21 +166,13 @@ class Conventional(GSIdiag):
             if self.variable == 'uv':
                 self.u_o = f.variables['u_Observation'][:]
                 self.v_o = f.variables['v_Observation'][:]
-
-                if self.ftype == 'ges':
-                    self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
-                    self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
-                else:
-                    self.u_oma = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
-                    self.v_oma = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
+                self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
+                self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
 
             else:
                 self.o = f.variables['Observation'][:]
+                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
-                if self.ftype == 'ges':
-                    self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
-                else:
-                    self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
     def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
         """
@@ -513,10 +505,7 @@ class Radiance(GSIdiag):
             self.lats = f.variables['Latitude'][:]
             self.time = f.variables['Obs_Time'][:]
             self.o = f.variables['Observation'][:]
-            if self.ftype == 'ges':
-                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
-            else:
-                self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.qc_flag = f.variables['QC_Flag'][:]
             self.water_frac = f.variables['Water_Fraction'][:]
             self.land_frac = f.variables['Land_Fraction'][:]
@@ -678,10 +667,7 @@ class Ozone(GSIdiag):
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.o = f.variables['Observation'][:]
-            if self.ftype == 'ges':
-                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
-            else:
-                self.oma = f.variables['Obs_Minus_Forecast_adjusted'][:]
+            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
             self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
 
     def get_data(self, diag_type, analysis_use=False, errcheck=True):
