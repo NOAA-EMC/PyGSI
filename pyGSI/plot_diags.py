@@ -86,160 +86,6 @@ def _get_obs_type(obs_id):
     else:
         return [str(x) for x in obs_id]
     
-def _get_xlabel(metadata):
-    """
-    Creates and returns x label for a plot.
-    """
-    
-    conv_xlabels = {'t': "Temperature (K)",
-                    'q': "Specific Humidity (kg/kg)",
-                    'sst': "Sea Surface Temperature (K)",
-                    'pw': "Precipitable Water (mm)",
-                    'tcp': "Pressure (hPa)",
-                    'u': "Windspeed (m/s)",
-                    'v': "Windspeed (m/s)",
-                    'windspeed': "Windspeed (m/s)"
-                   }
-    
-    # Observation minus Forecast
-    if metadata['Diag Type'] in ['omf', 'o-f']:
-        xlabel = 'Observation - Forecast'
-    
-    # Observation minus Analysis
-    elif metadata['Diag Type'] == 'oma':
-        xlabel = 'Observation - Analysis'
-    
-    # Conventional Data
-    elif metadata['Diag File'] == 'conv':
-        xlabel = conv_xlabel[metadata['Variable']]
-    
-    # Land, Water, Snow, Ice, or Cloud Fraction Data
-    elif metadata['Diag Type'].split('_')[-1] == 'fraction':
-        xlabel = '%s %s' % (metadata['Diag Type'].split(
-            '_')[0], metadata['Diag Type'].split('_')[-1])
-    
-    # Ozone Data
-    elif metadata['Diag File'] == 'ozone':
-        xlabel = "Dobson Units"
-    
-    # Radiance Data
-    else:
-        xlabel = "Brightness Temperature (K)"
-        
-    
-    return xlabel
-
-def _get_stats_labels(stats):
-    
-    if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'q':
-        roundnum = 6
-    else:
-        roundnum = 3
-
-        t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],
-                                                             np.round(
-                                                                 stats['Std'], roundnum),
-                                                             np.round(
-                                                                 stats['Mean'], roundnum),
-                                                             np.round(
-                                                                 stats['Max'], roundnum),
-                                                             np.round(stats['Min'], roundnum)))
-        
-    return t
-    
-def _get_title(metadata):
-    
-    # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False  
-    
-    # Left Title label
-    if anl_use:
-        if metadata['Diag File'] == 'conventional':
-            
-            conv_title_dict = {'assimilated' : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Assimilated\n'.format(**metadata) + \
-                                                '%s' % '\n'.join(metadata['ObsID Name'])},
-                               'monitored'   : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Monitored\n'.format(**metadata) + \
-                                                '%s' % '\n'.join(metadata['ObsID Name'])}
-                              }
-
-            title = conv_title_dict[metadata['Anl Use Type']]['title']
-
-        elif metadata['Diag File'] == 'ozone':
-
-            ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated'.format(
-                                                **metadata)},
-                                'monitored':   {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored'.format(
-                                                **metadata)}
-                                }
-
-            title = ozone_title_dict[metadata['Anl Use Type']]['title']
-
-    else:
-        if metadata['Diag File'] == 'conventional':
-            title = '{Obs Type}: {Variable} - {Diag Type}\n'.format(**metadata) + \
-            '%s' % '\n'.join(metadata['ObsID Name'])
-        else:
-            title = '{Obs Type}: {Diag Type} {Satellite} - {Diag Type}\n'.format(
-            **metadata) + 'Channels: %s' % ' '.join(str(x) for x in metadata['Channels'])
-            
-    return title
-
-def _get_save_file(metadata):
-    
-    # Save file label
-    if metadata['Diag File'] == 'conventional':
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}_'.format(
-            **metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
-    
-    elif metadata['Diag File'] == 'ozone':
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_{Diag File}'.format(
-            **metadata)
-    
-    else:
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_'.format(
-            **metadata) + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
-        
-    # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False 
-    
-    if anl_use:
-        if metadata['Anl Use Type'] == 'assimilated':
-            save_file = save_file + '_assimilated'
-        else:
-            save_file = save_file + '_monitored'
-        
-    return save_file
-
-
-def _plot_labels(metadata, stats):
-
-    # Stats label
-    if not stats:
-        t = None
-    else:
-        t = _get_stats_labels(stats)
-
-    # Date label
-    date_title = metadata['Date'].strftime("%d %b %Y %Hz")
-
-    # X Label
-    xlabel = _get_xlabel(metadata)
-
-    # Save file label
-    save_file = _get_save_file(metadata)
-      
-    # Left Title label
-    left_title = _get_title(metadata)
-
-    labels = {'stat text': t,
-              'x label': xlabel,
-              'left title': left_title,
-              'date title': date_title,
-              'save file': save_file
-              }
-
-    return labels
-
 def _conv_features_dict(stats):
     
     conv_features_dict = {'t': {'cmap': 'jet',
@@ -292,6 +138,173 @@ def _conv_features_dict(stats):
                          }
     
     return conv_features_dict
+    
+def _myround(x, base):
+    """
+    x    : number needing to be rounded
+    base : the interval you would to round to 
+    """
+    if isinstance(base, float):
+        return base * round(float(x)/base)
+    else:
+        return int(base * round(float(x)/base))
+    
+def _get_xlabel(metadata):
+    """
+    Creates and returns x label for a plot.
+    """
+    
+    conv_xlabels = {'t': "Temperature (K)",
+                    'q': "Specific Humidity (kg/kg)",
+                    'sst': "Sea Surface Temperature (K)",
+                    'pw': "Precipitable Water (mm)",
+                    'tcp': "Pressure (hPa)",
+                    'u': "Windspeed (m/s)",
+                    'v': "Windspeed (m/s)",
+                    'windspeed': "Windspeed (m/s)"
+                   }
+    
+    # Observation minus Forecast
+    if metadata['Diag Type'] in ['omf', 'o-f']:
+        xlabel = 'Observation - Forecast'
+    
+    # Observation minus Analysis
+    elif metadata['Diag Type'] == 'oma':
+        xlabel = 'Observation - Analysis'
+    
+    # Conventional Data
+    elif metadata['Diag File'] == 'conventional':
+        xlabel = conv_xlabels[metadata['Variable']]
+    
+    # Land, Water, Snow, Ice, or Cloud Fraction Data
+    elif metadata['Diag Type'].split('_')[-1] == 'fraction':
+        xlabel = '%s %s' % (metadata['Diag Type'].split(
+            '_')[0], metadata['Diag Type'].split('_')[-1])
+    
+    # Ozone Data
+    elif metadata['Diag File'] == 'ozone':
+        xlabel = "Dobson Units"
+    
+    # Radiance Data
+    elif metadata['Diag File'] == 'radiance':
+        xlabel = "Brightness Temperature (K)"
+        
+    else:
+        xlabel = None
+        
+    
+    return xlabel
+
+def _get_stats_labels(metadata,stats):
+    
+    if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'q':
+        roundnum = 6
+    else:
+        roundnum = 3
+
+        t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],
+                                                             np.round(
+                                                                 stats['Std'], roundnum),
+                                                             np.round(
+                                                                 stats['Mean'], roundnum),
+                                                             np.round(
+                                                                 stats['Max'], roundnum),
+                                                             np.round(stats['Min'], roundnum)))
+        
+    return t
+    
+def _get_title(metadata):
+    
+    # Handles analysis use data
+    anl_use = True if 'Anl Use' in metadata else False  
+    
+    # Left Title label
+    if anl_use:
+        if metadata['Diag File'] == 'conventional':
+            
+            conv_title_dict = {'assimilated' : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Assimilated\n'.format(**metadata) + \
+                                                '%s' % '\n'.join(metadata['ObsID Name'])},
+                               'monitored'   : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Monitored\n'.format(**metadata) + \
+                                                '%s' % '\n'.join(metadata['ObsID Name'])}
+                              }
+
+            title = conv_title_dict[metadata['Anl Use Type']]['title']
+
+        elif metadata['Diag File'] == 'ozone':
+
+            ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated'.format(
+                                                **metadata)},
+                                'monitored':   {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored'.format(
+                                                **metadata)}
+                                }
+
+            title = ozone_title_dict[metadata['Anl Use Type']]['title']
+
+    else:
+        if metadata['Diag File'] == 'conventional':
+            title = '{Obs Type}: {Variable} - {Diag Type}\n'.format(**metadata) + \
+            '%s' % '\n'.join(metadata['ObsID Name'])
+        else:
+            title = '{Obs Type}: {Satellite} - {Diag Type}\n'.format(
+            **metadata) + 'Channels: %s' % ' '.join(str(x) for x in metadata['Channels'])
+            
+    return title
+
+def _get_save_file(metadata):
+    
+    # Save file label
+    if metadata['Diag File'] == 'conventional':
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}_'.format(
+            **metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
+    
+    elif metadata['Diag File'] == 'ozone':
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_{Diag File}'.format(
+            **metadata)
+    
+    else:
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_'.format(
+            **metadata) + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
+        
+    # Handles analysis use data
+    anl_use = True if 'Anl Use' in metadata else False 
+    
+    if anl_use:
+        if metadata['Anl Use Type'] == 'assimilated':
+            save_file = save_file + '_assimilated'
+        else:
+            save_file = save_file + '_monitored'
+        
+    return save_file
+
+
+def _plot_labels(metadata, stats):
+
+    # Stats label
+    if not stats:
+        t = None
+    else:
+        t = _get_stats_labels(metadata, stats)
+
+    # Date label
+    date_title = metadata['Date'].strftime("%d %b %Y %Hz")
+
+    # X Label
+    xlabel = _get_xlabel(metadata)
+
+    # Save file label
+    save_file = _get_save_file(metadata)
+      
+    # Left Title label
+    left_title = _get_title(metadata)
+
+    labels = {'stat text': t,
+              'x label': xlabel,
+              'left title': left_title,
+              'date title': date_title,
+              'save file': save_file
+              }
+
+    return labels
 
 def _colorbar_features(metadata, stats):
     """
@@ -529,7 +542,120 @@ def _create_spatial_plot(data, metadata, lats, lons, outdir='./'):
     plt.savefig(outdir+'/%s_spatial.png' %
                 labels['save file'], bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
+
+
+def _binned_plot_features(binned_var, metadata, stats):
+    """
+    Returns colormaps, the boundary norm (generates a colormap
+    index based on discrete intervals), and how to properly 
+    extend the colorbar based on the type of data being used.
+    """
+
+    features_dict = {'binned_nobs': {'cmap': 'plasma',
+                                     'extend': 'max',
+                                     'upperbound': np.round(stats['Max']),
+                                     'lowerbound': 0,
+                                     'bins': _myround(stats['Max'], 25)/10,
+                                     'x label': '# of Observations',
+                                     'title': 'Binned Number of Observations'},
+                     'binned_mean': {'x label': 'Binned Average',
+                                     'title': 'Binned Mean'},
+                     'binned_max':  {'cmap': 'Reds',
+                                     'extend': 'max',
+                                     'upperbound': np.round(stats['Max']),
+                                     'lowerbound': np.round(stats['Min']),
+                                     'bins': _myround(stats['Std'], 2),
+                                     'x label': 'Binned Max',
+                                     'title': 'Binned Max'
+                                    },
+                     'binned_min':  {'cmap': 'Blues_r',
+                                     'extend': 'min',
+                                     'upperbound': np.round(stats['Max']),
+                                     'lowerbound': np.round(stats['Min']),
+                                     'bins': _myround(stats['Std'], 2),
+                                     'x label': 'Binned Min',
+                                     'title': 'Binned Min'
+                                    },
+                     'binned_std':  {'cmap': 'plasma',
+                                     'extend': 'max',
+                                     'upperbound': np.round(stats['Max']),
+                                     'lowerbound': np.round(stats['Min']),
+                                     'bins':  _myround(stats['Std'], 0.5),
+                                     'x label': 'Binned Std. Dev.',
+                                     'title': 'Binned Standard Deviation'
+                                    },
+                     'binned_rmse': {'cmap': 'plasma',
+                                     'extend': 'max',
+                                     'upperbound': np.round(stats['Max']),
+                                     'lowerbound': np.round(stats['Min']),
+                                     'bins': _myround(stats['Std'], 0.5),
+                                     'x label': 'Binned RMSE',
+                                     'title': 'Binned Root Mean Square Error'
+                                    }
+                    }
     
+    # Get cmap, bins, norm and extend for O-F and O-A
+    if metadata['Diag Type'] in ['omf', 'o-f', 'omb', 'o-b', 'oma', 'o-a'] and binned_var =='binned_mean':
+        cmap = 'bwr'
+
+        upperbound = (np.round(stats['Std']*2)/2)*5
+        if upperbound == 0:
+            upperbound = stats['Std']*5
+
+        lowerbound = 0-upperbound
+        bins = (upperbound - lowerbound)/10
+
+        norm = mcolors.BoundaryNorm(boundaries=np.arange(
+            lowerbound, upperbound+bins, bins), ncolors=256)
+
+        extend = 'both'
+        
+        
+    else:
+        cmap = features_dict[binned_var]['cmap']
+        extend = features_dict[binned_var]['extend']
+
+        upperbound = features_dict[binned_var]['upperbound']
+        lowerbound = features_dict[binned_var]['lowerbound']
+        bins = features_dict[binned_var]['bins']
+
+        norm = mcolors.BoundaryNorm(boundaries=np.arange(
+                lowerbound, upperbound+bins, bins), ncolors=256)
+    
+    
+    # Stats label
+    if not stats:
+        t = None
+    else:
+        t = _get_stats_labels(metadata, stats)
+
+    # Date label
+    date_title = metadata['Date'].strftime("%d %b %Y %Hz")
+    
+    # Left Title label
+    left_title = _get_title(metadata)
+    left_title = '%s\n' % features_dict[binned_var]['title'] + left_title 
+    
+    # X label
+    if binned_var == 'binned_nobs':
+        xlabel = features_dict[binned_var]['x label']
+    else:
+        xlabel = _get_xlabel(metadata)
+        xlabel = xlabel + ' (%s)' % features_dict[binned_var]['x label']
+    
+    # Save file
+    save_file = _get_save_file(metadata)
+    
+    labels = {'stat text': t,
+              'x label': xlabel,
+              'left title': left_title,
+              'date title': date_title,
+              'save file': save_file
+              }
+    
+
+    return labels, cmap, norm, extend    
+
 
 def plot_histogram(data, metadata, outdir='./'):
     if metadata['Diag File'] == 'conventional':
@@ -622,3 +748,74 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
             _create_spatial_plot(data, metadata, lats, lons, outdir=outdir)
             
     return
+    
+
+def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='./'):
+
+    if binned_var is None:
+        print('Please select a binned variable type i.e. binned_nobs, binned_mean,\n',
+              'binned_max, binned_min, binned_std, binned_rmse.')
+        return
+    
+    if metadata['Diag File'] == 'conventional':
+        metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
+
+    # Create lats and lons based on binsize
+    lonlen = 360
+    latlen = 180
+
+    lon_lowerlim = 0
+    lon_upperlim = 360
+
+    lat_lowerlim = -90
+    lat_upperlim = 90
+
+    if binsize.split('x')[0] != binsize.split('x')[1]:
+        print('ERROR: Binsize must be square i.e. 1x1, 2x2, 5x5 etc. Please use different binsize.')
+
+    binsize = int(binsize.split('x')[0])
+
+    if latlen % binsize == 0 and lonlen % binsize == 0:
+        latbin = int(latlen/binsize)
+        lonbin = int(lonlen/binsize)
+        n_deg = binsize/2
+
+        ll_lats = np.linspace(lat_lowerlim+(n_deg),
+                              lat_upperlim-(n_deg),
+                              latbin)
+
+        ll_lons = np.linspace(lon_lowerlim+(n_deg),
+                              lon_upperlim-(n_deg),
+                              lonbin)
+
+    xx, yy = np.meshgrid(ll_lons, ll_lats)
+
+    stats = _calculate_stats(data[binned_var])
+
+    labels, cmap, norm, extend = _binned_plot_features(binned_var, metadata, stats)
+
+    fig = plt.figure(figsize=(15, 12))
+    ax = fig.add_subplot(
+        1, 1, 1, projection=ccrs.PlateCarree(central_longitude=0))
+
+    ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
+    ax.set_extent([-180, 180, -90, 90])
+
+    cs = plt.pcolormesh(xx, yy, data[binned_var], #cmap='bwr',
+                        norm=norm, cmap=cmap,
+                        transform=ccrs.PlateCarree())
+
+    ax.text(185, 55, labels['stat text'], fontsize=14)
+
+    cb = plt.colorbar(cs, orientation='horizontal',
+                      shrink=0.5, pad=.04, extend=extend)
+    cb.ax.tick_params(labelsize=12)
+    cb.set_label(labels['x label'], fontsize=13)
+
+    plt.title(labels['left title'], loc='left', fontsize=14)
+    plt.title(labels['date title'], loc='right',
+              fontweight='semibold', fontsize=14)
+
+    plt.savefig(outdir+'/%s_binned_spatial.png' %
+                labels['save file'], bbox_inches='tight', pad_inches=0.1)
+    plt.close('all')
