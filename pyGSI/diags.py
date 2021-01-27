@@ -140,7 +140,7 @@ class Conventional(GSIdiag):
         super().__init__(path)
 
         self._read_obs()
-        self.metadata['Diag File'] = 'conventional'
+        self.metadata['Diag File Type'] = 'conventional'
 
     def __str__(self):
         return "Conventional GSI diagnostic object"
@@ -498,7 +498,7 @@ class Radiance(GSIdiag):
         super().__init__(path)
 
         self._read_obs()
-        self.metadata['Diag File'] = 'radiance'
+        self.metadata['Diag File Type'] = 'radiance'
 
     def __str__(self):
         return "Radiance GSI diagnostic object"
@@ -667,7 +667,7 @@ class Ozone(GSIdiag):
         super().__init__(path)
 
         self._read_obs()
-        self.metadata['Diag File'] = 'ozone'
+        self.metadata['Diag File Type'] = 'ozone'
 
     def __str__(self):
         return "Ozone GSI diagnostic object"

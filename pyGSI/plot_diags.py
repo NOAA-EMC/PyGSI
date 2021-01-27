@@ -173,7 +173,7 @@ def _get_xlabel(metadata):
         xlabel = 'Observation - Analysis'
     
     # Conventional Data
-    elif metadata['Diag File'] == 'conventional':
+    elif metadata['Diag File Type'] == 'conventional':
         xlabel = conv_xlabels[metadata['Variable']]
     
     # Land, Water, Snow, Ice, or Cloud Fraction Data
@@ -182,11 +182,11 @@ def _get_xlabel(metadata):
             '_')[0], metadata['Diag Type'].split('_')[-1])
     
     # Ozone Data
-    elif metadata['Diag File'] == 'ozone':
+    elif metadata['Diag File Type'] == 'ozone':
         xlabel = "Dobson Units"
     
     # Radiance Data
-    elif metadata['Diag File'] == 'radiance':
+    elif metadata['Diag File Type'] == 'radiance':
         xlabel = "Brightness Temperature (K)"
         
     else:
@@ -197,7 +197,7 @@ def _get_xlabel(metadata):
 
 def _get_stats_labels(metadata,stats):
     
-    if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'q':
+    if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'q':
         roundnum = 6
     else:
         roundnum = 3
@@ -220,7 +220,7 @@ def _get_title(metadata):
     
     # Left Title label
     if anl_use:
-        if metadata['Diag File'] == 'conventional':
+        if metadata['Diag File Type'] == 'conventional':
             
             conv_title_dict = {'assimilated' : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Assimilated\n'.format(**metadata) + \
                                                 '%s' % '\n'.join(metadata['ObsID Name'])},
@@ -230,7 +230,7 @@ def _get_title(metadata):
 
             title = conv_title_dict[metadata['Anl Use Type']]['title']
 
-        elif metadata['Diag File'] == 'ozone':
+        elif metadata['Diag File Type'] == 'ozone':
 
             ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated'.format(
                                                 **metadata)},
@@ -241,7 +241,7 @@ def _get_title(metadata):
             title = ozone_title_dict[metadata['Anl Use Type']]['title']
 
     else:
-        if metadata['Diag File'] == 'conventional':
+        if metadata['Diag File Type'] == 'conventional':
             title = '{Obs Type}: {Variable} - {Diag Type}\n'.format(**metadata) + \
             '%s' % '\n'.join(metadata['ObsID Name'])
         else:
@@ -253,11 +253,11 @@ def _get_title(metadata):
 def _get_save_file(metadata):
     
     # Save file label
-    if metadata['Diag File'] == 'conventional':
+    if metadata['Diag File Type'] == 'conventional':
         save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}_'.format(
             **metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
     
-    elif metadata['Diag File'] == 'ozone':
+    elif metadata['Diag File Type'] == 'ozone':
         save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_{Diag File}'.format(
             **metadata)
     
@@ -331,7 +331,7 @@ def _colorbar_features(metadata, stats):
 
     # Get cmap, bins, norm and extend for observations, hofx, and windspeed
     elif metadata['Diag Type'] in ['observation', 'hofx', 'windspeed']:
-        if metadata['Diag File'] == 'conventional':
+        if metadata['Diag File Type'] == 'conventional':
             
             conv_features_dict = _conv_features_dict(stats)
             
@@ -423,7 +423,7 @@ def _create_histogram_plot(data, metadata, outdir='./'):
         # Get binsize
         binsize = (stats['Max']-stats['Min'])/np.sqrt(stats['N'])
 
-        if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'windspeed':
+        if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'windspeed':
             bins = np.arange(
                 0, stats['Mean']+(4*stats['Std']), binsize)
         elif metadata['Diag Type'] in ['omf', 'o-f', 'omb', 'o-b', 'oma', 'o-a']:
@@ -658,14 +658,14 @@ def _binned_plot_features(binned_var, metadata, stats):
 
 
 def plot_histogram(data, metadata, outdir='./'):
-    if metadata['Diag File'] == 'conventional':
+    if metadata['Diag File Type'] == 'conventional':
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
     
     # Handles analysis use data
     anl_use = True if 'Anl Use' in metadata else False 
     
     # Handles uv data
-    if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'uv':
+    if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
         
         if anl_use:
             for anl_type in data.keys():
@@ -702,14 +702,14 @@ def plot_histogram(data, metadata, outdir='./'):
             
 def plot_spatial(data, metadata, lats, lons, outdir='./'):
 
-    if metadata['Diag File'] == 'conventional':
+    if metadata['Diag File Type'] == 'conventional':
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
     
     # Handles analysis use data
     anl_use = True if 'Anl Use' in metadata else False   
     
     # Handles uv data
-    if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'uv':
+    if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
         
         if anl_use:
             for anl_type in data.keys():
@@ -757,7 +757,7 @@ def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='
               'binned_max, binned_min, binned_std, binned_rmse.')
         return
     
-    if metadata['Diag File'] == 'conventional':
+    if metadata['Diag File Type'] == 'conventional':
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
 
     # Create lats and lons based on binsize
