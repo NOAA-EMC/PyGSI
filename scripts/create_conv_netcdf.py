@@ -33,20 +33,20 @@ def first_occurrence(worklist):
 
 
 def create_netcdf(conv_config):
-
+    
     diagfile = conv_config['conventional input']['path'][0]
-    data_type = conv_config['conventional input']['data type'][0]
+    diag_type = conv_config['conventional input']['data type'][0].lower()
     obsid = conv_config['conventional input']['observation id']
     subtype = conv_config['conventional input']['observation subtype']
     analysis_use = conv_config['conventional input']['analysis use'][0]
-    outdir = conv_config['outDir']
+    outdir = conv_config['outdir']
 
     diag = Conventional(diagfile)
 
-    if analysis_use == True:
+    if analysis_use:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
+            u, v = diag.get_data(diag_type, obsid=obsid,
                                  subtype=subtype, analysis_use=analysis_use)
 
             data = {'u': u['assimilated'],
@@ -55,42 +55,39 @@ def create_netcdf(conv_config):
                     }
 
         else:
-            data = diag.get_data(data_type, obsid=obsid,
+            data = diag.get_data(diag_type, obsid=obsid,
                                  subtype=subtype, analysis_use=analysis_use)
-
+            
             data = data['assimilated']
 
         lats, lons = diag.get_lat_lon(
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
+        lats = lats['assimilated']
+        lons = lons['assimilated']
+        
         pressure = diag.get_pressure(
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
         pressure = pressure['assimilated']
 
-        metadata = diag.get_metadata()
+        metadata = diag.metadata
+        metadata['Outdir'] = outdir
 
-        metadata['Data_type'] = data_type
-        metadata['ObsID'] = obsid
-        metadata['Subtype'] = subtype
-        metadata['outDir'] = outdir
-
-        metadata['assimilated'] = 'yes'
-        lat = lats['assimilated']
-        lon = lons['assimilated']
+        metadata['Anl Use Type'] = 'assimilated'
 
         # Get binned data
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             binned_data = spatial_bin(
-                data, lat, lon, binsize='1x1', uv_data=True, pressure=pressure)
+                data, lats, lons, binsize='1x1', uv_data=True, pressure=pressure)
         else:
             binned_data = spatial_bin(
-                data, lat, lon, binsize='1x1', pressure=pressure)
+                data, lats, lons, binsize='1x1', pressure=pressure)
 
         write_netcdf(data, binned_data, metadata)
 
     else:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
+            u, v = diag.get_data(diag_type, obsid=obsid,
                                  subtype=subtype, analysis_use=analysis_use)
 
             data = {'u': u,
@@ -98,7 +95,7 @@ def create_netcdf(conv_config):
                     'windspeed': np.sqrt(np.square(u) + np.square(v))
                     }
         else:
-            data = diag.get_data(data_type, obsid=obsid,
+            data = diag.get_data(diag_type, obsid=obsid,
                                  subtype=subtype, analysis_use=analysis_use)
 
         lats, lons = diag.get_lat_lon(
@@ -106,15 +103,10 @@ def create_netcdf(conv_config):
         pressure = diag.get_pressure(
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
 
-        metadata = diag.get_metadata()
-
-        metadata['Data_type'] = data_type
-        metadata['obsid'] = obsid
-        metadata['subtype'] = subtype
-        metadata['outDir'] = outdir
+        metadata = diag.metadata
+        metadata['Outdir'] = outdir
 
         # Get binned data
-        print('Binning..')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             binned_data = spatial_bin(
                 data, lat, lon, binsize='1x1', uv_data=True, pressure=pressure)
@@ -154,7 +146,7 @@ with open(input_yaml, 'r') as file:
 worklist = (parsed_yaml_file['diagnostic'])
 
 for w in parsed_yaml_file['diagnostic']:
-    w['outDir'] = outdir
+    w['outdir'] = outdir
 
 condition = True
 
