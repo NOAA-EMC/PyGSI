@@ -27,8 +27,6 @@ def plotting(sat_config):
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
 
     metadata = diag.metadata
-    metadata['Diag Type'] = diag_type
-    metadata['Channels'] = channel
 
     if np.isin('histogram', plot_type):
         plot_histogram(data, metadata, outdir)
