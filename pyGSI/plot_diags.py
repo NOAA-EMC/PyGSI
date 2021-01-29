@@ -232,9 +232,9 @@ def _get_title(metadata):
 
         elif metadata['Diag File Type'] == 'ozone':
 
-            ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated'.format(
+            ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated\nLayer: {Layer}'.format(
                                                 **metadata)},
-                                'monitored':   {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored'.format(
+                                'monitored':   {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored\nLayer: {Layer}'.format(
                                                 **metadata)}
                                 }
 
@@ -244,6 +244,11 @@ def _get_title(metadata):
         if metadata['Diag File Type'] == 'conventional':
             title = '{Obs Type}: {Variable} - {Diag Type}\n'.format(**metadata) + \
             '%s' % '\n'.join(metadata['ObsID Name'])
+            
+        elif metadata['Diag File Type'] == 'ozone':
+            title = '{Obs Type}: {Satellite} - {Diag Type} \nLayer: {Layer}'.format(
+            **metadata)
+        
         else:
             title = '{Obs Type}: {Satellite} - {Diag Type}\n'.format(
             **metadata) + 'Channels: %s' % ' '.join(str(x) for x in metadata['Channels'])
@@ -254,15 +259,17 @@ def _get_save_file(metadata):
     
     # Save file label
     if metadata['Diag File Type'] == 'conventional':
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}_'.format(
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}'.format(
             **metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
     
     elif metadata['Diag File Type'] == 'ozone':
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_{Diag File}'.format(
-            **metadata)
+        layer = '_'.join(metadata['Layer'].split()) if metadata['Layer'] == 'column total' else f"{metadata['Layer']:.3f}"
+
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_'.format(
+            **metadata) + '%s' % layer
     
     else:
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_'.format(
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}'.format(
             **metadata) + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
         
     # Handles analysis use data
@@ -290,12 +297,12 @@ def _plot_labels(metadata, stats):
 
     # X Label
     xlabel = _get_xlabel(metadata)
+    
+    # Left Title label
+    left_title = _get_title(metadata)
 
     # Save file label
     save_file = _get_save_file(metadata)
-      
-    # Left Title label
-    left_title = _get_title(metadata)
 
     labels = {'stat text': t,
               'x label': xlabel,

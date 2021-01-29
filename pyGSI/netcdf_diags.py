@@ -515,9 +515,15 @@ def _get_filename(metadata):
     metadata['Diag Type'] = 'omf' if metadata['Diag Type'] in ['o-f', 'omb', 'o-b'] else metadata['Diag Type']
     metadata['Diag Type'] = 'oma' if metadata['Diag Type'] in ['o-a'] else metadata['Diag Type']        
         
-    if metadata['Diag File'] == 'conventional':
+    if metadata['Diag File Type'] == 'conventional':
         ncfilename = '{Obs Type}_{Variable}_{ObsID[0]}_{Diag Type}.nc'.format(
                 **metadata)
+        
+    elif metadata['Diag File Type'] == 'ozone':
+        layer = '_'.join(metadata['Layer'].split()) if metadata['Layer'] == 'column total' else f"{metadata['Layer']:.3f}"
+
+        ncfilename = '{Obs Type}_{Satellite}_{Diag Type}_'.format(
+            **metadata) + '%s.nc' % layer
     else:
         ncfilename = '{Obs Type}_{Satellite}_Ch{Channel[0]}_{Diag Type}.nc'.format(
                 **metadata)
@@ -525,9 +531,9 @@ def _get_filename(metadata):
     return ncfilename
 
 
-def write_netcdf(data, binned_data, metadata):
+def write_netcdf(data, binned_data, metadata, outdir):
 
-    if metadata['Diag File'] == 'conventional' and metadata['Variable'] == 'uv':
+    if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
 
         uv_stat_dict = {}
 
@@ -543,7 +549,7 @@ def write_netcdf(data, binned_data, metadata):
         # Get the filename based on metadata
         ncfilename = _get_filename(metadata)
 
-        ncpath = metadata['Outdir']+'/'+ncfilename
+        ncpath = outdir+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
         if os.path.isfile(ncpath) != True:
@@ -560,13 +566,13 @@ def write_netcdf(data, binned_data, metadata):
         stat_dict['Date'] = int(metadata['Date'].strftime("%Y%m%d%H"))
         stat_dict['epoch'] = metadata['Date'].timestamp()
 
-        if metadata['Diag File'] == 'conventional':
+        if metadata['Diag File Type'] == 'conventional':
             stat_dict['Subtype'] = int(metadata['Subtype'][0])
 
         # Get the filename based on metadata
         ncfilename = _get_filename(metadata)
 
-        ncpath = metadata['Outdir']+'/'+ncfilename
+        ncpath = outdir+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
         if os.path.isfile(ncpath) != True:

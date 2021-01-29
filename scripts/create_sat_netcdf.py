@@ -28,11 +28,10 @@ def create_netcdf(sat_config):
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
 
     metadata = diag.metadata
-    metadata['Outdir'] = outdir
 
     binned_data = spatial_bin(data, lats, lons, binsize='1x1')
 
-    write_netcdf(data, binned_data, metadata)
+    write_netcdf(data, binned_data, metadata, outdir)
 
     return
 

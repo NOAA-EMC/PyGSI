@@ -66,7 +66,7 @@ def main(config):
         dictloop = {
                    'path': [diagfile],
                    'layer': [ichan],
-                   'qc flag': [0],
+                   'analysis use': [True],
                    'data type': [diagtype],
                    'plot type': figs,
                    }

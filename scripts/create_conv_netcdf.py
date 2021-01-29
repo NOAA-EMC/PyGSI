@@ -70,7 +70,6 @@ def create_netcdf(conv_config):
         pressure = pressure['assimilated']
 
         metadata = diag.metadata
-        metadata['Outdir'] = outdir
 
         metadata['Anl Use Type'] = 'assimilated'
 
@@ -82,7 +81,7 @@ def create_netcdf(conv_config):
             binned_data = spatial_bin(
                 data, lats, lons, binsize='1x1', pressure=pressure)
 
-        write_netcdf(data, binned_data, metadata)
+        write_netcdf(data, binned_data, metadata, outdir)
 
     else:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
@@ -104,7 +103,6 @@ def create_netcdf(conv_config):
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
 
         metadata = diag.metadata
-        metadata['Outdir'] = outdir
 
         # Get binned data
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
@@ -114,7 +112,7 @@ def create_netcdf(conv_config):
             binned_data = spatial_bin(
                 data, lat, lon, binsize='1x1', pressure=pressure)
 
-        write_netcdf(data, binned_data, metadata)
+        write_netcdf(data, binned_data, metadata, outdir)
 
     return
 

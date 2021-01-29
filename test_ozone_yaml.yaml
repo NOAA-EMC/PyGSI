@@ -1,0 +1,183 @@
+diagnostic:
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 6
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: &id001
+    - histogram
+    - spatial
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 7
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 8
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 9
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 10
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 11
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 12
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 13
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 14
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 15
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 16
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 17
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 18
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 19
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 20
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 21
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompsnp_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_omi_aura_ges.2020100712_ensmean.nc4
+    plot type: *id001
+- ozone input:
+    analysis use:
+    - true
+    data type:
+    - O-F
+    layer:
+    - 0
+    path:
+    - /scratch2/NCEPDEV/stmp1/Cory.R.Martin/DARTH/2020100712/GSI_out/diag_ompstc8_npp_ges.2020100712_ensmean.nc4
+    plot type: *id001
