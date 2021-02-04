@@ -216,7 +216,7 @@ def _get_stats_labels(metadata,stats):
 def _get_title(metadata):
     
     # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False  
+    anl_use = True if 'Anl Use' in metadata and metadata['Anl Use'] else False  
     
     # Left Title label
     if anl_use:
@@ -259,7 +259,7 @@ def _get_save_file(metadata):
     
     # Save file label
     if metadata['Diag File Type'] == 'conventional':
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}'.format(
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Variable}_{Diag Type}_'.format(
             **metadata) + '%s' % '_'.join(str(x) for x in metadata['ObsID'])
     
     elif metadata['Diag File Type'] == 'ozone':
@@ -269,11 +269,11 @@ def _get_save_file(metadata):
             **metadata) + '%s' % layer
     
     else:
-        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}'.format(
+        save_file = '{Date:%Y%m%d%H}_{Obs Type}_{Satellite}_{Diag Type}_'.format(
             **metadata) + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
         
     # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False 
+    anl_use = True if 'Anl Use' in metadata and metadata['Anl Use'] else False 
     
     if anl_use:
         if metadata['Anl Use Type'] == 'assimilated':
@@ -669,7 +669,7 @@ def plot_histogram(data, metadata, outdir='./'):
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
     
     # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False 
+    anl_use = True if 'Anl Use' in metadata and metadata['Anl Use'] else False 
     
     # Handles uv data
     if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
@@ -713,7 +713,7 @@ def plot_spatial(data, metadata, lats, lons, outdir='./'):
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
     
     # Handles analysis use data
-    anl_use = True if 'Anl Use' in metadata else False   
+    anl_use = True if 'Anl Use' in metadata and metadata['Anl Use'] else False   
     
     # Handles uv data
     if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
