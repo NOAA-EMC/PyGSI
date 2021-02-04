@@ -8,12 +8,12 @@ def bin_data(data, lat, lon, binsize=1, uv_data=False, pressure=None):
     """
     The main function to spatially bin the data.
     Inputs:
-        data      : data to binned
+        data      : data to be binned
         lat       : original data lats
         lon       : original data lons
         binsize   : string of the size of binning, must be square.
                     Examples: '1x1', '2x2', '5x5' (Default = 1x1)
-        uv_data    : if using uv_data, will be True (Default = False)
+        uv_data   : if using uv_data, will be True (Default = False)
         pressure  : original data pressure values (Default = None)
     Outputs:
         binned_data, binned_pressure
@@ -127,13 +127,11 @@ def spatial_bin(data, metadata, lat, lon, binsize=1, pressure=None, pbins=None):
     """
     Function to spatially bin data. Has the option to bin by pressures as well.
     Inputs:
-        data      : data to binned
+        data      : data to be binned
         lat       : original data lats
         lon       : original data lons
-        binsize   : string of the size of binning, must be square.
-                    Examples: '1x1', '2x2', '5x5' (Default = 1x1)
+        binsize   : integer of the size of binning (Default = 1)
         ** ONLY APPLICABLE FOR CONVENTIONAL DATA **
-        uv_data    : if using uv_data, will be True (Default = False)
         pressure  : original data pressure values (Default = None)
         pbins     : list of pressures in ascending order of what pressure
                     levels data will be binned into. Must provide data for
@@ -142,7 +140,7 @@ def spatial_bin(data, metadata, lat, lon, binsize=1, pressure=None, pbins=None):
         binned_data : a dictionary of statistics calculated for the newly
                       binned data. If binning by pressure for conventional
                       data, will return 3D data with the first index being
-                      all pressure levels, followed by n-1 amount of indexes
+                      all pressure levels, followed by n amount of indexes
                       based on the number of pressure levels given in pbins
     """
     
