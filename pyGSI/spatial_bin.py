@@ -4,7 +4,7 @@ import numpy as np
 import itertools
 
 
-def bin_data(data, lat, lon, binsize='1x1', uv_data=False, pressure=None):
+def bin_data(data, lat, lon, binsize=1, uv_data=False, pressure=None):
     """
     The main function to spatially bin the data.
     Inputs:
@@ -28,12 +28,6 @@ def bin_data(data, lat, lon, binsize='1x1', uv_data=False, pressure=None):
 
     lat_lowerlim = -90
     lat_upperlim = 90
-
-    if binsize.split('x')[0] != binsize.split('x')[1]:
-        print('ERROR: Binsize must be square i.e. 1x1, 2x2, 5x5 etc. Please use different binsize.')
-        return
-
-    binsize = int(binsize.split('x')[0])
 
     if latlen % binsize == 0 and lonlen % binsize == 0:
         latbin = int(latlen/binsize)
@@ -129,7 +123,7 @@ def bin_data(data, lat, lon, binsize='1x1', uv_data=False, pressure=None):
             return binned_data
 
 
-def spatial_bin(data, lat, lon, binsize='1x1', uv_data=False, pressure=None, pbins=None):
+def spatial_bin(data, metadata, lat, lon, binsize=1, pressure=None, pbins=None):
     """
     Function to spatially bin data. Has the option to bin by pressures as well.
     Inputs:
@@ -151,14 +145,18 @@ def spatial_bin(data, lat, lon, binsize='1x1', uv_data=False, pressure=None, pbi
                       all pressure levels, followed by n-1 amount of indexes
                       based on the number of pressure levels given in pbins
     """
+    
+    
+    uv_data = True if 'Variable' in metadata and metadata['Variable'] == 'uv' else False 
 
     if pbins is None:
         pressure_list = [None, 0, 100, 250, 500, 700, 850, 925, 1000, 1100]
     else:
-        pressure_list = pbins.insert(0, None)
-
-    if uv_data == True:
-        if pressure is None:
+        pbins.insert(0, None)
+        pressure_list = pbins
+        
+    if uv_data:
+        if pressure.any() == None:
             binned_u_data, binned_v_data = bin_data(data, lat, lon,
                                                    binsize=binsize,
                                                    uv_data=uv_data,
@@ -208,20 +206,22 @@ def spatial_bin(data, lat, lon, binsize='1x1', uv_data=False, pressure=None, pbi
 
             rows = binned_u_data.shape[0]
             cols = binned_u_data.shape[1]
+            
+            n_plevs = len(pressure_list)-1
 
-            binned_u_nobs = np.full((rows, cols, 9), np.nan)
-            binned_u_mean = np.full((rows, cols, 9), np.nan)
-            binned_u_max = np.full((rows, cols, 9), np.nan)
-            binned_u_min = np.full((rows, cols, 9), np.nan)
-            binned_u_std = np.full((rows, cols, 9), np.nan)
-            binned_u_rmse = np.full((rows, cols, 9), np.nan)
+            binned_u_nobs = np.full((rows, cols, n_plevs), np.nan)
+            binned_u_mean = np.full((rows, cols, n_plevs), np.nan)
+            binned_u_max = np.full((rows, cols, n_plevs), np.nan)
+            binned_u_min = np.full((rows, cols, n_plevs), np.nan)
+            binned_u_std = np.full((rows, cols, n_plevs), np.nan)
+            binned_u_rmse = np.full((rows, cols, n_plevs), np.nan)
 
-            binned_v_nobs = np.full((rows, cols, 9), np.nan)
-            binned_v_mean = np.full((rows, cols, 9), np.nan)
-            binned_v_max = np.full((rows, cols, 9), np.nan)
-            binned_v_min = np.full((rows, cols, 9), np.nan)
-            binned_v_std = np.full((rows, cols, 9), np.nan)
-            binned_v_rmse = np.full((rows, cols, 9), np.nan)
+            binned_v_nobs = np.full((rows, cols, n_plevs), np.nan)
+            binned_v_mean = np.full((rows, cols, n_plevs), np.nan)
+            binned_v_max = np.full((rows, cols, n_plevs), np.nan)
+            binned_v_min = np.full((rows, cols, n_plevs), np.nan)
+            binned_v_std = np.full((rows, cols, n_plevs), np.nan)
+            binned_v_rmse = np.full((rows, cols, n_plevs), np.nan)
 
             for i, pressure in enumerate(pressure_list[:-1]):
                 for x in range(0, rows):
@@ -333,13 +333,15 @@ def spatial_bin(data, lat, lon, binsize='1x1', uv_data=False, pressure=None, pbi
                                                    pressure=pressure)
             rows = binned_data.shape[0]
             cols = binned_data.shape[1]
+            
+            n_plevs = len(pressure_list)-1
 
-            binned_nobs = np.full((rows, cols, 9), np.nan)
-            binned_mean = np.full((rows, cols, 9), np.nan)
-            binned_max = np.full((rows, cols, 9), np.nan)
-            binned_min = np.full((rows, cols, 9), np.nan)
-            binned_std = np.full((rows, cols, 9), np.nan)
-            binned_rmse = np.full((rows, cols, 9), np.nan)
+            binned_nobs = np.full((rows, cols, n_plevs), np.nan)
+            binned_mean = np.full((rows, cols, n_plevs), np.nan)
+            binned_max = np.full((rows, cols, n_plevs), np.nan)
+            binned_min = np.full((rows, cols, n_plevs), np.nan)
+            binned_std = np.full((rows, cols, n_plevs), np.nan)
+            binned_rmse = np.full((rows, cols, n_plevs), np.nan)
 
             for i, pressure in enumerate(pressure_list[:-1]):
                 for x in range(0, rows):
