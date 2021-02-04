@@ -146,7 +146,6 @@ def spatial_bin(data, metadata, lat, lon, binsize=1, pressure=None, pbins=None):
                       based on the number of pressure levels given in pbins
     """
     
-    
     uv_data = True if 'Variable' in metadata and metadata['Variable'] == 'uv' else False 
 
     if pbins is None:
