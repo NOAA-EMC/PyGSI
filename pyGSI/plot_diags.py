@@ -202,14 +202,14 @@ def _get_stats_labels(metadata,stats):
     else:
         roundnum = 3
 
-        t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],
-                                                             np.round(
-                                                                 stats['Std'], roundnum),
-                                                             np.round(
-                                                                 stats['Mean'], roundnum),
-                                                             np.round(
-                                                                 stats['Max'], roundnum),
-                                                             np.round(stats['Min'], roundnum)))
+    t = ('n: %s\nstd: %s\nmean: %s\nmax: %s\nmin: %s' % (stats['N'],
+                                                         np.round(
+                                                             stats['Std'], roundnum),
+                                                         np.round(
+                                                             stats['Mean'], roundnum),
+                                                         np.round(
+                                                             stats['Max'], roundnum),
+                                                         np.round(stats['Min'], roundnum)))
         
     return t
     
@@ -415,7 +415,7 @@ def _create_histogram_plot(data, metadata, outdir='./'):
     
     # Plots 'Single Observation' if one ob
     elif len(data) == 1:
-        stats = calculate_stats(data[i])
+        stats = _calculate_stats(data)
         labels = _plot_labels(metadata, stats)
 
         ax.text(0.75, .7, labels['stat text'],
