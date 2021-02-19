@@ -158,6 +158,7 @@ def _get_xlabel(metadata):
                     'q': "Specific Humidity (kg/kg)",
                     'sst': "Sea Surface Temperature (K)",
                     'pw': "Precipitable Water (mm)",
+                    'ps': "Pressure (hPa)"
                     'tcp': "Pressure (hPa)",
                     'u': "Windspeed (m/s)",
                     'v': "Windspeed (m/s)",
@@ -169,7 +170,7 @@ def _get_xlabel(metadata):
         xlabel = 'Observation - Forecast'
     
     # Observation minus Analysis
-    elif metadata['Diag Type'] == 'oma':
+    elif metadata['Diag Type'] in ['oma', 'o-a']:
         xlabel = 'Observation - Analysis'
     
     # Conventional Data
