@@ -400,16 +400,17 @@ class Conventional(GSIdiag):
 
     def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
 
+        indexed_df = self._get_idx_conv(obsid, subtype, station_id)
+        
         if analysis_use:
-            assimilated_df, monitored_df = self._get_idx_conv(
-                obsid, subtype, station_id, analysis_use)
+            assimilated_df = indexed_df.loc[df['Analysis_Use_Flag'] == 1]
+            monitored_df = indexed_df.loc[df['Analysis_Use_Flag'] == -1]
+
             pressure = {'assimilated': assimilated_df['Pressure'].to_numpy(),
                         'monitored': monitored_df['Pressure'].to_numpy()}
 
             return pressure
         else:
-            indexed_df = self._get_idx_conv(
-                obsid, subtype, station_id, analysis_use)
             return indexed_df['Pressure'].to_numpy()
 
 
