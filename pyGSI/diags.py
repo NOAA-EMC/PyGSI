@@ -383,19 +383,16 @@ class Conventional(GSIdiag):
 
         else:
             if analysis_use:
-                assimilated_df, monitored_df = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
+                assimilated_df = indexed_df.loc[df['Analysis_Use_Flag'] == 1]
+                monitored_df = indexed_df.loc[df['Analysis_Use_Flag'] == -1]
 
-                lats = {'assimilated': assimilated_pressure_df['Latitude'].to_numpy(),
-                        'monitored': monitored_pressure_df['Latitude'].to_numpy()}
-                lons = {'assimilated': assimilated_pressure_df['Longitude'].to_numpy(),
-                        'monitored': monitored_pressure_df['Longitude'].to_numpy()}
+                lats = {'assimilated': assimilated_df['Latitude'].to_numpy(),
+                        'monitored': monitored_df['Latitude'].to_numpy()}
+                lons = {'assimilated': assimilated_df['Longitude'].to_numpy(),
+                        'monitored': monitored_df['Longitude'].to_numpy()}
                 return lats, lons
 
             else:
-                indexed_df = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
-
                 return indexed_df['Latitude'].to_numpy(), indexed_df['Longitude'].to_numpy()
 
     def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
