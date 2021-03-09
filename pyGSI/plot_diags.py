@@ -158,7 +158,7 @@ def _get_xlabel(metadata):
                     'q': "Specific Humidity (kg/kg)",
                     'sst': "Sea Surface Temperature (K)",
                     'pw': "Precipitable Water (mm)",
-                    'ps': "Pressure (hPa)"
+                    'ps': "Pressure (hPa)",
                     'tcp': "Pressure (hPa)",
                     'u': "Windspeed (m/s)",
                     'v': "Windspeed (m/s)",
