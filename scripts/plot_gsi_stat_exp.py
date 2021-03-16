@@ -61,7 +61,11 @@ def gen_figure(datadict, datatypestr, labels, sdate, edate, save, plotdir):
             var_unit = '%'
             var_name = 'Relative Humidity'
 
-        plt.xlabel('magnitude (%s)' % var_unit)
+        if (stattype == 'sum'):
+            plt.xlabel('count')
+        else:
+            plt.xlabel('magnitude (%s)' % var_unit)
+
         plt.title(var_name, fontsize=14)
         plt.ylim(1020, 50)
         ax.set_yscale('log')
