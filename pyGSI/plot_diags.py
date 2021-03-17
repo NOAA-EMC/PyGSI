@@ -24,7 +24,7 @@ def _get_map_params(regional):
                    'textsize': 12,
                    'markersize': 10,
                   }
-    else
+    else:
         mapdict = {
                    'figdims': (15,12),
                    'cenlon': 0,
