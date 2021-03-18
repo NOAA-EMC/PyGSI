@@ -35,15 +35,17 @@ class GSIdiag:
     def __len__(self):
         return len(self.lats)
 
-    def _query_diag_type(self, diag_type, df, bias_correction=False):
+    def get_diag_type_data(self, diag_type, df, bias_correction=False):
         """
-        Query the data type being requested and returns
-        the appropriate indexed data
+        Based on the inputted diag_type ('omf', 'observation', 'hofx', etc.), returns
+        the subsetted data from the inputted dataframe.
         """
         
         diag_type = diag_type.lower()
         
-        diag_type = 'omf' if diag_type in ['omf', 'o-f', 'omb', 'o-b', 'o-a', 'oma'] else diag_type
+        if diag_type in ['o-f', 'omb', 'o-b', 'o-a', 'oma']:
+            diag_type='omf'
+            
         bias = 'adjusted' if bias_correction else 'unadjusted'
         
         try:
@@ -92,12 +94,16 @@ class Conventional(GSIdiag):
         Stores the data as a pandas dataframe.
         """
         ds = xr.open_dataset(self.path)
-        df = ds.to_dataframe()
+        df = ds.to_dataframe().reset_index()
+
+        # only found this on t
+        if 'Bias_Correction_Terms_arr_dim' in df:
+            df = df.loc[df['Bias_Correction_Terms_arr_dim'] == 0]
         
-        # Covert byte strings to strings
+        # Convert byte strings to strings
         byte_cols = ['Station_ID', 'Observation_Class']
         for col in byte_cols:
-            df[col] = df[col].str.decode("utf-8")
+            df[col] = df[col].str.decode("utf-8").str.strip()
 
         # Creates multidimensional indexed dataframe
         indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
@@ -158,13 +164,13 @@ class Conventional(GSIdiag):
         self.metadata['Anl Use'] = analysis_use
         
         if analysis_use:
-            assimilated_df, monitored_df = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
+            assimilated_df, monitored_df = self._select_conv(obsid, subtype, station_id, analysis_use)
             
             if self.variable == 'uv':
-                u_assimilated, v_assimilated = self._query_diag_type(
-                    diag_type, indexed_df, bias_correction)
-                u_monitored, v_monitored = self._query_diag_type(
-                    diag_type, indexed_df, bias_correction)
+                u_assimilated, v_assimilated = self.get_diag_type_data(
+                    diag_type, assimilated_df, bias_correction)
+                u_monitored, v_monitored = self.get_diag_type_data(
+                    diag_type, monitored_df, bias_correction)
 
                 u = {'assimilated': u_assimilated,
                      'monitored': u_monitored}
@@ -173,68 +179,66 @@ class Conventional(GSIdiag):
 
                 return u, v
             else:
-                assimilated_data = self._query_diag_type(
-                    diag_type, indexed_df, bias_correction)
+                assimilated_data = self.get_diag_type_data(
+                    diag_type, assimilated_df, bias_correction)
 
-                monitored_data = self._query_diag_type(
-                    diag_type, indexed_df, bias_correction)
+                monitored_data = self.get_diag_type_data(
+                    diag_type, monitored_df, bias_correction)
 
                 data = {'assimilated': assimilated_data,
-                        'monitored': monitored_data
-                        }
+                        'monitored': monitored_data}
 
                 return data
         
         else:
-            indexed_df = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
+            df = self._select_conv(obsid, subtype, station_id, analysis_use)
             
             if self.variable == 'uv':
-                u, v = self._query_diag_type(diag_type, indexed_df, bias_correction)
+                u, v = self.get_diag_type_data(diag_type, df, bias_correction)
                 
                 return u, v
             else:
-                data = self._query_diag_type(diag_type, indexed_df, bias_correction)
+                data = self.get_diag_type_data(diag_type, df, bias_correction)
 
                 return data
     
     
-    def _get_idx_conv(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
+    def _select_conv(self, obsids=None, subtypes=None, station_ids=None, analysis_use=False):
         """
-        Given parameters, get the indices of the observation
-        locations from a conventional diagnostic file
-        INPUT:
-            obsid   : observation measurement ID number
-            subtype : subtype number (default: None)
-            station_id   : station id tag (default: None)
-            analysis_use : if True, seperates data into assimilated and monitored
-        OUTPUT:
-            idx    : indices of the requested data in the file
+        Slice a dataframe given input parameters obsid, subtype, station_id,
+        and analysis_use
         """
         
-        if not obsid or obsid == [None]:
-            obsid = None
-        if not subtype or subtype == [None]:
-            subtype = None
-        if not station_id or station_id == [None]:
-            station_id = None
+        df = self.data_df
         
-        indexed_df = self.data_df
-        
-        if obsid is not None:
-            indexed_df = indexed_df.query(f'Observation_Type == {obsid}')
-        if subtype is not None:
-            indexed_df = indexed_df.query(f'Observation_Subtype == {subtype}')
-        if station_id is not None:
-            indexed_df = indexed_df.query(f'Station_ID == {station_id}')
+        if obsids is not None:
+            indx = df.index.get_level_values('Observation_Type') == ''
+            for obsid in obsids:
+                indx = np.ma.logical_or(indx, df.index.get_level_values('Observation_Type') == obsid)
+            df = df.iloc[indx]
+        if subtypes is not None:
+            indx = df.index.get_level_values('Observation_Subtype') == ''
+            for subtype in subtypes:
+                indx = np.ma.logical_or(indx, df.index.get_level_values('Observation_Subtype') == subtype)
+            df = df.iloc[indx]
+        if station_ids is not None:
+            indx = df.index.get_level_values('Station_ID') == ''
+            for station_id in station_ids:
+                indx = np.ma.logical_or(indx, df.index.get_level_values('Station_ID') == station_id)
+            df = df.iloc[indx]
         
         if analysis_use:
-            assimilated_df = indexed_df.query('Analysis_Flag_Use == 1')
-            monitored_df = indexed_df.query('Analysis_Flag_Use == -1')
+            indx = df.index.get_level_values('Analysis_Use_Flag') == ''
+            assimilated_indx = np.ma.logical_or(indx, df.index.get_level_values('Analysis_Use_Flag') == 1)
+            monitored_indx = np.ma.logical_or(indx, df.index.get_level_values('Analysis_Use_Flag') == -1)
+            
+            assimilated_df = df.iloc[assimilated_indx]
+            monitored_df = df.iloc[monitored_indx]
             
             return assimilated_df, monitored_df
         
         else:
-            return indexed_df
+            return df
         
     
     def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
@@ -243,22 +247,22 @@ class Conventional(GSIdiag):
         """
             
         if analysis_use:
-            assimilated_df, monitored_df = self._get_idx_conv(
+            assimilated_df, monitored_df = self._select_conv(
                 obsid, subtype, station_id, analysis_use)
 
-            lats = {'assimilated': assimilated_pressure_df['latitude'],
-                    'monitored': monitored_pressure_df['latitude']}
-            lons = {'assimilated': assimilated_pressure_df['longitude'],
-                    'monitored': monitored_pressure_df['longitude']}
+            lats = {'assimilated': assimilated_df['latitude'],
+                    'monitored': monitored_df['latitude']}
+            lons = {'assimilated': assimilated_df['longitude'],
+                    'monitored': monitored_df['longitude']}
             return lats, lons
 
         else:
-            indexed_df = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
+            df = self._select_conv(obsid, subtype, station_id, analysis_use)
 
-            return indexed_df['latitude'], indexed_df['longitude']
+            return df['latitude'], df['longitude']
         
         
-    def pressure_indexing(data, p1, p2):
+    def pressure_binning(self, data, p1=None, p2=None):
         """
         Returns a series of data that is indexed between two 
         pressures
