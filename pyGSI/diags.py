@@ -361,8 +361,8 @@ class Conventional(GSIdiag):
                 valid_idx = np.logical_and(valid_idx, valid_subtype_idx)
             if station_id != None:
                 stnididx = self.stnid
-                stnididx = np.array(
-                    [''.join(i.tostring().decode().split()) for i in stnididx])
+                stnididx = [i.tobytes(fill_value='/////', order='C') for i in stnididx]
+                stnididx = np.array([''.join(i.decode('UTF-8', 'ignore').split()) for i in stnididx])
                 valid_stnid_idx = np.isin(stnididx, station_id)
                 valid_idx = np.logical_and(valid_idx, valid_stnid_idx)
 
