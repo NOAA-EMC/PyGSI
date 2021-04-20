@@ -528,7 +528,6 @@ def _no_data_spatial(metadata, outdir='./', regional=False):
 def _create_spatial_plot(data, metadata, lats, lons,
                          outdir='./', regional=False):
 
-
     if len(data) == 0:
         _no_data_spatial(metadata, outdir, regional=regional)
         return
@@ -710,6 +709,9 @@ def plot_histogram(data, metadata, outdir='./'):
                     metadata['Anl Use Type'] = anl_type
 
                     _create_histogram_plot(data[anl_type][variable], metadata, outdir=outdir)
+            
+            #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
+            metadata['Variable'] = 'uv'
 
         else:
             for variable in data.keys():
@@ -717,6 +719,9 @@ def plot_histogram(data, metadata, outdir='./'):
                 metadata['Variable'] = variable
 
                 _create_histogram_plot(data[variable], metadata, outdir=outdir)
+            
+            #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
+            metadata['Variable'] = 'uv'
 
 
     else:
@@ -735,16 +740,15 @@ def plot_histogram(data, metadata, outdir='./'):
     return
 
 def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
-
+    
     if metadata['Diag File Type'] == 'conventional':
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
 
     # Handles analysis use data
     anl_use = True if 'Anl Use' in metadata and metadata['Anl Use'] else False
-
+    
     # Handles uv data
     if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
-
         if anl_use:
             for anl_type in data.keys():
                 for variable in data[anl_type].keys():
@@ -756,16 +760,17 @@ def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
                     _create_spatial_plot(data[anl_type][variable], metadata,
                                          lats[anl_type], lons[anl_type],
                                          outdir=outdir, regional=regional)
+            #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
+            metadata['Variable'] = 'uv'
 
         else:
             for variable in data.keys():
-
                 metadata['Variable'] = variable
-
                 _create_spatial_plot(data[variable], metadata,
                                      lats, lons,
                                      outdir=outdir, regional=regional)
-
+            #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
+            metadata['Variable'] = 'uv'
 
     else:
 
