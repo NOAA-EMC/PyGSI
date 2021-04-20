@@ -218,7 +218,7 @@ class Conventional(GSIdiag):
 
                 for i, pressure in enumerate(pressure_list[:-1]):
                     pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
+                        self.press <= pressure_list[i+1]))
                     valid_assimilated_idx = np.isin(
                         assimilated_idx[0], pres_idx[0])
                     valid_monitored_idx = np.isin(
