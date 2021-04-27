@@ -10,113 +10,99 @@ from datetime import datetime
 def plotting_conventional(conv_config):
 
     diagfile = conv_config['conventional input']['path'][0]
-    data_type = conv_config['conventional input']['data type'][0]
+    diag_type = conv_config['conventional input']['data type'][0].lower()
     obsid = conv_config['conventional input']['observation id']
     analysis_use = conv_config['conventional input']['analysis use'][0]
     plot_type = conv_config['conventional input']['plot type']
-    outdir = conv_config['outDir']
+    outdir = conv_config['outdir']
 
     diag = Conventional(diagfile)
 
-    if analysis_use == True:
+    if analysis_use:
         diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
+            u, v = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
+            
+            data = {'assimilated': {'u': u['assimilated'],
+                                    'v': v['assimilated'],
+                                    'windspeed': np.sqrt(np.square(u['assimilated']) + np.square(v['assimilated']))
+                                   },
+                    'monitored':   {'u': u['monitored'],
+                                    'v': v['monitored'],
+                                    'windspeed': np.sqrt(np.square(u['monitored']) + np.square(v['monitored']))
+                                   }
+                   }
 
-            assimilated_data = {'u': u['assimilated'],
-                                'v': v['assimilated'],
-                                'windspeed': np.sqrt(np.square(u['assimilated']) + np.square(v['assimilated']))
-                                }
-
-            monitored_data = {'u': u['monitored'],
-                              'v': v['monitored'],
-                              'windspeed': np.sqrt(np.square(u['monitored']) + np.square(v['monitored']))
-                              }
         else:
-            data = diag.get_data(data_type, obsid=obsid,
+            data = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
-
-            assimilated_data = data['assimilated']
-            monitored_data = data['monitored']
+            
+            data = {'assimilated': data['assimilated'],
+                    'monitored': data['monitored']
+                   }
 
         lats, lons = diag.get_lat_lon(obsid=obsid, analysis_use=analysis_use)
-
-        for i, data in enumerate([assimilated_data, monitored_data]):
-            for plot in plot_type:
-                metadata = diag.get_metadata()
-
-                metadata['Data_type'] = data_type
-                metadata['ObsID'] = obsid
-
-                if i == 0:
-                    metadata['assimilated'] = 'yes'
-                    lat = lats['assimilated']
-                    lon = lons['assimilated']
-                else:
-                    metadata['assimilated'] = 'no'
-                    lat = lats['monitored']
-                    lon = lons['monitored']
-
-                if plot == 'histogram':
-                    plot_histogram(data, metadata, outdir)
-                if plot == 'spatial':
-                    plot_spatial(data, metadata, lat, lon, outdir)
-
-    else:
-
-        diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
-        if diag_components[1] == 'conv' and diag_components[2] == 'uv':
-            u, v = diag.get_data(data_type, obsid=obsid,
-                                 analysis_use=analysis_use)
-            data = {'u': u,
-                    'v': v,
-                    'windspeed': np.sqrt(np.square(u) + np.square(v))
-                    }
-        else:
-            data = diag.get_data(data_type, obsid=obsid)
-
-        lats, lons = diag.get_lat_lon(obsid=obsid)
-
-        metadata = diag.get_metadata()
-
-        metadata['Data_type'] = data_type
-        metadata['ObsID'] = obsid
-        metadata['assimilated'] = 'n/a'
+        
+        metadata = diag.metadata
 
         if np.isin('histogram', plot_type):
             plot_histogram(data, metadata, outdir)
         if np.isin('spatial', plot_type):
             plot_spatial(data, metadata, lats, lons, outdir)
 
+    else:
 
-def plotting_radiance(rad_config):
+        diag_components = diagfile.split('/')[-1].split('.')[0].split('_')
+        if diag_components[1] == 'conv' and diag_components[2] == 'uv':
+            u, v = diag.get_data(diag_type, obsid=obsid,
+                                 analysis_use=analysis_use)
+            data = {'u': u,
+                    'v': v,
+                    'windspeed': np.sqrt(np.square(u) + np.square(v))
+                    }
+        else:
+            data = diag.get_data(diag_type, obsid=obsid)
 
-    diagfile = rad_config['radiance input']['path'][0]
-    data_type = rad_config['radiance input']['data type'][0]
-    channel = rad_config['radiance input']['channel']
-    qcflag = rad_config['radiance input']['qc flag']
-    plot_type = rad_config['radiance input']['plot type']
-    outdir = rad_config['outDir']
+        lats, lons = diag.get_lat_lon(obsid=obsid)
+
+        metadata = diag.metadata
+
+        if np.isin('histogram', plot_type):
+            plot_histogram(data, metadata, outdir)
+        if np.isin('spatial', plot_type):
+            plot_spatial(data, metadata, lats, lons, outdir)
+            
+        return
+
+
+def plotting_radiance(sat_config):
+
+    diagfile = sat_config['radiance input']['path'][0]
+    diag_type = sat_config['radiance input']['data type'][0].lower()
+    channel = sat_config['radiance input']['channel']
+    qcflag = sat_config['radiance input']['qc flag']
+    plot_type = sat_config['radiance input']['plot type']
+    outdir = sat_config['outdir']
 
     diag = Radiance(diagfile)
 
-    data = diag.get_data(data_type, channel=channel, qcflag=qcflag)
+    data = diag.get_data(diag_type, channel=channel, qcflag=qcflag)
     lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
 
-    metadata = diag.get_metadata()
-    metadata['Data_type'] = data_type
-    metadata['Channels'] = channel
+    metadata = diag.metadata
 
     if np.isin('histogram', plot_type):
         plot_histogram(data, metadata, outdir)
     if np.isin('spatial', plot_type):
         plot_spatial(data, metadata, lats, lons, outdir)
+        
+    return
 
 
 ###############################################
 
-# Parse command line
+# # Parse command line
 ap = argparse.ArgumentParser()
 ap.add_argument("-y", "--yaml",
                 help="Path to yaml file with diag data",
@@ -138,7 +124,7 @@ with open(input_yaml, 'r') as file:
 
 work = (parsed_yaml_file['diagnostic'])
 for w in work:
-    w['outDir'] = outdir
+    w['outdir'] = outdir
 
 diagType = next(iter(parsed_yaml_file['diagnostic'][0].items()))[0]
 if diagType == 'conventional input':
