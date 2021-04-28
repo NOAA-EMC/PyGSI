@@ -14,25 +14,93 @@ from textwrap import TextWrapper
 import matplotlib
 matplotlib.use('agg')
 
-def _get_map_params(regional):
-    if regional:
-        mapdict = {
-                   'figdims': (10,8),
-                   'cenlon': -95,
-                   'extent': [-130, -60, 10, 60],
-                   'titlesize': 11,
-                   'textsize': 12,
-                   'markersize': 10,
-                  }
-    else:
-        mapdict = {
-                   'figdims': (15,12),
-                   'cenlon': 0,
-                   'extent': [-180, 180, -90, 90],
-                   'titlesize': 14,
-                   'textsize': 14,
-                   'markersize': 30,
-                  }
+def _get_map_params(region):
+        
+    map_params = {'global': {'figdims': (15,12),
+                             'cenlon': 0,
+                             'extent': [-180, 180, -90, 90],
+                             'textloc': [185, 55],
+                             'titlesize': 14,
+                             'textsize': 14,
+                             'markersize': 30},
+                  'CONUS':  {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-130, -60, 10, 60],
+                             'textloc': [-58, 53],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 10},
+                  'North America': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-170, -50, 7.5, 75],
+                             'textloc': [-48, 65],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 15},
+                  'Alaska': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-170, -140, 50, 75],
+                             'textloc': [-139, 70],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 10},
+                  'Europe': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-12.5, 40, 30, 70],
+                             'textloc': [41, 64],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 15},
+                  'Africa': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-20, 55, -35, 40],
+                             'textloc': [57, 30],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 15},
+                  'Asia':   {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [30, 160, -5, 80],
+                             'textloc': [163, 66],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 20},
+                  'Australia': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [110, 155, -10, -42.5],
+                             'textloc': [156, -17],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 15},
+                  'South America': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [-100, -30, 15, -55],
+                             'textloc': [-28, 3],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 15},
+                  'Baltic': {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [5, 35, 50, 70],
+                             'textloc': [35.5, 66],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 10},
+                  'Japan':  {'figdims': (10,8),
+                             'cenlon': 0,
+                             'extent': [125, 155, 25, 55],
+                             'textloc': [156, 50],
+                             'titlesize': 12,
+                             'textsize': 12,
+                             'markersize': 10}
+                 }    
+    
+    try:
+        mapdict = map_params[region]
+    except KeyError:
+        mapdict = map_params['global']
+        print('Region entered is not included in map params. Returning global view ...')
+    
     return mapdict
 
 def _get_obs_type(obs_id):
@@ -499,7 +567,7 @@ def _create_histogram_plot(data, metadata, outdir='./'):
 
     return
 
-def _no_data_spatial(metadata, outdir='./', regional=False):
+def _no_data_spatial(metadata, outdir='./', region='global'):
     """
     Plots spatial map with 'No Data' printed across
     middle of plot when there is no data returned
@@ -507,7 +575,7 @@ def _no_data_spatial(metadata, outdir='./', regional=False):
 
     stats = False
     labels = _plot_labels(metadata, stats)
-    figdict = _get_map_params(regional)
+    figdict = _get_map_params(region)
 
     fig = plt.figure(figsize=figdict['figdims'])
     ax = fig.add_subplot(
@@ -526,10 +594,10 @@ def _no_data_spatial(metadata, outdir='./', regional=False):
 
 
 def _create_spatial_plot(data, metadata, lats, lons,
-                         outdir='./', regional=False):
+                         outdir='./', region='global'):
 
     if len(data) == 0:
-        _no_data_spatial(metadata, outdir, regional=regional)
+        _no_data_spatial(metadata, outdir, region=region)
         return
     else:
         stats = _calculate_stats(data)
@@ -541,7 +609,7 @@ def _create_spatial_plot(data, metadata, lats, lons,
         else:
             cmap, norm, extend = _colorbar_features(metadata, stats)
 
-    figdict = _get_map_params(regional)
+    figdict = _get_map_params(region)
     # Creates Figure
     fig = plt.figure(figsize=figdict['figdims'])
     ax = fig.add_subplot(
@@ -560,7 +628,7 @@ def _create_spatial_plot(data, metadata, lats, lons,
     # Get and plot labels
     labels = _plot_labels(metadata, stats)
 
-    ax.text(185, 55, labels['stat text'], fontsize=figdict['textsize'])
+    ax.text(figdict['textloc'][0], figdict['textloc'][1], labels['stat text'], fontsize=figdict['textsize'])
 
     plt.title(labels['left title'], loc='left', fontsize=figdict['titlesize'])
     plt.title(labels['date title'], loc='right',
@@ -739,7 +807,7 @@ def plot_histogram(data, metadata, outdir='./'):
 
     return
 
-def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
+def plot_spatial(data, metadata, lats, lons, outdir='./', region='global'):
     
     if metadata['Diag File Type'] == 'conventional':
         metadata['ObsID Name'] = _get_obs_type(metadata['ObsID'])
@@ -759,7 +827,7 @@ def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
 
                     _create_spatial_plot(data[anl_type][variable], metadata,
                                          lats[anl_type], lons[anl_type],
-                                         outdir=outdir, regional=regional)
+                                         outdir=outdir, region=region)
             #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
             metadata['Variable'] = 'uv'
 
@@ -768,7 +836,7 @@ def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
                 metadata['Variable'] = variable
                 _create_spatial_plot(data[variable], metadata,
                                      lats, lons,
-                                     outdir=outdir, regional=regional)
+                                     outdir=outdir, region=region)
             #metadata was being saved as windspeed, need to revert back to 'uv' for other plots
             metadata['Variable'] = 'uv'
 
@@ -781,11 +849,11 @@ def plot_spatial(data, metadata, lats, lons, outdir='./', regional=False):
 
                 _create_spatial_plot(data[anl_type], metadata,
                                      lats[anl_type], lons[anl_type],
-                                     outdir=outdir, regional=regional)
+                                     outdir=outdir, region=region)
 
         else:
             _create_spatial_plot(data, metadata, lats, lons,
-                                 outdir=outdir, regional=regional)
+                                 outdir=outdir, region=region)
 
     return
 
