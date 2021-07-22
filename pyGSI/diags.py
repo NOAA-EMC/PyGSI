@@ -142,6 +142,7 @@ class Conventional(GSIdiag):
         self._read_obs()
         self.metadata['Diag File Type'] = 'conventional'
 
+
     def __str__(self):
         return "Conventional GSI diagnostic object"
 
@@ -156,9 +157,11 @@ class Conventional(GSIdiag):
             self.lons = f.variables['Longitude'][:]
             self.lats = f.variables['Latitude'][:]
             self.press = f.variables['Pressure'][:]
+            self.height = f.variables['Height'][:]/1000  	# convert height from meters to km
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.stnid = f.variables['Station_ID'][:]
+
             try:
                 self.stnelev = f.variables['Station_Elevation'][:]
             except:
@@ -176,7 +179,8 @@ class Conventional(GSIdiag):
                 self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
 
-    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
+
+    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type=None):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
@@ -190,13 +194,15 @@ class Conventional(GSIdiag):
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
-                plvls        : List of pressure levels i.e. [250,500,750,1000]. Will 
-                               return a dictionary with subsetted pressure levels where
-                               data is seperated within those levels:
+                lvls         : List of pressure or height levels i.e. [250,500,750,1000]. List 
+			       must be arranged low to high.  Will return a dictionary with
+                               subsetted pressure or height levels where data is seperated 
+                               within those levels:
 
                                dict = {250-500: <data>,
                                        500-750: <data>,
                                        750-1000: <data>}
+                lvl_type     : lvls definition as 'pressure' or 'height'.  Default is 'pressure'.
 
         OUTPUT:
             data   : requested data
@@ -208,21 +214,41 @@ class Conventional(GSIdiag):
         self.metadata['Station ID'] = station_id
         self.metadata['Anl Use'] = analysis_use
 
-        if plvls is not None:
-            pressure_list = plvls
-            binned_pressure = {}
+        if lvls is not None:
+            if lvl_type is not None:
+                if lvl_type != 'height' and lvl_type != 'pressure':
+                    print( "WARNING:  input lvl_type ', lvl_type, ' does not match expected values of height or pressure" )
+                    print( "            lvl_type will be set to the default value of pressure" )
+                    print( )
+                    lvl_type = 'pressure'
+            else:
+                lvl_type = 'pressure'
+                print( "lvl_type NOT supplied, using default value of pressure" )
+                print( )
+
+            level_list = lvls
+            binned_data = {}
 
             if analysis_use:
                 assimilated_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press <= pressure_list[i+1]))
-                    valid_assimilated_idx = np.isin(
-                        assimilated_idx[0], pres_idx[0])
-                    valid_monitored_idx = np.isin(
-                        monitored_idx[0], pres_idx[0])
+
+                for i, low_bound in enumerate(level_list[:-1]):
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height > level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], hght_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], hght_idx[0])
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press <= level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], pres_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
@@ -239,8 +265,8 @@ class Conventional(GSIdiag):
                                       'monitored': v_monitored}
                                 }
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
                     else:
                         assimilated_data = self.query_diag_type(
@@ -252,20 +278,29 @@ class Conventional(GSIdiag):
                                 'monitored': monitored_data
                                 }
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
-                return binned_pressure
+                return binned_data
 
             else:
                 idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
-                    valid_idx = np.isin(idx[0], pres_idx[0])
-                    pidx = np.where(valid_idx)
+                for i, low_bound in enumerate(level_list[:-1]):
+
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height > level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_idx = np.isin(idx[0], hght_idx[0])
+                       pidx = np.where(valid_idx)
+
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press < level_list[i+1]))
+                       valid_idx = np.isin(idx[0], pres_idx[0])
+                       pidx = np.where(valid_idx)
+
 
                     if self.variable == 'uv':
                         u, v = self.query_diag_type(diag_type, pidx)
@@ -273,16 +308,16 @@ class Conventional(GSIdiag):
                         data = {'u': u,
                                 'v': v}
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
                     else:
                         data = self.query_diag_type(diag_type, pidx)
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
-                return binned_pressure
+                return binned_data
 
         else:
 
@@ -379,7 +414,7 @@ class Conventional(GSIdiag):
                 valid_obs_idx = np.isin(idxobs, obsid)
 
                 valid_assimilated_idx = np.logical_and(
-                    valid_assimilated_idx, valid_obs_idx)
+                    valid_assimilated_idx, valid_obs_idx, qc_two_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_obs_idx)
 
@@ -408,27 +443,46 @@ class Conventional(GSIdiag):
 
             return assimilated_idx, monitored_idx
 
-    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
+    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type=None):
         """
         Gets lats and lons with desired indices
         """
 
-        if plvls is not None:
-            pressure_list = plvls
-            pressure_lats = {}
-            pressure_lons = {}
+        if lvls is not None:
+            if lvl_type is not None:
+                if lvl_type != 'height' and lvl_type != 'pressure':
+                    print( "WARNING:  input lvl_type ', lvl_type, ' does not match expected values of height or pressure" )
+                    print( "            lvl_type will be set to the default value of pressure" )
+                    print( )
+                    lvl_type = 'pressure'
+            else:
+                lvl_type = 'pressure'
+                print( "lvl_type NOT supplied, using default value of pressure" )
+                print( )
+
+            level_list = lvls
+            binned_lats = {}
+            binned_lats = {}
 
             if analysis_use:
                 assimilated_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
-                    valid_assimilated_idx = np.isin(
-                        assimilated_idx[0], pres_idx[0])
-                    valid_monitored_idx = np.isin(
-                        monitored_idx[0], pres_idx[0])
+                for i, low_bound in enumerate(level_list[:-1]):
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height > level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], hght_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], hght_idx[0])
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press < level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], pres_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
@@ -438,25 +492,25 @@ class Conventional(GSIdiag):
                     lons = {'assimilated': self.lons[assimilated_pidx],
                             'monitored': self.lons[monitored_pidx]}
 
-                    pressure_lats[pressure] = lats
-                    pressure_lons[pressure] = lons
+                    binned_lats[low_bound] = lats
+                    binned_lons[low_bound] = lons
 
-                return pressure_lats, pressure_lons
+                return binned_lats, binned_lons
 
             else:
                 idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
+                for i, pressure in enumerate(level_list[:-1]):
+                    pres_idx = np.where((self.press > level_list[i]) & (
+                        self.press < level_list[i+1]))
                     valid_idx = np.isin(idx[0], pres_idx[0])
                     pidx = np.where(valid_idx)
 
-                    pressure_lats[pressure] = self.lats[pidx]
-                    pressure_lons[pressure] = self.lons[pidx]
+                    binned_lats[pressure] = self.lats[pidx]
+                    binned_lons[pressure] = self.lons[pidx]
 
-                return pressure_lats, pressure_lons
+                return binned_lats, binned_lons
 
         else:
             if analysis_use:
@@ -483,6 +537,18 @@ class Conventional(GSIdiag):
         else:
             idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
             return self.press[idx]
+
+    def get_height(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
+        if analysis_use:
+            assimilated_idx, monitored_idx = self._get_idx_conv(
+                obsid, subtype, station_id, analysis_use)
+            height = {'assimilated': self.height[assimilated_idx],
+                        'monitored': self.height[monitored_idx]}
+
+            return height
+        else:
+            idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
+            return self.height[idx]
 
 
 class Radiance(GSIdiag):
@@ -549,7 +615,7 @@ class Radiance(GSIdiag):
             data : requested data
 
         """
-        
+       
         self.metadata['Diag Type'] = diag_type
         self.metadata['QC Flag'] = qcflag
         self.metadata['Channels'] = channel
