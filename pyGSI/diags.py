@@ -408,7 +408,7 @@ class Conventional(GSIdiag):
                 valid_obs_idx = np.isin(idxobs, obsid)
 
                 valid_assimilated_idx = np.logical_and(
-                    valid_assimilated_idx, valid_obs_idx)
+                    valid_assimilated_idx, valid_obs_idx, qc_two_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_obs_idx)
 
