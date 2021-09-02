@@ -1,3 +1,7 @@
+# 2021-09-02 X.Su : modified _read_obs such as setupqc, vqc, and all error items
+# 2021-09-02 X.Su : Added one data category: rejected to the functions: get_data, 
+#                   _get_idx_conv, get_lat_lon, get_pressure,get_height for 
+#                   conventional data. 
 import os
 import numpy as np
 from netCDF4 import Dataset
