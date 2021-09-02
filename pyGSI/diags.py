@@ -260,7 +260,7 @@ class Conventional(GSIdiag):
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], pres_idx[0])
                        valid_rejected_idx = np.isin(
-                        rejected_idx[0], pres_idx[0])
+                           rejected_idx[0], pres_idx[0])
                        valid_monitored_idx = np.isin(
                            monitored_idx[0], pres_idx[0])
 
