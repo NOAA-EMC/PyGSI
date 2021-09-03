@@ -1,3 +1,7 @@
+# 2021-09-02 X.Su : modified _read_obs such as setupqc, vqc, and all error items
+# 2021-09-02 X.Su : Added one data category: rejected to the functions: get_data, 
+#                   _get_idx_conv, get_lat_lon, get_pressure,get_height for 
+#                   conventional data. 
 import os
 import numpy as np
 from netCDF4 import Dataset
@@ -154,7 +158,11 @@ class Conventional(GSIdiag):
 
         with Dataset(self.path, mode='r') as f:
             self.o_type = f.variables['Observation_Type'][:]
-            self.o_stype = f.variables['Observation_Subtype'][:]
+            try:
+                self.o_stype = f.variables['Observation_Subtype'][:]
+            except:
+                print('Subtype is not defined')           
+
             self.lons = f.variables['Longitude'][:]
             self.lats = f.variables['Latitude'][:]
             self.press = f.variables['Pressure'][:]
@@ -162,6 +170,12 @@ class Conventional(GSIdiag):
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.stnid = f.variables['Station_ID'][:]
+            self.prepqc = f.variables['Prep_QC_Mark'][:]
+            self.setupqc = f.variables['Prep_Use_Flag'][:]
+            self.vqc = f.variables['Nonlinear_QC_Rel_Wgt'][:]
+            self.input_err = f.variables['Errinv_Input'][:]
+            self.adjst_err = f.variables['Errinv_Adjust'][:]
+            self.finl_err = f.variables['Errinv_Final'][:]
 
             try:
                 self.stnelev = f.variables['Station_Elevation'][:]
@@ -195,6 +209,8 @@ class Conventional(GSIdiag):
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
+                qcflag       : used:qcflag<7 and analysis_use_flag=1, rejected: analysis_use_flag=-1;monitored: qcflag>7
+                vqcflag      : used:vqcflag>=1;rejected by vqc:  vqcflag<1
                 lvls         : List of pressure or height levels i.e. [250,500,750,1000]. List 
 			       must be arranged low to high.  Will return a dictionary with
                                subsetted pressure or height levels where data is seperated 
@@ -224,7 +240,7 @@ class Conventional(GSIdiag):
             binned_data = {}
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
 
@@ -234,6 +250,8 @@ class Conventional(GSIdiag):
                            self.height < level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], hght_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], hght_idx[0])
                        valid_monitored_idx = np.isin(
                            monitored_idx[0], hght_idx[0])
                     else:
@@ -241,21 +259,28 @@ class Conventional(GSIdiag):
                            self.press <= level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], pres_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], pres_idx[0])
                        valid_monitored_idx = np.isin(
                            monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
+                    rejected_pidx = np.where(valid_rejected_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
 
                     if self.variable == 'uv':
                         u_assimilated, v_assimilated = self.query_diag_type(
                             diag_type, assimilated_pidx)
+                        u_rejected, v_rejected = self.query_diag_type(
+                            diag_type, rejected_pidx)
                         u_monitored, v_monitored = self.query_diag_type(
                             diag_type, monitored_pidx)
 
                         data = {'u': {'assimilated': u_assimilated,
+                                      'rejected': u_rejected,
                                       'monitored': u_monitored},
                                 'v': {'assimilated': v_assimilated,
+                                      'rejected': v_rejected,
                                       'monitored': v_monitored}
                                 }
 
@@ -265,10 +290,13 @@ class Conventional(GSIdiag):
                     else:
                         assimilated_data = self.query_diag_type(
                             diag_type, assimilated_pidx)
+                        rejected_data = self.query_diag_type(
+                            diag_type, rejected_pidx)
                         monitored_data = self.query_diag_type(
                             diag_type, monitored_pidx)
 
                         data = {'assimilated': assimilated_data,
+                                'rejected': rejected_data,
                                 'monitored': monitored_data
                                 }
 
@@ -316,29 +344,35 @@ class Conventional(GSIdiag):
         else:
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
                 if self.variable == 'uv':
                     u_assimilated, v_assimilated = self.query_diag_type(
                         diag_type, assimilated_idx)
+                    u_rejected, v_rejected = self.query_diag_type(
+                        diag_type, rejected_idx)
                     u_monitored, v_monitored = self.query_diag_type(
                         diag_type, monitored_idx)
 
                     u = {'assimilated': u_assimilated,
+                         'rejected': u_rejected,
                          'monitored': u_monitored}
                     v = {'assimilated': v_assimilated,
+                         'rejected': v_rejected,
                          'monitored': v_monitored}
 
                     return u, v
                 else:
                     assimilated_data = self.query_diag_type(
                         diag_type, assimilated_idx)
-
+                    rejected_data = self.query_diag_type(
+                        diag_type, rejected_idx)
                     monitored_data = self.query_diag_type(
                         diag_type, monitored_idx)
 
                     data = {'assimilated': assimilated_data,
+                            'rejected': rejected_data,
                             'monitored': monitored_data
                             }
 
@@ -364,7 +398,8 @@ class Conventional(GSIdiag):
         locations from a conventional diagnostic file
         INPUT:
             obsid   : observation measurement ID number
-            qcflag  : qc flag (default: None) i.e. 0, 1
+            qcflag  : qc flag (default: None) i.e. <7, >7
+            vqcflag : vqc flag (default: None) i.e. <1, >=1
             subtype : subtype number (default: None)
             station_id : station id tag (default: None)
         OUTPUT:
@@ -401,7 +436,13 @@ class Conventional(GSIdiag):
 
         else:
             valid_assimilated_idx = np.isin(self.anl_use, 1)
+            valid_rejected_idx = np.isin(self.anl_use, -1)
             valid_monitored_idx = np.isin(self.anl_use, -1)
+
+            valid_qc_idx = self.prepqc < 8.0
+            valid_qc2_idx = self.prepqc > 7.0
+            valid_rejected_idx = np.logical_and(valid_rejected_idx, valid_qc_idx)
+            valid_monitored_idx = np.logical_and(valid_monitored_idx, valid_qc2_idx)
 
             if obsid != None:
                 idxobs = self.o_type
@@ -409,6 +450,8 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_obs_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_obs_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_obs_idx)
 
@@ -418,6 +461,8 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_subtype_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_subtype_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_subtype_idx)
 
@@ -429,13 +474,16 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_stnid_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_stnid_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_stnid_idx)
 
             assimilated_idx = np.where(valid_assimilated_idx)
+            rejected_idx = np.where(valid_rejected_idx)
             monitored_idx = np.where(valid_monitored_idx)
 
-            return assimilated_idx, monitored_idx
+            return assimilated_idx, rejected_idx, monitored_idx
 
     def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
         """
@@ -452,7 +500,7 @@ class Conventional(GSIdiag):
             binned_lats = {}
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
                 for i, low_bound in enumerate(level_list[:-1]):
@@ -461,6 +509,8 @@ class Conventional(GSIdiag):
                            self.height < level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], hght_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], hght_idx[0])
                        valid_monitored_idx = np.isin(
                            monitored_idx[0], hght_idx[0])
                     else:
@@ -468,15 +518,20 @@ class Conventional(GSIdiag):
                            self.press < level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], pres_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], pres_idx[0]) 
                        valid_monitored_idx = np.isin(
                            monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
+                    rejected_pidx = np.where(valid_rejected_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
 
                     lats = {'assimilated': self.lats[assimilated_pidx],
+                            'rejected': self.lats[rejected_pidx],
                             'monitored': self.lats[monitored_pidx]}
                     lons = {'assimilated': self.lons[assimilated_pidx],
+                            'rejected': self.lons[rejected_pidx],
                             'monitored': self.lons[monitored_pidx]}
 
                     binned_lats[low_bound] = lats
@@ -501,11 +556,13 @@ class Conventional(GSIdiag):
 
         else:
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
                 lats = {'assimilated': self.lats[assimilated_idx],
+                        'rejected': self.lats[rejected_idx],
                         'monitored': self.lats[monitored_idx]}
                 lons = {'assimilated': self.lons[assimilated_idx],
+                        'rejected': self.lons[rejected_idx],
                         'monitored': self.lons[monitored_idx]}
                 return lats, lons
             else:
@@ -515,9 +572,10 @@ class Conventional(GSIdiag):
 
     def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
         if analysis_use:
-            assimilated_idx, monitored_idx = self._get_idx_conv(
+            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                 obsid, subtype, station_id, analysis_use)
             pressure = {'assimilated': self.press[assimilated_idx],
+                        'rejected': self.press[rejected_idx],
                         'monitored': self.press[monitored_idx]}
 
             return pressure
@@ -527,10 +585,11 @@ class Conventional(GSIdiag):
 
     def get_height(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
         if analysis_use:
-            assimilated_idx, monitored_idx = self._get_idx_conv(
+            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                 obsid, subtype, station_id, analysis_use)
             height = {'assimilated': self.height[assimilated_idx],
-                        'monitored': self.height[monitored_idx]}
+                      'rejected': self.height[rejected_idx],
+                      'monitored': self.height[monitored_idx]}
 
             return height
         else:
