@@ -246,7 +246,7 @@ class Conventional(GSIdiag):
 
                 for i, low_bound in enumerate(level_list[:-1]):
                     if lvl_type == 'height':
-                       hght_idx = np.where((self.height > level_list[i]) & (
+                       hght_idx = np.where((self.height >= level_list[i]) & (
                            self.height < level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], hght_idx[0])
@@ -312,14 +312,14 @@ class Conventional(GSIdiag):
                 for i, low_bound in enumerate(level_list[:-1]):
 
                     if lvl_type == 'height':
-                       hght_idx = np.where((self.height > level_list[i]) & (
+                       hght_idx = np.where((self.height >= level_list[i]) & (
                            self.height < level_list[i+1]))
                        valid_idx = np.isin(idx[0], hght_idx[0])
                        pidx = np.where(valid_idx)
 
                     else:
                        pres_idx = np.where((self.press > level_list[i]) & (
-                           self.press < level_list[i+1]))
+                           self.press <= level_list[i+1]))
                        valid_idx = np.isin(idx[0], pres_idx[0])
                        pidx = np.where(valid_idx)
 
@@ -505,7 +505,7 @@ class Conventional(GSIdiag):
 
                 for i, low_bound in enumerate(level_list[:-1]):
                     if lvl_type == 'height':
-                       hght_idx = np.where((self.height > level_list[i]) & (
+                       hght_idx = np.where((self.height >= level_list[i]) & (
                            self.height < level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], hght_idx[0])
@@ -515,7 +515,7 @@ class Conventional(GSIdiag):
                            monitored_idx[0], hght_idx[0])
                     else:
                        pres_idx = np.where((self.press > level_list[i]) & (
-                           self.press < level_list[i+1]))
+                           self.press <= level_list[i+1]))
                        valid_assimilated_idx = np.isin(
                            assimilated_idx[0], pres_idx[0])
                        valid_rejected_idx = np.isin(
@@ -545,7 +545,7 @@ class Conventional(GSIdiag):
 
                 for i, low_bound in enumerate(level_list[:-1]):
                     pres_idx = np.where((self.press > level_list[i]) & (
-                        self.press < level_list[i+1]))
+                        self.press <= level_list[i+1]))
                     valid_idx = np.isin(idx[0], pres_idx[0])
                     pidx = np.where(valid_idx)
 
