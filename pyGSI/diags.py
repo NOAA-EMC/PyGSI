@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 _VALID_LVL_TYPES = ["pressure", "height"]
+_VALID_DIAG_TYPES = ["omf", "o-f", "omb", "o-b", "oma", "o-a", "observation", "hofx"]
 
 class GSIdiag:
 
@@ -170,7 +171,10 @@ class Conventional(GSIdiag):
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.stnid = f.variables['Station_ID'][:]
-            self.prepqc = f.variables['Prep_QC_Mark'][:]
+            try:
+                self.prepqc = f.variables['Prep_QC_Mark'][:]
+            except:
+                self.prepqc = f.variables['Setup_QC_Mark'][:]
             self.setupqc = f.variables['Prep_Use_Flag'][:]
             self.vqc = f.variables['Nonlinear_QC_Rel_Wgt'][:]
             self.input_err = f.variables['Errinv_Input'][:]
@@ -224,7 +228,10 @@ class Conventional(GSIdiag):
         OUTPUT:
             data   : requested data
         """
-        
+       
+        if diag_type not in _VALID_DIAG_TYPES:
+            raise ValueError(f'{diag_type} wrong. Valid choices are: {" | ".join(_VALID_DIAG_TYPES)}') 
+
         self.metadata['Diag Type'] = diag_type
         self.metadata['ObsID'] = obsid
         self.metadata['Subtype'] = subtype
@@ -232,7 +239,7 @@ class Conventional(GSIdiag):
         self.metadata['Anl Use'] = analysis_use
 
         if lvls is not None:
-
+       
             if lvl_type not in _VALID_LVL_TYPES:
                 raise ValueError('{lvl_type} wrong, use "pressure" or "height" for input lvl_type'.format(lvl_type=repr(lvl_type)))
 
@@ -497,7 +504,7 @@ class Conventional(GSIdiag):
 
             level_list = lvls
             binned_lats = {}
-            binned_lats = {}
+            binned_lons = {}
 
             if analysis_use:
                 assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
@@ -540,14 +547,23 @@ class Conventional(GSIdiag):
                 return binned_lats, binned_lons
 
             else:
+                binned_lats = {}
+                binned_lons = {}
+
                 idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
                 for i, low_bound in enumerate(level_list[:-1]):
-                    pres_idx = np.where((self.press > level_list[i]) & (
-                        self.press <= level_list[i+1]))
-                    valid_idx = np.isin(idx[0], pres_idx[0])
-                    pidx = np.where(valid_idx)
+                    if lvl_type == 'height':
+                        hght_idx = np.where((self.height >= level_list[i]) & (
+                            self.height < level_list[i+1]))
+                        valid_idx = np.isin(idx[0], hght_idx[0])
+                        pidx = np.where(valid_idx)
+                    else:
+                        pres_idx = np.where((self.press > level_list[i]) & (
+                            self.press <= level_list[i+1]))
+                        valid_idx = np.isin(idx[0], pres_idx[0])
+                        pidx = np.where(valid_idx)
 
                     binned_lats[low_bound] = self.lats[pidx]
                     binned_lons[low_bound] = self.lons[pidx]

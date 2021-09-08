@@ -314,6 +314,8 @@ def _get_title(metadata):
 
             conv_title_dict = {'assimilated' : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Assimilated\n'.format(**metadata) + \
                                                 '%s' % '\n'.join(metadata['ObsID Name'])},
+                               'rejected'    : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Rejected\n'.format(**metadata) + \
+                                                '%s' % '\n'.join(metadata['ObsID Name'])},
                                'monitored'   : {'title': '{Obs Type}: {Variable} - {Diag Type} - Data Monitored\n'.format(**metadata) + \
                                                 '%s' % '\n'.join(metadata['ObsID Name'])}
                               }
@@ -324,7 +326,9 @@ def _get_title(metadata):
 
             ozone_title_dict = {'assimilated': {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Assimilated\nLayer: {Layer}'.format(
                                                 **metadata)},
-                                'monitored':   {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored\nLayer: {Layer}'.format(
+                                'rejected'   : {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Rejected\nLayer: {Layer}'.format(
+                                                **metadata)},
+                                'monitored'  : {'title': '{Obs Type}: {Satellite} - {Diag Type} - Data Monitored\nLayer: {Layer}'.format(
                                                 **metadata)}
                                 }
 
@@ -368,6 +372,8 @@ def _get_save_file(metadata):
     if anl_use:
         if metadata['Anl Use Type'] == 'assimilated':
             save_file = save_file + '_assimilated'
+        elif metadata['Anl Use Type'] == 'rejected':
+            save_file = save_file + '_rejected'
         else:
             save_file = save_file + '_monitored'
 
@@ -796,7 +802,6 @@ def plot_histogram(data, metadata, outdir='./'):
 
         if anl_use:
             for anl_type in data.keys():
-
                 metadata['Anl Use Type'] = anl_type
 
                 _create_histogram_plot(data[anl_type], metadata, outdir=outdir)
