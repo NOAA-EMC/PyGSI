@@ -1,9 +1,14 @@
+# 2021-09-02 X.Su : modified _read_obs such as setupqc, vqc, and all error items
+# 2021-09-02 X.Su : Added one data category: rejected to the functions: get_data, 
+#                   _get_idx_conv, get_lat_lon, get_pressure,get_height for 
+#                   conventional data. 
 import os
 import numpy as np
 from netCDF4 import Dataset
 from datetime import datetime
 from pathlib import Path
 
+_VALID_LVL_TYPES = ["pressure", "height"]
 
 class GSIdiag:
 
@@ -142,6 +147,7 @@ class Conventional(GSIdiag):
         self._read_obs()
         self.metadata['Diag File Type'] = 'conventional'
 
+
     def __str__(self):
         return "Conventional GSI diagnostic object"
 
@@ -152,13 +158,25 @@ class Conventional(GSIdiag):
 
         with Dataset(self.path, mode='r') as f:
             self.o_type = f.variables['Observation_Type'][:]
-            self.o_stype = f.variables['Observation_Subtype'][:]
+            try:
+                self.o_stype = f.variables['Observation_Subtype'][:]
+            except:
+                print('Subtype is not defined')           
+
             self.lons = f.variables['Longitude'][:]
             self.lats = f.variables['Latitude'][:]
             self.press = f.variables['Pressure'][:]
+            self.height = f.variables['Height'][:]
             self.time = f.variables['Time'][:]
             self.anl_use = f.variables['Analysis_Use_Flag'][:]
             self.stnid = f.variables['Station_ID'][:]
+            self.prepqc = f.variables['Prep_QC_Mark'][:]
+            self.setupqc = f.variables['Prep_Use_Flag'][:]
+            self.vqc = f.variables['Nonlinear_QC_Rel_Wgt'][:]
+            self.input_err = f.variables['Errinv_Input'][:]
+            self.adjst_err = f.variables['Errinv_Adjust'][:]
+            self.finl_err = f.variables['Errinv_Final'][:]
+
             try:
                 self.stnelev = f.variables['Station_Elevation'][:]
             except:
@@ -176,7 +194,8 @@ class Conventional(GSIdiag):
                 self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
 
 
-    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
+
+    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
         """
         Given parameters, get the data from a conventional diagnostic file
         INPUT:
@@ -190,13 +209,17 @@ class Conventional(GSIdiag):
                 analysis_use : if True, will return two sets of data: assimlated
                                (analysis_use_flag=1), and monitored (analysis_use
                                _flag=-1); default = False
-                plvls        : List of pressure levels i.e. [250,500,750,1000]. Will 
-                               return a dictionary with subsetted pressure levels where
-                               data is seperated within those levels:
+                qcflag       : used:qcflag<7 and analysis_use_flag=1, rejected: analysis_use_flag=-1;monitored: qcflag>7
+                vqcflag      : used:vqcflag>=1;rejected by vqc:  vqcflag<1
+                lvls         : List of pressure or height levels i.e. [250,500,750,1000]. List 
+			       must be arranged low to high.  Will return a dictionary with
+                               subsetted pressure or height levels where data is seperated 
+                               within those levels:
 
                                dict = {250-500: <data>,
                                        500-750: <data>,
                                        750-1000: <data>}
+                lvl_type     : lvls definition as 'pressure' or 'height'.  Default is 'pressure'.
 
         OUTPUT:
             data   : requested data
@@ -208,64 +231,98 @@ class Conventional(GSIdiag):
         self.metadata['Station ID'] = station_id
         self.metadata['Anl Use'] = analysis_use
 
-        if plvls is not None:
-            pressure_list = plvls
-            binned_pressure = {}
+        if lvls is not None:
+
+            if lvl_type not in _VALID_LVL_TYPES:
+                raise ValueError('{lvl_type} wrong, use "pressure" or "height" for input lvl_type'.format(lvl_type=repr(lvl_type)))
+
+            level_list = lvls
+            binned_data = {}
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press <= pressure_list[i+1]))
-                    valid_assimilated_idx = np.isin(
-                        assimilated_idx[0], pres_idx[0])
-                    valid_monitored_idx = np.isin(
-                        monitored_idx[0], pres_idx[0])
+
+                for i, low_bound in enumerate(level_list[:-1]):
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height >= level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], hght_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], hght_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], hght_idx[0])
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press <= level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], pres_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], pres_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
+                    rejected_pidx = np.where(valid_rejected_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
 
                     if self.variable == 'uv':
                         u_assimilated, v_assimilated = self.query_diag_type(
                             diag_type, assimilated_pidx)
+                        u_rejected, v_rejected = self.query_diag_type(
+                            diag_type, rejected_pidx)
                         u_monitored, v_monitored = self.query_diag_type(
                             diag_type, monitored_pidx)
 
                         data = {'u': {'assimilated': u_assimilated,
+                                      'rejected': u_rejected,
                                       'monitored': u_monitored},
                                 'v': {'assimilated': v_assimilated,
+                                      'rejected': v_rejected,
                                       'monitored': v_monitored}
                                 }
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
                     else:
                         assimilated_data = self.query_diag_type(
                             diag_type, assimilated_pidx)
+                        rejected_data = self.query_diag_type(
+                            diag_type, rejected_pidx)
                         monitored_data = self.query_diag_type(
                             diag_type, monitored_pidx)
 
                         data = {'assimilated': assimilated_data,
+                                'rejected': rejected_data,
                                 'monitored': monitored_data
                                 }
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
-                return binned_pressure
+                return binned_data
 
             else:
                 idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
-                    valid_idx = np.isin(idx[0], pres_idx[0])
-                    pidx = np.where(valid_idx)
+                for i, low_bound in enumerate(level_list[:-1]):
+
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height >= level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_idx = np.isin(idx[0], hght_idx[0])
+                       pidx = np.where(valid_idx)
+
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press <= level_list[i+1]))
+                       valid_idx = np.isin(idx[0], pres_idx[0])
+                       pidx = np.where(valid_idx)
+
 
                     if self.variable == 'uv':
                         u, v = self.query_diag_type(diag_type, pidx)
@@ -273,43 +330,49 @@ class Conventional(GSIdiag):
                         data = {'u': u,
                                 'v': v}
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
                     else:
                         data = self.query_diag_type(diag_type, pidx)
 
-                        binned_pressure['%s-%s' %
-                                        (pressure_list[i], pressure_list[i+1])] = data
+                        binned_data['%s-%s' %
+                                        (level_list[i], level_list[i+1])] = data
 
-                return binned_pressure
+                return binned_data
 
         else:
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
                 if self.variable == 'uv':
                     u_assimilated, v_assimilated = self.query_diag_type(
                         diag_type, assimilated_idx)
+                    u_rejected, v_rejected = self.query_diag_type(
+                        diag_type, rejected_idx)
                     u_monitored, v_monitored = self.query_diag_type(
                         diag_type, monitored_idx)
 
                     u = {'assimilated': u_assimilated,
+                         'rejected': u_rejected,
                          'monitored': u_monitored}
                     v = {'assimilated': v_assimilated,
+                         'rejected': v_rejected,
                          'monitored': v_monitored}
 
                     return u, v
                 else:
                     assimilated_data = self.query_diag_type(
                         diag_type, assimilated_idx)
-
+                    rejected_data = self.query_diag_type(
+                        diag_type, rejected_idx)
                     monitored_data = self.query_diag_type(
                         diag_type, monitored_idx)
 
                     data = {'assimilated': assimilated_data,
+                            'rejected': rejected_data,
                             'monitored': monitored_data
                             }
 
@@ -335,7 +398,8 @@ class Conventional(GSIdiag):
         locations from a conventional diagnostic file
         INPUT:
             obsid   : observation measurement ID number
-            qcflag  : qc flag (default: None) i.e. 0, 1
+            qcflag  : qc flag (default: None) i.e. <7, >7
+            vqcflag : vqc flag (default: None) i.e. <1, >=1
             subtype : subtype number (default: None)
             station_id : station id tag (default: None)
         OUTPUT:
@@ -372,7 +436,13 @@ class Conventional(GSIdiag):
 
         else:
             valid_assimilated_idx = np.isin(self.anl_use, 1)
+            valid_rejected_idx = np.isin(self.anl_use, -1)
             valid_monitored_idx = np.isin(self.anl_use, -1)
+
+            valid_qc_idx = self.prepqc < 8.0
+            valid_qc2_idx = self.prepqc > 7.0
+            valid_rejected_idx = np.logical_and(valid_rejected_idx, valid_qc_idx)
+            valid_monitored_idx = np.logical_and(valid_monitored_idx, valid_qc2_idx)
 
             if obsid != None:
                 idxobs = self.o_type
@@ -380,6 +450,8 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_obs_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_obs_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_obs_idx)
 
@@ -389,6 +461,8 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_subtype_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_subtype_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_subtype_idx)
 
@@ -400,71 +474,95 @@ class Conventional(GSIdiag):
 
                 valid_assimilated_idx = np.logical_and(
                     valid_assimilated_idx, valid_stnid_idx)
+                valid_rejected_idx = np.logical_and(
+                    valid_rejected_idx, valid_stnid_idx)
                 valid_monitored_idx = np.logical_and(
                     valid_monitored_idx, valid_stnid_idx)
 
             assimilated_idx = np.where(valid_assimilated_idx)
+            rejected_idx = np.where(valid_rejected_idx)
             monitored_idx = np.where(valid_monitored_idx)
 
-            return assimilated_idx, monitored_idx
+            return assimilated_idx, rejected_idx, monitored_idx
 
-    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, plvls=None):
+    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
         """
         Gets lats and lons with desired indices
         """
 
-        if plvls is not None:
-            pressure_list = plvls
-            pressure_lats = {}
-            pressure_lons = {}
+        if lvls is not None:
+
+            if lvl_type not in _VALID_LVL_TYPES:
+                raise ValueError('{lvl_type} wrong, use "pressure" or "height" for input lvl_type'.format(lvl_type=repr(lvl_type)))
+
+            level_list = lvls
+            binned_lats = {}
+            binned_lats = {}
 
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
-                    valid_assimilated_idx = np.isin(
-                        assimilated_idx[0], pres_idx[0])
-                    valid_monitored_idx = np.isin(
-                        monitored_idx[0], pres_idx[0])
+                for i, low_bound in enumerate(level_list[:-1]):
+                    if lvl_type == 'height':
+                       hght_idx = np.where((self.height >= level_list[i]) & (
+                           self.height < level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], hght_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], hght_idx[0])
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], hght_idx[0])
+                    else:
+                       pres_idx = np.where((self.press > level_list[i]) & (
+                           self.press <= level_list[i+1]))
+                       valid_assimilated_idx = np.isin(
+                           assimilated_idx[0], pres_idx[0])
+                       valid_rejected_idx = np.isin(
+                           rejected_idx[0], pres_idx[0]) 
+                       valid_monitored_idx = np.isin(
+                           monitored_idx[0], pres_idx[0])
 
                     assimilated_pidx = np.where(valid_assimilated_idx)
+                    rejected_pidx = np.where(valid_rejected_idx)
                     monitored_pidx = np.where(valid_monitored_idx)
 
                     lats = {'assimilated': self.lats[assimilated_pidx],
+                            'rejected': self.lats[rejected_pidx],
                             'monitored': self.lats[monitored_pidx]}
                     lons = {'assimilated': self.lons[assimilated_pidx],
+                            'rejected': self.lons[rejected_pidx],
                             'monitored': self.lons[monitored_pidx]}
 
-                    pressure_lats[pressure] = lats
-                    pressure_lons[pressure] = lons
+                    binned_lats[low_bound] = lats
+                    binned_lons[low_bound] = lons
 
-                return pressure_lats, pressure_lons
+                return binned_lats, binned_lons
 
             else:
                 idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, pressure in enumerate(pressure_list[:-1]):
-                    pres_idx = np.where((self.press > pressure_list[i]) & (
-                        self.press < pressure_list[i+1]))
+                for i, low_bound in enumerate(level_list[:-1]):
+                    pres_idx = np.where((self.press > level_list[i]) & (
+                        self.press <= level_list[i+1]))
                     valid_idx = np.isin(idx[0], pres_idx[0])
                     pidx = np.where(valid_idx)
 
-                    pressure_lats[pressure] = self.lats[pidx]
-                    pressure_lons[pressure] = self.lons[pidx]
+                    binned_lats[low_bound] = self.lats[pidx]
+                    binned_lons[low_bound] = self.lons[pidx]
 
-                return pressure_lats, pressure_lons
+                return binned_lats, binned_lons
 
         else:
             if analysis_use:
-                assimilated_idx, monitored_idx = self._get_idx_conv(
+                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                     obsid, subtype, station_id, analysis_use)
                 lats = {'assimilated': self.lats[assimilated_idx],
+                        'rejected': self.lats[rejected_idx],
                         'monitored': self.lats[monitored_idx]}
                 lons = {'assimilated': self.lons[assimilated_idx],
+                        'rejected': self.lons[rejected_idx],
                         'monitored': self.lons[monitored_idx]}
                 return lats, lons
             else:
@@ -474,15 +572,29 @@ class Conventional(GSIdiag):
 
     def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
         if analysis_use:
-            assimilated_idx, monitored_idx = self._get_idx_conv(
+            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
                 obsid, subtype, station_id, analysis_use)
             pressure = {'assimilated': self.press[assimilated_idx],
+                        'rejected': self.press[rejected_idx],
                         'monitored': self.press[monitored_idx]}
 
             return pressure
         else:
             idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
             return self.press[idx]
+
+    def get_height(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
+        if analysis_use:
+            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
+                obsid, subtype, station_id, analysis_use)
+            height = {'assimilated': self.height[assimilated_idx],
+                      'rejected': self.height[rejected_idx],
+                      'monitored': self.height[monitored_idx]}
+
+            return height
+        else:
+            idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
+            return self.height[idx]
 
 
 class Radiance(GSIdiag):
@@ -549,7 +661,7 @@ class Radiance(GSIdiag):
             data : requested data
 
         """
-        
+       
         self.metadata['Diag Type'] = diag_type
         self.metadata['QC Flag'] = qcflag
         self.metadata['Channels'] = channel
