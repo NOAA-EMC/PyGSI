@@ -33,6 +33,10 @@ def plotting(conv_config):
                                     'v': v['assimilated'],
                                     'windspeed': np.sqrt(np.square(u['assimilated']) + np.square(v['assimilated']))
                                    },
+                    'rejected':    {'u': u['rejected'],
+                                    'v': v['rejected'],
+                                    'windspeed': np.sqrt(np.square(u['rejected']) + np.square(v['rejected']))
+                                   },
                     'monitored':   {'u': u['monitored'],
                                     'v': v['monitored'],
                                     'windspeed': np.sqrt(np.square(u['monitored']) + np.square(v['monitored']))
@@ -44,6 +48,7 @@ def plotting(conv_config):
                                  analysis_use=analysis_use)
             
             data = {'assimilated': data['assimilated'],
+                    'rejected': data['rejected'],
                     'monitored': data['monitored']
                    }
 
