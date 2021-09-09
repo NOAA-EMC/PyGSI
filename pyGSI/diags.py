@@ -1,15 +1,17 @@
-# 2021-09-02 X.Su : modified _read_obs such as setupqc, vqc, and all error items
-# 2021-09-02 X.Su : Added one data category: rejected to the functions: get_data, 
-#                   _get_idx_conv, get_lat_lon, get_pressure,get_height for 
-#                   conventional data. 
 import os
+import pandas as pd
 import numpy as np
 from netCDF4 import Dataset
 from datetime import datetime
 from pathlib import Path
 
 _VALID_LVL_TYPES = ["pressure", "height"]
-_VALID_DIAG_TYPES = ["omf", "o-f", "omb", "o-b", "oma", "o-a", "observation", "hofx"]
+_VALID_CONV_DIAG_TYPES = ["omf", "oma", "observation", "hofx"]
+_VALID_RADIANCE_DIAG_TYPES = ["omf", "oma", "observation", "hofx",
+                              "water_fraction", "land_fraction",
+                              "cloud_fraction", "snow_fraction",
+                              "ice_fraction"]
+
 
 class GSIdiag:
 
@@ -19,7 +21,7 @@ class GSIdiag:
         INPUT:
             path : path to GSI diagnostic object
         """
-        
+
         self.path = path
         self.filename = os.path.splitext(Path(self.path).stem)[0]
         self.obs_type = self.filename.split('_')[1]
@@ -40,97 +42,31 @@ class GSIdiag:
     def __len__(self):
         return len(self.lats)
 
-    def query_diag_type(self, diag_type, idx):
+    def _query_diag_type(self, df, diag_type, bias_correction):
         """
         Query the data type being requested and returns
         the appropriate indexed data
         """
 
-        diag_type = diag_type.lower()
+        bias = 'adjusted' if bias_correction else 'unadjusted'
 
-        # Determines the diagnostic type
-        omf = True if diag_type in ['omf', 'o-f', 'omb', 'o-b'] else False
-        oma = True if diag_type in ['oma', 'o-a'] else False
-        obs = True if diag_type in ['observation'] else False
-        hofx = True if diag_type in ['hofx'] else False
-        water_fraction = True if diag_type in ['water_fraction'] else False
-        land_fraction = True if diag_type in ['land_fraction'] else False
-        cloud_fraction = True if diag_type in ['cloud_fraction'] else False
-        snow_fraction = True if diag_type in ['snow_fraction'] else False
-        ice_fraction = True if diag_type in ['ice_fraction'] else False
-
-        # Determines the file type
-        is_ges = True if self.ftype == 'ges' else False
-        is_anl = True if self.ftype == 'anl' else False
-
-        if omf and is_ges:
-            if self.variable == 'uv':
-                u = self.u_omf[idx]
-                v = self.v_omf[idx]
-
-                return u, v
-
+        if self.variable == 'uv':
+            if diag_type in ['Observation']:
+                u = df[f'u_{diag_type}']
+                v = df[f'v_{diag_type}']
             else:
-                data = self.omf[idx]
-                return data
+                u = df[f'u_{diag_type}_{bias}']
+                v = df[f'v_{diag_type}_{bias}']
 
-        if oma and is_anl:
-            if self.variable == 'uv':
-                u = self.u_omf[idx]
-                v = self.v_omf[idx]
-
-                return u, v
-
-            else:
-                data = self.omf[idx]
-                return data
-
-        if obs:
-            if self.variable == 'uv':
-                u = self.u_o[idx]
-                v = self.v_o[idx]
-
-                return u, v
-
-            else:
-                data = self.o[idx]
-                return data
-
-        if hofx:
-            if self.variable == 'uv':
-                u = self.u_o[idx] - self.u_omf[idx]
-                v = self.v_o[idx] - self.v_omf[idx]
-
-                return u, v
-
-            else:
-                hx = self.o - self.omf
-                data = hx[idx]
-                return data
-
-        if water_fraction:
-            data = self.water_frac[idx]
-            return data
-
-        if land_fraction:
-            data = self.land_frac[idx]
-            return data
-
-        if ice_fraction:
-            data = self.ice_frac[idx]
-            return data
-
-        if snow_fraction:
-            data = self.snow_frac[idx]
-            return data
-
-        if cloud_fraction:
-            data = self.cloud_frac[idx]
-            return data
+            return u.to_numpy(), v.to_numpy()
 
         else:
-            raise Exception(f'Unrecognizable diag type input: {diag_type}')
-            return None
+            if diag_type in ['Observation']:
+                data = df[f'{diag_type}']
+            else:
+                data = df[f'{diag_type}_{bias}']
+
+            return data.to_numpy()
 
 
 class Conventional(GSIdiag):
@@ -138,105 +74,132 @@ class Conventional(GSIdiag):
     def __init__(self, path):
         """
         Initialize a conventional GSI diagnostic object
-        INPUT:
-            path   : path to conventional GSI diagnostic object
-        RESULT:
-            self   : GSI diag conventional object containing the path to extract data
+
+        Args:
+            path : (str) path to conventional GSI diagnostic object
+        Returns:
+            self : GSI diag conventional object containing the path
+                   to extract data
         """
         super().__init__(path)
 
         self._read_obs()
         self.metadata['Diag File Type'] = 'conventional'
 
-
     def __str__(self):
         return "Conventional GSI diagnostic object"
 
     def _read_obs(self):
         """
-        Reads the data from the conventional diagnostic file during initialization.
+        Reads the data from the conventional diagnostic file during
+        initialization into a multidimensional pandas dataframe.
         """
+        df_dict = {}
 
-        with Dataset(self.path, mode='r') as f:
-            self.o_type = f.variables['Observation_Type'][:]
-            try:
-                self.o_stype = f.variables['Observation_Subtype'][:]
-            except:
-                print('Subtype is not defined')           
+        # Open netCDF file, store data into dictionary
+        with Dataset(file, mode='r') as f:
+            for var in f.variables:
+                # Station_ID and Observatio_Class variables need
+                # to be converted from byte string to string
+                if var in ['Station_ID', 'Observation_Class']:
+                    data = f.variables[var][:]
+                    data = [i.tobytes(fill_value='/////', order='C')
+                            for i in data]
+                    data = np.array(
+                        [''.join(i.decode('UTF-8', 'ignore').split())
+                         for i in data])
+                    df_dict[var] = data
 
-            self.lons = f.variables['Longitude'][:]
-            self.lats = f.variables['Latitude'][:]
-            self.press = f.variables['Pressure'][:]
-            self.height = f.variables['Height'][:]
-            self.time = f.variables['Time'][:]
-            self.anl_use = f.variables['Analysis_Use_Flag'][:]
-            self.stnid = f.variables['Station_ID'][:]
-            try:
-                self.prepqc = f.variables['Prep_QC_Mark'][:]
-            except:
-                self.prepqc = f.variables['Setup_QC_Mark'][:]
-            self.setupqc = f.variables['Prep_Use_Flag'][:]
-            self.vqc = f.variables['Nonlinear_QC_Rel_Wgt'][:]
-            self.input_err = f.variables['Errinv_Input'][:]
-            self.adjst_err = f.variables['Errinv_Adjust'][:]
-            self.finl_err = f.variables['Errinv_Final'][:]
+                # Grab variables with only 'nobs' dimension
+                elif len(f.variables[var].shape) == 1:
+                    df_dict[var] = f.variables[var][:]
 
-            try:
-                self.stnelev = f.variables['Station_Elevation'][:]
-            except:
-                self.modelelev = f.variables['Model_Elevation'][:]
+        # Create pandas dataframe from dict
+        df = pd.DataFrame(df_dict)
 
-            if self.variable == 'uv':
-                self.u_o = f.variables['u_Observation'][:]
-                self.v_o = f.variables['v_Observation'][:]
+        # Creates multidimensional indexed dataframe
+        indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
+                   'Observation_Subtype', 'Pressure', 'Analysis_Use_Flag']
+        df.set_index(indices, inplace=True)
 
-                self.u_omf = f.variables['u_Obs_Minus_Forecast_adjusted'][:]
-                self.v_omf = f.variables['v_Obs_Minus_Forecast_adjusted'][:]
+        # Rename columns
+        df.columns = df.columns.str.lower()
+        if self.variable == 'uv':
+            df = df.rename(columns={
+                'u_obs_minus_forecast_unadjusted': 'u_omf_unadjusted',
+                'u_obs_minus_forecast_adjusted': 'u_omf_adjusted',
+                'v_obs_minus_forecast_unadjusted': 'v_omf_unadjusted',
+                'v_obs_minus_forecast_adjusted': 'v_omf_adjusted'
+                })
+            # Create hofx columns
+            df['u_hofx_unadjusted'] = df['u_observation'] - \
+                df['u_omf_unadjusted']
+            df['v_hofx_unadjusted'] = df['v_observation'] - \
+                df['v_omf_unadjusted']
+            df['u_hofx_adjusted'] = df['u_observation'] - \
+                df['u_omf_adjusted']
+            df['v_hofx_adjusted'] = df['v_observation'] - \
+                df['v_omf_adjusted']
 
-            else:
-                self.o = f.variables['Observation'][:]
-                self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
+        else:
+            df = df.rename(columns={
+                'obs_minus_forecast_unadjusted': 'omf_unadjusted',
+                'obs_minus_forecast_adjusted': 'omf_adjusted',
+                })
+            # Create hofx columns
+            df['hofx_unadjusted'] = df['observation'] - df['omf_unadjusted']
+            df['hofx_adjusted'] = df['observation'] - df['omf_adjusted']
 
+        self.data_df = df
 
-
-    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
+    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None,
+                 analysis_use=False, lvls=None, lvl_type='pressure',
+                 bias_correction=True):
         """
         Given parameters, get the data from a conventional diagnostic file
-        INPUT:
-            required:
-                diag_type  : type of data to extract i.e. observation, omf, oma, hofx
 
-            optional:    
-                obsid        : observation measurement ID number; default=None
-                subtype      : observation measurement ID subtype number, default=None
-                station_id   : station id, default=None
-                analysis_use : if True, will return two sets of data: assimlated
-                               (analysis_use_flag=1), and monitored (analysis_use
-                               _flag=-1); default = False
-                qcflag       : used:qcflag<7 and analysis_use_flag=1, rejected: analysis_use_flag=-1;monitored: qcflag>7
-                vqcflag      : used:vqcflag>=1;rejected by vqc:  vqcflag<1
-                lvls         : List of pressure or height levels i.e. [250,500,750,1000]. List 
-			       must be arranged low to high.  Will return a dictionary with
-                               subsetted pressure or height levels where data is seperated 
-                               within those levels:
+        Args:
+            diag_type : (str; Required) type of data to extract
+                        i.e. observation, omf, oma, hofx
+            obsid : (list of ints; optional; default=None) observation
+                    measurement ID number; default=None
+            subtype : (list of ints; optional; default=None) observation
+                      measurement ID subtype number, default=None
+            station_id : (list of str; optional; default=None)
+                         station id, default=None
+            analysis_use : (bool; defaul=False) if True, will return
+                           three sets of data:
+                           assimlated (analysis_use_flag=1, qc<7),
+                           rejected (analysis_use_flag=-1, qc<8),
+                           monitored (analysis_use_flag=-1, qc>7)
+            lvls : (list type; default=None) List of pressure or height
+                   levels i.e. [250,500,750,1000]. List must be arranged
+                   low to high.  Will return a dictionary with subsetted
+                   pressure or height levels where data is separated
+                   within those levels:
 
-                               dict = {250-500: <data>,
-                                       500-750: <data>,
-                                       750-1000: <data>}
-                lvl_type     : lvls definition as 'pressure' or 'height'.  Default is 'pressure'.
-
-        OUTPUT:
-            data   : requested data
+                   dict = {250-500: <data>,
+                           500-750: <data>,
+                           750-1000: <data>}
+            lvl_type : (str; default='pressure') lvls definition as
+                       'pressure' or 'height'.
+            bias_correction : (bool; default=True) If True, will return bias
+                              corrected data.
+        Returns:
+            data   : requested indexed data
         """
-       
-        if diag_type not in _VALID_DIAG_TYPES:
-            raise ValueError(f'{diag_type} wrong. Valid choices are: {" | ".join(_VALID_DIAG_TYPES)}') 
+
+        if diag_type not in _VALID_CONV_DIAG_TYPES:
+            raise ValueError((f'{diag_type} wrong. Valid choices are: '
+                              f'{" | ".join(_VALID_DIAG_TYPES)}'))
 
         self.metadata['Diag Type'] = diag_type
         self.metadata['ObsID'] = obsid
         self.metadata['Subtype'] = subtype
         self.metadata['Station ID'] = station_id
         self.metadata['Anl Use'] = analysis_use
+        self.metadata['Levels'] = lvls
+        self.metadata['Levels Type'] = lvl_type
 
         if lvls is not None:
        
@@ -351,146 +314,136 @@ class Conventional(GSIdiag):
         else:
 
             if analysis_use:
-                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
+                assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                if self.variable == 'uv':
-                    u_assimilated, v_assimilated = self.query_diag_type(
-                        diag_type, assimilated_idx)
-                    u_rejected, v_rejected = self.query_diag_type(
-                        diag_type, rejected_idx)
-                    u_monitored, v_monitored = self.query_diag_type(
-                        diag_type, monitored_idx)
+            if self.variable == 'uv':
+                u_assimilated, v_assimilated = self.query_diag_type(
+                    assimilated_df, diag_type, bias_correction)
+                u_rejected, v_rejected = self.query_diag_type(
+                    rejected_df, diag_type, bias_correction)
+                u_monitored, v_monitored = self.query_diag_type(
+                    monitored_df, diag_type, bias_correction)
 
-                    u = {'assimilated': u_assimilated,
-                         'rejected': u_rejected,
-                         'monitored': u_monitored}
-                    v = {'assimilated': v_assimilated,
-                         'rejected': v_rejected,
-                         'monitored': v_monitored}
+                u = {'assimilated': u_assimilated,
+                     'rejected': u_rejected,
+                     'monitored': u_monitored}
+                v = {'assimilated': v_assimilated,
+                     'rejected': v_rejected,
+                     'monitored': v_monitored}
 
-                    return u, v
-                else:
-                    assimilated_data = self.query_diag_type(
-                        diag_type, assimilated_idx)
-                    rejected_data = self.query_diag_type(
-                        diag_type, rejected_idx)
-                    monitored_data = self.query_diag_type(
-                        diag_type, monitored_idx)
-
-                    data = {'assimilated': assimilated_data,
-                            'rejected': rejected_data,
-                            'monitored': monitored_data
-                            }
-
-                    return data
+                return u, v
 
             else:
-                idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
+                assimilated_data = self.query_diag_type(
+                    assimilated_df, diag_type, bias_correction)
+                rejected_data = self.query_diag_type(
+                    rejected_df, diag_type, bias_correction)
+                monitored_data = self.query_diag_type(
+                    monitored_df, diag_type, bias_correction)
 
-                if self.variable == 'uv':
-                    u, v = self.query_diag_type(diag_type, idx)
+                data = {'assimilated': assimilated_data,
+                        'rejected': rejected_data,
+                        'monitored': monitored_data
+                        }
 
-                    return u, v
-
-                else:
-                    data = self.query_diag_type(diag_type, idx)
-
-                    return data
-
-    def _get_idx_conv(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
-        """
-        Given parameters, get the indices of the observation
-        locations from a conventional diagnostic file
-        INPUT:
-            obsid   : observation measurement ID number
-            qcflag  : qc flag (default: None) i.e. <7, >7
-            vqcflag : vqc flag (default: None) i.e. <1, >=1
-            subtype : subtype number (default: None)
-            station_id : station id tag (default: None)
-        OUTPUT:
-            idx    : indices of the requested data in the file
-        """
-
-        if not obsid or obsid == [None]:
-            obsid = None
-        if not subtype or subtype == [None]:
-            subtype = None
-        if not station_id or station_id == [None]:
-            station_id = None
-
-        if not analysis_use:
-            idxobs = self.o_type
-            valid_idx = np.full_like(idxobs, True, dtype=bool)
-            if obsid != None:
-                valid_obs_idx = np.isin(idxobs, obsid)
-                valid_idx = np.logical_and(valid_idx, valid_obs_idx)
-            if subtype != None:
-                subtypeidx = self.o_stype
-                valid_subtype_idx = np.isin(subtypeidx, subtype)
-                valid_idx = np.logical_and(valid_idx, valid_subtype_idx)
-            if station_id != None:
-                stnididx = self.stnid
-                stnididx = [i.tobytes(fill_value='/////', order='C') for i in stnididx]
-                stnididx = np.array([''.join(i.decode('UTF-8', 'ignore').split()) for i in stnididx])
-                valid_stnid_idx = np.isin(stnididx, station_id)
-                valid_idx = np.logical_and(valid_idx, valid_stnid_idx)
-
-            idx = np.where(valid_idx)
-
-            return idx
+                return data
 
         else:
-            valid_assimilated_idx = np.isin(self.anl_use, 1)
-            valid_rejected_idx = np.isin(self.anl_use, -1)
-            valid_monitored_idx = np.isin(self.anl_use, -1)
+            indexed_df = self._select_conv(obsid, subtype, station_id)
 
-            valid_qc_idx = self.prepqc < 8.0
-            valid_qc2_idx = self.prepqc > 7.0
-            valid_rejected_idx = np.logical_and(valid_rejected_idx, valid_qc_idx)
-            valid_monitored_idx = np.logical_and(valid_monitored_idx, valid_qc2_idx)
+            if self.variable == 'uv':
+                u, v = self._query_diag_type(
+                    indexed_df, diag_type, bias_correction)
 
-            if obsid != None:
-                idxobs = self.o_type
-                valid_obs_idx = np.isin(idxobs, obsid)
+                return u, v
 
-                valid_assimilated_idx = np.logical_and(
-                    valid_assimilated_idx, valid_obs_idx)
-                valid_rejected_idx = np.logical_and(
-                    valid_rejected_idx, valid_obs_idx)
-                valid_monitored_idx = np.logical_and(
-                    valid_monitored_idx, valid_obs_idx)
+            else:
+                data = self._query_diag_type(
+                    indexed_df, diag_type, bias_correction)
 
-            if subtype != None:
-                subtypeidx = self.o_stype
-                valid_subtype_idx = np.isin(subtypeidx, subtype)
+                return data
 
-                valid_assimilated_idx = np.logical_and(
-                    valid_assimilated_idx, valid_subtype_idx)
-                valid_rejected_idx = np.logical_and(
-                    valid_rejected_idx, valid_subtype_idx)
-                valid_monitored_idx = np.logical_and(
-                    valid_monitored_idx, valid_subtype_idx)
+    def _select_conv(self, obsid=None, subtype=None, station_id=None,
+                     analysis_use=False):
+        """
+        Given parameters, multidimensional dataframe is indexed
+        to only include selected locations from a conventional
+        diagnostic file.
 
-            if station_id != None:
-                stnididx = self.stnid
-                stnididx = np.array(
-                    [''.join(i.tostring().decode().split()) for i in stnididx])
-                valid_stnid_idx = np.isin(stnididx, station_id)
+        Args:
+            obsid : (list of ints; default=None) observation measurement
+                    ID number
+            subtype : (list of ints; default=None) subtype number
+            station_id : (list of str; default=None) station id tag
+            analysis_use : (bool; deafault=False) if True, will separate
+                           into three indexed dataframes: assimilated,
+                           rejected, monitored
+        Returns:
+            df : (pandas dataframe) indexed multidimentsional
+                 dataframe from selected data
+        """
 
-                valid_assimilated_idx = np.logical_and(
-                    valid_assimilated_idx, valid_stnid_idx)
-                valid_rejected_idx = np.logical_and(
-                    valid_rejected_idx, valid_stnid_idx)
-                valid_monitored_idx = np.logical_and(
-                    valid_monitored_idx, valid_stnid_idx)
+        df = self.data_df
 
-            assimilated_idx = np.where(valid_assimilated_idx)
-            rejected_idx = np.where(valid_rejected_idx)
-            monitored_idx = np.where(valid_monitored_idx)
+        # select data by obsid, subtype, and station ids
+        if obsid is not None:
+            idx_col = 'Observation_Type'
+            indx = df.index.get_level_values(idx_col) == ''
+            for obid in obsid:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == obid)
+            df = df.iloc[indx]
+        if subtype is not None:
+            idx_col = 'Observation_Subtype'
+            indx = df.index.get_level_values(idx_col) == ''
+            for stype in subtype:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == stype)
+            df = df.iloc[indx]
+        if station_id is not None:
+            idx_col = 'Station_ID'
+            indx = df.index.get_level_values(idx_col) == ''
+            for stn_id in station_id:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == stn_id)
+            df = df.iloc[indx]
 
-            return assimilated_idx, rejected_idx, monitored_idx
+        if analysis_use:
+            # Separate into 3 dataframes; assimilated, rejected, and monitored
+            indx = df.index.get_level_values('Analysis_Use_Flag') == ''
+
+            assimilated_indx = np.ma.logical_or(
+                indx, df.index.get_level_values('Analysis_Use_Flag') == 1)
+            rejected_indx = np.ma.logical_or(
+                indx, df.index.get_level_values('Analysis_Use_Flag') == -1)
+            monitored_indx = np.ma.logical_or(
+                indx, df.index.get_level_values('Analysis_Use_Flag') == -1)
+
+            assimilated_df = df.iloc[assimilated_indx]
+            rejected_df = df.iloc[rejected_indx]
+            monitored_df = df.iloc[monitored_indx]
+
+            # Find rejected and monitored based on Prep_QC_Mark
+            try:
+                assimilated_df = assimilated_df.loc[
+                    assimilated_df['Prep_QC_Mark'] < 7]
+                rejected_df = rejected_df.loc[
+                    rejected_df['Prep_QC_Mark'] < 8]
+                monitored_df = monitored_df.loc[
+                    monitored_df['Prep_QC_Mark'] > 7]
+            except KeyError:
+                assimilated_df = assimilated_df.loc[
+                    assimilated_df['Setup_QC_Mark'] < 7]
+                rejected_df = rejected_df.loc[
+                    rejected_df['Setup_QC_Mark'] < 8]
+                monitored_df = monitored_df.loc[
+                    monitored_df['Setup_QC_Mark'] > 7]
+
+            return assimilated_df, rejected_df, monitored_df
+
+        else:
+            return df
 
     def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
         """
