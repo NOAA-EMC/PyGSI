@@ -99,7 +99,7 @@ class Conventional(GSIdiag):
         # Open netCDF file, store data into dictionary
         with Dataset(self.path, mode='r') as f:
             for var in f.variables:
-                # Station_ID and Observatio_Class variables need
+                # Station_ID and Observation_Class variables need
                 # to be converted from byte string to string
                 if var in ['Station_ID', 'Observation_Class']:
                     data = f.variables[var][:]
@@ -119,37 +119,28 @@ class Conventional(GSIdiag):
 
         # Creates multidimensional indexed dataframe
         indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
-                   'Observation_Subtype', 'Pressure', 'Height',
-                   'Analysis_Use_Flag']
+                   'Observation_Subtype', 'Pressure', 'Height', 'Analysis_Use_Flag']
         df.set_index(indices, inplace=True)
 
         # Rename columns
         df.columns = df.columns.str.lower()
         if self.variable == 'uv':
-            df = df.rename(columns={
-                'u_obs_minus_forecast_unadjusted': 'u_omf_unadjusted',
-                'u_obs_minus_forecast_adjusted': 'u_omf_adjusted',
-                'v_obs_minus_forecast_unadjusted': 'v_omf_unadjusted',
-                'v_obs_minus_forecast_adjusted': 'v_omf_adjusted'
-                })
-            # Create hofx columns
-            df['u_hofx_unadjusted'] = df['u_observation'] - \
-                df['u_omf_unadjusted']
-            df['v_hofx_unadjusted'] = df['v_observation'] - \
-                df['v_omf_unadjusted']
-            df['u_hofx_adjusted'] = df['u_observation'] - \
-                df['u_omf_adjusted']
-            df['v_hofx_adjusted'] = df['v_observation'] - \
-                df['v_omf_adjusted']
+            for wind_type in ['u', 'v']:
+                for bias_type in ['unadjusted', 'adjusted']:
+                    df = df.rename(columns={
+                        f'{wind_type}_obs_minus_forecast_{bias_type}': f'{wind_type}_omf_{bias_type}'
+                        })
+                    # Create hofx columns
+                    df[f'{wind_type}_hofx_{bias_type}'] = df[f'{wind_type}_observation'] - \
+                        df[f'{wind_type}_omf_{bias_type}']
 
         else:
-            df = df.rename(columns={
-                'obs_minus_forecast_unadjusted': 'omf_unadjusted',
-                'obs_minus_forecast_adjusted': 'omf_adjusted',
-                })
-            # Create hofx columns
-            df['hofx_unadjusted'] = df['observation'] - df['omf_unadjusted']
-            df['hofx_adjusted'] = df['observation'] - df['omf_adjusted']
+            for bias_type in ['unadjusted', 'adjusted']:
+                df = df.rename(columns={
+                    f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
+                    })
+                # Create hofx columns
+                df[f'hofx_{bias_type}'] = df['observation'] - df[f'omf_{bias_type}']
 
         self.data_df = df
 
@@ -430,12 +421,12 @@ class Conventional(GSIdiag):
         """
 
         if lvl_type == 'pressure':
-            df = df.query(
-                f'(Pressure <= {high_bound}) and (Pressure > {low_bound})')
+            # Grab data greater than low bound and less or than equal to high_bound
+            df = df.query(f'(Pressure > {low_bound}) and (Pressure <= {high_bound})')
 
         else:
-            df = df.query(
-                f'(Height <= {high_bound}) and (Height > {low_bound})')
+            # Grab data greater than or equal to low bound and less than high_bound
+            df = df.query(f'(Height >= {low_bound}) and (Height < {high_bound})')
 
         return df
 
@@ -443,6 +434,21 @@ class Conventional(GSIdiag):
                      analysis_use=False):
         """
         Grabs indexed pressure data.
+
+        Args:
+            obsid : (list of ints; optional; default=None) observation
+                    measurement ID number; default=None
+            subtype : (list of ints; optional; default=None) observation
+                      measurement ID subtype number, default=None
+            station_id : (list of str; optional; default=None)
+                         station id, default=None
+            analysis_use : (bool; defaul=False) if True, will return
+                           three sets of data:
+                           assimlated (analysis_use_flag=1, qc<7),
+                           rejected (analysis_use_flag=-1, qc<8),
+                           monitored (analysis_use_flag=-1, qc>7)
+        Returns:
+            height : indexed pressure values
         """
         if analysis_use:
             assimilated_df, rejected_df, monitored_df = self._select_conv(
@@ -465,6 +471,21 @@ class Conventional(GSIdiag):
                    analysis_use=False):
         """
         Grabs indexed height data.
+
+        Args:
+            obsid : (list of ints; optional; default=None) observation
+                    measurement ID number; default=None
+            subtype : (list of ints; optional; default=None) observation
+                      measurement ID subtype number, default=None
+            station_id : (list of str; optional; default=None)
+                         station id, default=None
+            analysis_use : (bool; defaul=False) if True, will return
+                           three sets of data:
+                           assimlated (analysis_use_flag=1, qc<7),
+                           rejected (analysis_use_flag=-1, qc<8),
+                           monitored (analysis_use_flag=-1, qc>7)
+        Returns:
+            height : indexed height values
         """
         if analysis_use:
             assimilated_df, rejected_df, monitored_df = self._select_conv(
@@ -482,6 +503,109 @@ class Conventional(GSIdiag):
             height = indexed_df.reset_index()['Height'].to_numpy()
 
         return height
+    
+    def get_lat_lon(self, obsid=None, subtype=None, station_id=None,
+                    analysis_use=False, lvls=None, lvl_type='pressure'):
+        """
+        Grabs indexed lats and lons from inputs.
+        
+        Args:
+            obsid : (list of ints; optional; default=None) observation
+                    measurement ID number; default=None
+            subtype : (list of ints; optional; default=None) observation
+                      measurement ID subtype number, default=None
+            station_id : (list of str; optional; default=None)
+                         station id, default=None
+            analysis_use : (bool; defaul=False) if True, will return
+                           three sets of data:
+                           assimlated (analysis_use_flag=1, qc<7),
+                           rejected (analysis_use_flag=-1, qc<8),
+                           monitored (analysis_use_flag=-1, qc>7)
+            lvls : (list type; default=None) List of pressure or height
+                   levels i.e. [250,500,750,1000]. List must be arranged
+                   low to high.
+            lvl_type : (str; default='pressure') lvls definition as
+                       'pressure' or 'height'.
+        Returns:
+            lat, lon : (array like) requested indexed latitude and longitude
+        """
+        # Selects proper levels
+        if lvls is not None:
+            # Check if level type is valid
+            if lvl_type not in _VALID_LVL_TYPES:
+                raise ValueError((f'{lvl_type} is not a valid lvl_type. '
+                                  'Valid choices are: '
+                                  f'{" | ".join(_VALID_LVL_TYPES)}'))
+
+        if analysis_use:
+            assimilated_df, rejected_df, monitored_df = self._select_conv(
+                        obsid, subtype, station_id, analysis_use)
+
+            # select by levels
+            if lvls is not None:
+                binned_lats = {}
+                binned_lons = {}
+
+                for i, low_bound in enumerate(lvls[:-1]):
+                    high_bound = lvls[i+1]
+
+                    assimilated_lvl_df = self._select_levels(
+                        assimilated_df, low_bound, high_bound, lvl_type)
+                    rejected_lvl_df = self._select_levels(
+                        rejected_df, low_bound, high_bound, lvl_type)
+                    monitored_lvl_df = self._select_levels(
+                        monitored_df, low_bound, high_bound, lvl_type)
+
+                    lats = {'assimilated': assimilated_lvl_df['latitude'].to_numpy(),
+                            'rejected': rejected_lvl_df['latitude'].to_numpy(),
+                            'monitored': monitored_lvl_df['latitude'].to_numpy()
+                            }
+                    lons = {'assimilated': assimilated_lvl_df['longitude'].to_numpy(),
+                            'rejected': rejected_lvl_df['longitude'].to_numpy(),
+                            'monitored': monitored_lvl_df['longitude'].to_numpy()
+                            }
+
+                    binned_lats[f'{low_bound}-{high_bound}'] = lats
+                    binned_lons[f'{low_bound}-{high_bound}'] = lons
+
+                return binned_lats, binned_lons
+
+            else:
+                lats = {'assimilated': assimilated_df['latitude'].to_numpy(),
+                        'rejected': rejected_df['latitude'].to_numpy(),
+                        'monitored': monitored_df['latitude'].to_numpy()
+                        }
+                lons = {'assimilated': assimilated_df['longitude'].to_numpy(),
+                        'rejected': rejected_df['longitude'].to_numpy(),
+                        'monitored': monitored_df['longitude'].to_numpy()
+                        }
+
+                return lats, lons
+
+        else:
+            indexed_df = self._select_conv(obsid, subtype, station_id)
+
+            # select by levels
+            if lvls is not None:
+                binned_lats = {}
+                binned_lons = {}
+
+                for i, low_bound in enumerate(lvls[:-1]):
+                    high_bound = lvls[i+1]
+
+                    lvl_df = self._select_levels(
+                        indexed_df, low_bound, high_bound, lvl_type)
+
+                    lats = lvl_df['latitude'].to_numpy()
+                    lons = lvl_df['longitude'].to_numpy()
+
+                    binned_lats[f'{low_bound}-{high_bound}'] = lats
+                    binned_lons[f'{low_bound}-{high_bound}'] = lons
+
+                return binned_lats, binned_lons
+
+            else:
+                return indexed_df['latitude'].to_numpy(), indexed_df['longitude'].to_numpy()
 
 
 class Radiance(GSIdiag):
