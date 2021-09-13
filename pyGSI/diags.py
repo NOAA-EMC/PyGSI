@@ -97,7 +97,7 @@ class Conventional(GSIdiag):
         df_dict = {}
 
         # Open netCDF file, store data into dictionary
-        with Dataset(file, mode='r') as f:
+        with Dataset(self.path, mode='r') as f:
             for var in f.variables:
                 # Station_ID and Observatio_Class variables need
                 # to be converted from byte string to string
@@ -119,7 +119,8 @@ class Conventional(GSIdiag):
 
         # Creates multidimensional indexed dataframe
         indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
-                   'Observation_Subtype', 'Pressure', 'Analysis_Use_Flag']
+                   'Observation_Subtype', 'Pressure', 'Height',
+                   'Analysis_Use_Flag']
         df.set_index(indices, inplace=True)
 
         # Rename columns
@@ -174,24 +175,19 @@ class Conventional(GSIdiag):
                            monitored (analysis_use_flag=-1, qc>7)
             lvls : (list type; default=None) List of pressure or height
                    levels i.e. [250,500,750,1000]. List must be arranged
-                   low to high.  Will return a dictionary with subsetted
-                   pressure or height levels where data is separated
-                   within those levels:
-
-                   dict = {250-500: <data>,
-                           500-750: <data>,
-                           750-1000: <data>}
+                   low to high.
             lvl_type : (str; default='pressure') lvls definition as
                        'pressure' or 'height'.
             bias_correction : (bool; default=True) If True, will return bias
                               corrected data.
         Returns:
-            data   : requested indexed data
+            data : requested indexed data
         """
 
         if diag_type not in _VALID_CONV_DIAG_TYPES:
-            raise ValueError((f'{diag_type} wrong. Valid choices are: '
-                              f'{" | ".join(_VALID_DIAG_TYPES)}'))
+            raise ValueError((f'{diag_type} is not a valid diag_type. '
+                              'Valid choices are: '
+                              f'{" | ".join(_VALID_CONV_DIAG_TYPES)}'))
 
         self.metadata['Diag Type'] = diag_type
         self.metadata['ObsID'] = obsid
@@ -201,168 +197,71 @@ class Conventional(GSIdiag):
         self.metadata['Levels'] = lvls
         self.metadata['Levels Type'] = lvl_type
 
+        # Selects proper levels
         if lvls is not None:
-       
+            # Check if level type is valid
             if lvl_type not in _VALID_LVL_TYPES:
-                raise ValueError('{lvl_type} wrong, use "pressure" or "height" for input lvl_type'.format(lvl_type=repr(lvl_type)))
+                raise ValueError((f'{lvl_type} is not a valid lvl_type. '
+                                  'Valid choices are: '
+                                  f'{" | ".join(_VALID_LVL_TYPES)}'))
 
-            level_list = lvls
-            binned_data = {}
+            data = self._get_lvl_data(
+                diag_type, obsid, subtype, station_id,
+                analysis_use, lvls, lvl_type, bias_correction)
 
-            if analysis_use:
-                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
-
-
-                for i, low_bound in enumerate(level_list[:-1]):
-                    if lvl_type == 'height':
-                       hght_idx = np.where((self.height >= level_list[i]) & (
-                           self.height < level_list[i+1]))
-                       valid_assimilated_idx = np.isin(
-                           assimilated_idx[0], hght_idx[0])
-                       valid_rejected_idx = np.isin(
-                           rejected_idx[0], hght_idx[0])
-                       valid_monitored_idx = np.isin(
-                           monitored_idx[0], hght_idx[0])
-                    else:
-                       pres_idx = np.where((self.press > level_list[i]) & (
-                           self.press <= level_list[i+1]))
-                       valid_assimilated_idx = np.isin(
-                           assimilated_idx[0], pres_idx[0])
-                       valid_rejected_idx = np.isin(
-                           rejected_idx[0], pres_idx[0])
-                       valid_monitored_idx = np.isin(
-                           monitored_idx[0], pres_idx[0])
-
-                    assimilated_pidx = np.where(valid_assimilated_idx)
-                    rejected_pidx = np.where(valid_rejected_idx)
-                    monitored_pidx = np.where(valid_monitored_idx)
-
-                    if self.variable == 'uv':
-                        u_assimilated, v_assimilated = self.query_diag_type(
-                            diag_type, assimilated_pidx)
-                        u_rejected, v_rejected = self.query_diag_type(
-                            diag_type, rejected_pidx)
-                        u_monitored, v_monitored = self.query_diag_type(
-                            diag_type, monitored_pidx)
-
-                        data = {'u': {'assimilated': u_assimilated,
-                                      'rejected': u_rejected,
-                                      'monitored': u_monitored},
-                                'v': {'assimilated': v_assimilated,
-                                      'rejected': v_rejected,
-                                      'monitored': v_monitored}
-                                }
-
-                        binned_data['%s-%s' %
-                                        (level_list[i], level_list[i+1])] = data
-
-                    else:
-                        assimilated_data = self.query_diag_type(
-                            diag_type, assimilated_pidx)
-                        rejected_data = self.query_diag_type(
-                            diag_type, rejected_pidx)
-                        monitored_data = self.query_diag_type(
-                            diag_type, monitored_pidx)
-
-                        data = {'assimilated': assimilated_data,
-                                'rejected': rejected_data,
-                                'monitored': monitored_data
-                                }
-
-                        binned_data['%s-%s' %
-                                        (level_list[i], level_list[i+1])] = data
-
-                return binned_data
-
-            else:
-                idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
-
-                for i, low_bound in enumerate(level_list[:-1]):
-
-                    if lvl_type == 'height':
-                       hght_idx = np.where((self.height >= level_list[i]) & (
-                           self.height < level_list[i+1]))
-                       valid_idx = np.isin(idx[0], hght_idx[0])
-                       pidx = np.where(valid_idx)
-
-                    else:
-                       pres_idx = np.where((self.press > level_list[i]) & (
-                           self.press <= level_list[i+1]))
-                       valid_idx = np.isin(idx[0], pres_idx[0])
-                       pidx = np.where(valid_idx)
-
-
-                    if self.variable == 'uv':
-                        u, v = self.query_diag_type(diag_type, pidx)
-
-                        data = {'u': u,
-                                'v': v}
-
-                        binned_data['%s-%s' %
-                                        (level_list[i], level_list[i+1])] = data
-
-                    else:
-                        data = self.query_diag_type(diag_type, pidx)
-
-                        binned_data['%s-%s' %
-                                        (level_list[i], level_list[i+1])] = data
-
-                return binned_data
+            return data
 
         else:
-
             if analysis_use:
                 assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
 
-            if self.variable == 'uv':
-                u_assimilated, v_assimilated = self.query_diag_type(
-                    assimilated_df, diag_type, bias_correction)
-                u_rejected, v_rejected = self.query_diag_type(
-                    rejected_df, diag_type, bias_correction)
-                u_monitored, v_monitored = self.query_diag_type(
-                    monitored_df, diag_type, bias_correction)
+                if self.variable == 'uv':
+                    u_assimilated, v_assimilated = self._query_diag_type(
+                        assimilated_df, diag_type, bias_correction)
+                    u_rejected, v_rejected = self._query_diag_type(
+                        rejected_df, diag_type, bias_correction)
+                    u_monitored, v_monitored = self._query_diag_type(
+                        monitored_df, diag_type, bias_correction)
 
-                u = {'assimilated': u_assimilated,
-                     'rejected': u_rejected,
-                     'monitored': u_monitored}
-                v = {'assimilated': v_assimilated,
-                     'rejected': v_rejected,
-                     'monitored': v_monitored}
+                    u = {'assimilated': u_assimilated,
+                         'rejected': u_rejected,
+                         'monitored': u_monitored}
+                    v = {'assimilated': v_assimilated,
+                         'rejected': v_rejected,
+                         'monitored': v_monitored}
 
-                return u, v
+                    return u, v
 
-            else:
-                assimilated_data = self.query_diag_type(
-                    assimilated_df, diag_type, bias_correction)
-                rejected_data = self.query_diag_type(
-                    rejected_df, diag_type, bias_correction)
-                monitored_data = self.query_diag_type(
-                    monitored_df, diag_type, bias_correction)
+                else:
+                    assimilated_data = self._query_diag_type(
+                        assimilated_df, diag_type, bias_correction)
+                    rejected_data = self._query_diag_type(
+                        rejected_df, diag_type, bias_correction)
+                    monitored_data = self._query_diag_type(
+                        monitored_df, diag_type, bias_correction)
 
-                data = {'assimilated': assimilated_data,
-                        'rejected': rejected_data,
-                        'monitored': monitored_data
-                        }
+                    data = {'assimilated': assimilated_data,
+                            'rejected': rejected_data,
+                            'monitored': monitored_data
+                            }
 
-                return data
-
-        else:
-            indexed_df = self._select_conv(obsid, subtype, station_id)
-
-            if self.variable == 'uv':
-                u, v = self._query_diag_type(
-                    indexed_df, diag_type, bias_correction)
-
-                return u, v
+                    return data
 
             else:
-                data = self._query_diag_type(
-                    indexed_df, diag_type, bias_correction)
+                indexed_df = self._select_conv(obsid, subtype, station_id)
 
-                return data
+                if self.variable == 'uv':
+                    u, v = self._query_diag_type(
+                        indexed_df, diag_type, bias_correction)
+
+                    return u, v
+
+                else:
+                    data = self._query_diag_type(
+                        indexed_df, diag_type, bias_correction)
+
+                    return data
 
     def _select_conv(self, obsid=None, subtype=None, station_id=None,
                      analysis_use=False):
@@ -427,143 +326,162 @@ class Conventional(GSIdiag):
             # Find rejected and monitored based on Prep_QC_Mark
             try:
                 assimilated_df = assimilated_df.loc[
-                    assimilated_df['Prep_QC_Mark'] < 7]
+                    assimilated_df['prep_qc_mark'] < 7]
                 rejected_df = rejected_df.loc[
-                    rejected_df['Prep_QC_Mark'] < 8]
+                    rejected_df['prep_qc_mark'] < 8]
                 monitored_df = monitored_df.loc[
-                    monitored_df['Prep_QC_Mark'] > 7]
+                    monitored_df['prep_qc_mark'] > 7]
             except KeyError:
                 assimilated_df = assimilated_df.loc[
-                    assimilated_df['Setup_QC_Mark'] < 7]
+                    assimilated_df['setup_qc_mark'] < 7]
                 rejected_df = rejected_df.loc[
-                    rejected_df['Setup_QC_Mark'] < 8]
+                    rejected_df['setup_qc_mark'] < 8]
                 monitored_df = monitored_df.loc[
-                    monitored_df['Setup_QC_Mark'] > 7]
+                    monitored_df['setup_qc_mark'] > 7]
 
             return assimilated_df, rejected_df, monitored_df
 
         else:
             return df
 
-    def get_lat_lon(self, obsid=None, subtype=None, station_id=None, analysis_use=False, lvls=None, lvl_type='pressure'):
+    def _get_lvl_data(self, diag_type, obsid=None, subtype=None,
+                      station_id=None, analysis_use=False, lvls=None,
+                      lvl_type='pressure', bias_correction=True):
         """
-        Gets lats and lons with desired indices
+        Given a list of levels, will create a dictionary of data that is
+        selected between each level. Will return a dictionary with subsetted
+        pressure or height levels where data is separated within those levels:
+
+        dict = {250-500: <data>,
+                500-750: <data>,
+                750-1000: <data>}
         """
+        binned_data = {}
 
-        if lvls is not None:
-
-            if lvl_type not in _VALID_LVL_TYPES:
-                raise ValueError('{lvl_type} wrong, use "pressure" or "height" for input lvl_type'.format(lvl_type=repr(lvl_type)))
-
-            level_list = lvls
-            binned_lats = {}
-            binned_lons = {}
+        for i, low_bound in enumerate(lvls[:-1]):
+            high_bound = lvls[i+1]
 
             if analysis_use:
-                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
+                assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                for i, low_bound in enumerate(level_list[:-1]):
-                    if lvl_type == 'height':
-                       hght_idx = np.where((self.height >= level_list[i]) & (
-                           self.height < level_list[i+1]))
-                       valid_assimilated_idx = np.isin(
-                           assimilated_idx[0], hght_idx[0])
-                       valid_rejected_idx = np.isin(
-                           rejected_idx[0], hght_idx[0])
-                       valid_monitored_idx = np.isin(
-                           monitored_idx[0], hght_idx[0])
-                    else:
-                       pres_idx = np.where((self.press > level_list[i]) & (
-                           self.press <= level_list[i+1]))
-                       valid_assimilated_idx = np.isin(
-                           assimilated_idx[0], pres_idx[0])
-                       valid_rejected_idx = np.isin(
-                           rejected_idx[0], pres_idx[0]) 
-                       valid_monitored_idx = np.isin(
-                           monitored_idx[0], pres_idx[0])
+                assimilated_lvl_df = self._select_levels(
+                    assimilated_df, low_bound, high_bound, lvl_type)
+                rejected_lvl_df = self._select_levels(
+                    rejected_df, low_bound, high_bound, lvl_type)
+                monitored_lvl_df = self._select_levels(
+                    monitored_df, low_bound, high_bound, lvl_type)
 
-                    assimilated_pidx = np.where(valid_assimilated_idx)
-                    rejected_pidx = np.where(valid_rejected_idx)
-                    monitored_pidx = np.where(valid_monitored_idx)
+                if self.variable == 'uv':
+                    u_assimilated, v_assimilated = self._query_diag_type(
+                        assimilated_lvl_df, diag_type, bias_correction)
+                    u_rejected, v_rejected = self._query_diag_type(
+                        rejected_lvl_df, diag_type, bias_correction)
+                    u_monitored, v_monitored = self._query_diag_type(
+                        monitored_lvl_df, diag_type, bias_correction)
 
-                    lats = {'assimilated': self.lats[assimilated_pidx],
-                            'rejected': self.lats[rejected_pidx],
-                            'monitored': self.lats[monitored_pidx]}
-                    lons = {'assimilated': self.lons[assimilated_pidx],
-                            'rejected': self.lons[rejected_pidx],
-                            'monitored': self.lons[monitored_pidx]}
+                    u = {'assimilated': u_assimilated,
+                         'rejected': u_rejected,
+                         'monitored': u_monitored}
+                    v = {'assimilated': v_assimilated,
+                         'rejected': v_rejected,
+                         'monitored': v_monitored}
 
-                    binned_lats[low_bound] = lats
-                    binned_lons[low_bound] = lons
+                    data = {'u': u,
+                            'v': v}
+                else:
+                    assimilated_data = self._query_diag_type(
+                        assimilated_lvl_df, diag_type, bias_correction)
+                    rejected_data = self._query_diag_type(
+                        rejected_lvl_df, diag_type, bias_correction)
+                    monitored_data = self._query_diag_type(
+                        monitored_lvl_df, diag_type, bias_correction)
 
-                return binned_lats, binned_lons
+                    data = {'assimilated': assimilated_data,
+                            'rejected': rejected_data,
+                            'monitored': monitored_data
+                            }
+
+                binned_data[f'{low_bound}-{high_bound}'] = data
 
             else:
-                binned_lats = {}
-                binned_lons = {}
+                indexed_df = self._select_conv(obsid, subtype, station_id)
 
-                idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
+                lvl_df = self._select_levels(
+                    indexed_df, low_bound, high_bound, lvl_type)
 
-                for i, low_bound in enumerate(level_list[:-1]):
-                    if lvl_type == 'height':
-                        hght_idx = np.where((self.height >= level_list[i]) & (
-                            self.height < level_list[i+1]))
-                        valid_idx = np.isin(idx[0], hght_idx[0])
-                        pidx = np.where(valid_idx)
-                    else:
-                        pres_idx = np.where((self.press > level_list[i]) & (
-                            self.press <= level_list[i+1]))
-                        valid_idx = np.isin(idx[0], pres_idx[0])
-                        pidx = np.where(valid_idx)
+                if self.variable == 'uv':
+                    u, v = self._query_diag_type(
+                        lvl_df, diag_type, bias_correction)
 
-                    binned_lats[low_bound] = self.lats[pidx]
-                    binned_lons[low_bound] = self.lons[pidx]
+                    data = {'u': u,
+                            'v': v}
+                else:
+                    data = self._query_diag_type(
+                        lvl_df, diag_type, bias_correction)
 
-                return binned_lats, binned_lons
+                binned_data[f'{low_bound}-{high_bound}'] = data
+
+        return binned_data
+
+    def _select_levels(self, df, low_bound, high_bound, lvl_type):
+        """
+        Selects data between two level bounds from given dataframe.
+        """
+
+        if lvl_type == 'pressure':
+            df = df.query(
+                f'(Pressure <= {high_bound}) and (Pressure > {low_bound})')
 
         else:
-            if analysis_use:
-                assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
-                lats = {'assimilated': self.lats[assimilated_idx],
-                        'rejected': self.lats[rejected_idx],
-                        'monitored': self.lats[monitored_idx]}
-                lons = {'assimilated': self.lons[assimilated_idx],
-                        'rejected': self.lons[rejected_idx],
-                        'monitored': self.lons[monitored_idx]}
-                return lats, lons
-            else:
-                idx = self._get_idx_conv(
-                    obsid, subtype, station_id, analysis_use)
-                return self.lats[idx], self.lons[idx]
+            df = df.query(
+                f'(Height <= {high_bound}) and (Height > {low_bound})')
 
-    def get_pressure(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
+        return df
+
+    def get_pressure(self, obsid=None, subtype=None, station_id=None,
+                     analysis_use=False):
+        """
+        Grabs indexed pressure data.
+        """
         if analysis_use:
-            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
-                obsid, subtype, station_id, analysis_use)
-            pressure = {'assimilated': self.press[assimilated_idx],
-                        'rejected': self.press[rejected_idx],
-                        'monitored': self.press[monitored_idx]}
+            assimilated_df, rejected_df, monitored_df = self._select_conv(
+                    obsid, subtype, station_id, analysis_use)
 
-            return pressure
+            pressure = {
+                'assimilated':
+                    assimilated_df.reset_index()['Pressure'].to_numpy(),
+                'rejected': rejected_df.reset_index()['Pressure'].to_numpy(),
+                'monitored': monitored_df.reset_index()['Pressure'].to_numpy()
+            }
+
         else:
-            idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
-            return self.press[idx]
+            indexed_df = self._select_conv(obsid, subtype, station_id)
+            pressure = indexed_df.reset_index()['Pressure'].to_numpy()
 
-    def get_height(self, obsid=None, subtype=None, station_id=None, analysis_use=False):
+        return pressure
+
+    def get_height(self, obsid=None, subtype=None, station_id=None,
+                   analysis_use=False):
+        """
+        Grabs indexed height data.
+        """
         if analysis_use:
-            assimilated_idx, rejected_idx, monitored_idx = self._get_idx_conv(
-                obsid, subtype, station_id, analysis_use)
-            height = {'assimilated': self.height[assimilated_idx],
-                      'rejected': self.height[rejected_idx],
-                      'monitored': self.height[monitored_idx]}
+            assimilated_df, rejected_df, monitored_df = self._select_conv(
+                    obsid, subtype, station_id, analysis_use)
 
-            return height
+            height = {
+                'assimilated':
+                    assimilated_df.reset_index()['Height'].to_numpy(),
+                'rejected': rejected_df.reset_index()['Height'].to_numpy(),
+                'monitored': monitored_df.reset_index()['Height'].to_numpy()
+            }
+
         else:
-            idx = self._get_idx_conv(obsid, subtype, station_id, analysis_use)
-            return self.height[idx]
+            indexed_df = self._select_conv(obsid, subtype, station_id)
+            height = indexed_df.reset_index()['Height'].to_numpy()
+
+        return height
 
 
 class Radiance(GSIdiag):
