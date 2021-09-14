@@ -119,7 +119,8 @@ class Conventional(GSIdiag):
 
         # Creates multidimensional indexed dataframe
         indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
-                   'Observation_Subtype', 'Pressure', 'Height', 'Analysis_Use_Flag']
+                   'Observation_Subtype', 'Pressure', 'Height',
+                   'Analysis_Use_Flag']
         df.set_index(indices, inplace=True)
 
         # Rename columns
@@ -128,10 +129,12 @@ class Conventional(GSIdiag):
             for wind_type in ['u', 'v']:
                 for bias_type in ['unadjusted', 'adjusted']:
                     df = df.rename(columns={
-                        f'{wind_type}_obs_minus_forecast_{bias_type}': f'{wind_type}_omf_{bias_type}'
+                        f'{wind_type}_obs_minus_forecast_{bias_type}':
+                        f'{wind_type}_omf_{bias_type}'
                         })
                     # Create hofx columns
-                    df[f'{wind_type}_hofx_{bias_type}'] = df[f'{wind_type}_observation'] - \
+                    df[f'{wind_type}_hofx_{bias_type}'] = \
+                        df[f'{wind_type}_observation'] - \
                         df[f'{wind_type}_omf_{bias_type}']
 
         else:
@@ -140,7 +143,8 @@ class Conventional(GSIdiag):
                     f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
                     })
                 # Create hofx columns
-                df[f'hofx_{bias_type}'] = df['observation'] - df[f'omf_{bias_type}']
+                df[f'hofx_{bias_type}'] = df['observation'] - \
+                    df[f'omf_{bias_type}']
 
         self.data_df = df
 
@@ -421,12 +425,16 @@ class Conventional(GSIdiag):
         """
 
         if lvl_type == 'pressure':
-            # Grab data greater than low bound and less or than equal to high_bound
-            df = df.query(f'(Pressure > {low_bound}) and (Pressure <= {high_bound})')
+            # Grab data greater than low bound and less than or
+            # equal to high_bound
+            df = df.query(
+                f'(Pressure > {low_bound}) and (Pressure <= {high_bound})')
 
         else:
-            # Grab data greater than or equal to low bound and less than high_bound
-            df = df.query(f'(Height >= {low_bound}) and (Height < {high_bound})')
+            # Grab data greater than or equal to low bound and
+            # less than high_bound
+            df = df.query(
+                f'(Height >= {low_bound}) and (Height < {high_bound})')
 
         return df
 
@@ -503,12 +511,12 @@ class Conventional(GSIdiag):
             height = indexed_df.reset_index()['Height'].to_numpy()
 
         return height
-    
+
     def get_lat_lon(self, obsid=None, subtype=None, station_id=None,
                     analysis_use=False, lvls=None, lvl_type='pressure'):
         """
         Grabs indexed lats and lons from inputs.
-        
+
         Args:
             obsid : (list of ints; optional; default=None) observation
                     measurement ID number; default=None
@@ -556,13 +564,19 @@ class Conventional(GSIdiag):
                     monitored_lvl_df = self._select_levels(
                         monitored_df, low_bound, high_bound, lvl_type)
 
-                    lats = {'assimilated': assimilated_lvl_df['latitude'].to_numpy(),
-                            'rejected': rejected_lvl_df['latitude'].to_numpy(),
-                            'monitored': monitored_lvl_df['latitude'].to_numpy()
+                    lats = {'assimilated':
+                            assimilated_lvl_df['latitude'].to_numpy(),
+                            'rejected':
+                            rejected_lvl_df['latitude'].to_numpy(),
+                            'monitored':
+                            monitored_lvl_df['latitude'].to_numpy()
                             }
-                    lons = {'assimilated': assimilated_lvl_df['longitude'].to_numpy(),
-                            'rejected': rejected_lvl_df['longitude'].to_numpy(),
-                            'monitored': monitored_lvl_df['longitude'].to_numpy()
+                    lons = {'assimilated':
+                            assimilated_lvl_df['longitude'].to_numpy(),
+                            'rejected':
+                            rejected_lvl_df['longitude'].to_numpy(),
+                            'monitored':
+                            monitored_lvl_df['longitude'].to_numpy()
                             }
 
                     binned_lats[f'{low_bound}-{high_bound}'] = lats
@@ -605,7 +619,10 @@ class Conventional(GSIdiag):
                 return binned_lats, binned_lons
 
             else:
-                return indexed_df['latitude'].to_numpy(), indexed_df['longitude'].to_numpy()
+                lats = indexed_df['latitude'].to_numpy()
+                lons = indexed_df['longitude'].to_numpy()
+
+                return lats, lons
 
 
 class Radiance(GSIdiag):
@@ -650,14 +667,15 @@ class Radiance(GSIdiag):
                     elif len(f.variables[var][:]) == len(nobs):
                         df_dict[var] = f.variables[var][:]
 
-        self.chan_info = chan_info              
-        
+        self.chan_info = chan_info
+
         # Sets correct channel number to indexed channel
         nchans = len(chan_info['chaninfoidx'])
         iters = int(len(df_dict['Channel_Index'])/nchans)
 
         for a in range(iters):
-            df_dict['Channel_Index'][a*nchans:(a+1)*nchans] = chan_info['sensor_chan']
+            df_dict['Channel_Index'][a*nchans:(a+1)*nchans] = \
+                chan_info['sensor_chan']
         df_dict['Channel'] = df_dict['Channel_Index']
 
         # Create pandas dataframe from dict
@@ -674,7 +692,8 @@ class Radiance(GSIdiag):
                 f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
                 })
             # Create hofx columns
-            df[f'hofx_{bias_type}'] = df['observation'] - df[f'omf_{bias_type}']
+            df[f'hofx_{bias_type}'] = df['observation'] - \
+                df[f'omf_{bias_type}']
 
         self.data_df = df
 
@@ -689,13 +708,15 @@ class Radiance(GSIdiag):
                         i.e. observation, omf, oma, hofx
             channel : (list of ints; default=None) observation channel number
             qcflag : (list of ints; default=None) qc flag number
-            separate_channels : (bool; default=False) if True, returns dict of separate 
-                                data by specified channels
-            separate_qc : (bool; default=False) if True, returns dict of separate data by
-                          specified qc flag
-            use_flag : (bool; default=False) if True, will only return where use_flag==1
-            errcheck : (bool; default=True) when True and qcflag==0, will toss out obs where
-                       inverse obs error is zero (i.e. not assimilated in GSI)
+            separate_channels : (bool; default=False) if True, returns
+                                dict of separate data by specified channels
+            separate_qc : (bool; default=False) if True, returns dict of
+                          separate data by specified qc flag
+            use_flag : (bool; default=False) if True, will only return where
+                       use_flag==1
+            errcheck : (bool; default=True) when True and qcflag==0, will
+                       toss out obs where inverse obs error is zero (i.e.
+                       not assimilated in GSI)
             bias_correction : (bool; default=True) If True, will return bias
                               corrected data.
         Returns:
@@ -712,19 +733,22 @@ class Radiance(GSIdiag):
 
         if separate_channels or separate_qc:
             data = self._get_data_special(
-                diag_type, channel, qcflag, use_flag, 
-                separate_channels, separate_qc, errcheck, bias_correction)
+                diag_type, channel, qcflag, use_flag, separate_channels,
+                separate_qc, errcheck, bias_correction)
             return data
 
         else:
-            indexed_df = self._select_radiance(channel, qcflag, use_flag, errcheck)
-            data = self._query_diag_type(indexed_df, diag_type, bias_correction)
+            indexed_df = self._select_radiance(
+                channel, qcflag, use_flag, errcheck)
+            data = self._query_diag_type(
+                indexed_df, diag_type, bias_correction)
 
             data[data > 1e5] = np.nan
 
             return data
 
-    def _select_radiance(self, channel=None, qcflag=None, use_flag=False, errcheck=True):
+    def _select_radiance(self, channel=None, qcflag=None, use_flag=False,
+                         errcheck=True):
         """
         Given parameters, get the indices of the observation
         locations from a radiance diagnostic file.
@@ -741,10 +765,11 @@ class Radiance(GSIdiag):
 
                 # If channel not valid, raise TypeError
                 if not any(indx):
-                    VALIDCHANS = df.index.get_level_values('Channel').unique().to_numpy()
+                    VALIDCHANS = df.index.get_level_values(
+                        'Channel').unique().to_numpy()
                     raise TypeError(f'Channel {chan} is not a valid channel. '
-                                     'Valid channels include: '
-                                     f'{", ".join(str(i) for i in VALIDCHANS)}')
+                                    'Valid channels include: '
+                                    f'{", ".join(str(i) for i in VALIDCHANS)}')
             df = df.iloc[indx]
 
         # index dataframe by qcflag
@@ -762,42 +787,47 @@ class Radiance(GSIdiag):
                 indx = df.index.get_level_values(idx_col) == ''
 
                 # Grab index where inverse ob error is not zero
-                err_indx = np.isin(df['inverse_observation_error'], 0, invert=True)
+                err_indx = np.isin(
+                    df['inverse_observation_error'], 0, invert=True)
                 indx = np.ma.logical_or(indx, err_indx)
 
                 df = df.iloc[indx]
 
         return df
-    
+
     def _get_data_special(self, diag_type, channel, qcflag, use_flag,
-                         separate_channels, separate_qc, errcheck,
-                         bias_correction):
+                          separate_channels, separate_qc, errcheck,
+                          bias_correction):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
         separate_qc
         """
         data_dict = {}
-        
+
         # If no channels given, return all channels
         if channel is None:
             channel = self.chan_info['sensor_chan']
-            
+
         # If no qc flags given, return all qc flags
         if qcflag is None:
-            qcflag = self.data_df.index.get_level_values('QC_Flag').unique().to_numpy()
+            qcflag = self.data_df.index.get_level_values(
+                'QC_Flag').unique().to_numpy()
 
         if separate_channels and not separate_qc:
             for c in channel:
-                indexed_df = self._select_radiance([c], qcflag, errcheck=errcheck)
-                data = self._query_diag_type(indexed_df, diag_type, bias_correction)
+                indexed_df = self._select_radiance(
+                    [c], qcflag, errcheck=errcheck)
+                data = self._query_diag_type(
+                    indexed_df, diag_type, bias_correction)
                 data[data > 1e5] = np.nan
 
                 data_dict['Channel %s' % c] = data
 
-        if not separate_channels and separate_qc:                
+        if not separate_channels and separate_qc:
             for qc in qcflag:
-                indexed_df = self._select_radiance(channel, [qc], errcheck=errcheck)
+                indexed_df = self._select_radiance(
+                    channel, [qc], errcheck=errcheck)
                 data = self._query_diag_type(diag_type, idx)
                 data[data > 1e5] = np.nan
 
@@ -807,14 +837,16 @@ class Radiance(GSIdiag):
             for c in channel:
                 data_dict['Channel %s' % c] = {}
                 for qc in qcflag:
-                    indexed_df = self._select_radiance([c], [qc], errcheck=errcheck)
-                    data = self._query_diag_type(indexed_df, diag_type, bias_correction)
+                    indexed_df = self._select_radiance(
+                        [c], [qc], errcheck=errcheck)
+                    data = self._query_diag_type(
+                        indexed_df, diag_type, bias_correction)
                     data[data > 1e5] = np.nan
 
                     data_dict['Channel %s' % c]['QC Flag %s' % qc] = data
 
         return data_dict
-    
+
     def get_lat_lon(self, channel=None, qcflag=None, errcheck=True):
         """
         Gets lats and lons with desired indices.
@@ -822,13 +854,17 @@ class Radiance(GSIdiag):
         Args:
             channel : (list of ints; default=None) observation channel number
             qcflag : (list of ints; default=None) qc flag number
-            errcheck : (bool; default=True) when True and qcflag==0, will toss out obs where
-                       inverse obs error is zero (i.e. not assimilated in GSI)
+            errcheck : (bool; default=True) when True and qcflag==0, will
+                       toss out obs where inverse obs error is zero (i.e.
+                       not assimilated in GSI)
         Returns:
             lat, lon : (array like) indexed latitude and longitude values
         """
         indexed_df = self._select_radiance(channel, qcflag, errcheck=errcheck)
-        return indexed_df['latitude'].to_numpy(), indexed_df['longitude'].to_numpy()
+        lats = indexed_df['latitude'].to_numpy()
+        lons = indexed_df['longitude'].to_numpy()
+
+        return lats, lons
 
 
 class Ozone(GSIdiag):
