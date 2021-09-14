@@ -612,11 +612,13 @@ class Radiance(GSIdiag):
 
     def __init__(self, path):
         """
-        Initialize a radiance GSI diagnostic object
-        INPUT:
-            path   : path to conventional GSI diagnostic object
-        RESULT:
-            self   : GSI diag radiance object containing the path to extract data
+        Initialize a Radiance GSI diagnostic object
+
+        Args:
+            path : (str) path to radiance GSI diagnostic object
+        Returns:
+            self : GSI diag radiance object containing the path
+                   to extract data
         """
         super().__init__(path)
 
@@ -628,154 +630,206 @@ class Radiance(GSIdiag):
 
     def _read_obs(self):
         """
-        Reads the data from the radiance diagnostic file during initialization.
+        Reads the data from the radiance diagnostic file during
+        initialization into a multidimensional pandas dataframe.
         """
+        df_dict = {}
+        chan_info = {}
 
-        with Dataset(self.path, mode='r') as f:
-            self.channel_idx = f.variables['Channel_Index'][:]
-            self.sensor_chan = f.variables['sensor_chan'][:]
-            self.chaninfo_idx = f.variables['chaninfoidx'][:]
-            self.lons = f.variables['Longitude'][:]
-            self.lats = f.variables['Latitude'][:]
-            self.time = f.variables['Obs_Time'][:]
-            self.o = f.variables['Observation'][:]
-            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
-            self.qc_flag = f.variables['QC_Flag'][:]
-            self.water_frac = f.variables['Water_Fraction'][:]
-            self.land_frac = f.variables['Land_Fraction'][:]
-            self.ice_frac = f.variables['Ice_Fraction'][:]
-            self.snow_frac = f.variables['Snow_Fraction'][:]
-            self.cloud_frac = f.variables['Cloud_Frac'][:]
-            self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
+        with Dataset(file, mode='r') as f:
 
+            # Grab dimensions to get lens
+            nchans = f.dimensions['nchans']
+            nobs = f.dimensions['nobs']
 
-    def get_data(self, diag_type, channel=None, qcflag=None,
-                 separate_channels=False, separate_qc=False, errcheck=True):
+            for var in f.variables:
+                if len(f.variables[var].shape) == 1:
+                    # Add channel info to own dict
+                    if len(f.variables[var][:]) == len(nchans):
+                        chan_info[var] = f.variables[var][:]
+                    elif len(f.variables[var][:]) == len(nobs):
+                        df_dict[var] = f.variables[var][:]
+
+        self.chan_info = chan_info              
+        
+        # Sets correct channel number to indexed channel
+        nchans = len(chan_info['chaninfoidx'])
+        iters = int(len(df_dict['Channel_Index'])/nchans)
+
+        for a in range(iters):
+            df_dict['Channel_Index'][a*nchans:(a+1)*nchans] = chan_info['sensor_chan']
+        df_dict['Channel'] = df_dict['Channel_Index']
+
+        # Create pandas dataframe from dict
+        df = pd.DataFrame(df_dict)
+
+        # Creates multidimensional indexed dataframe
+        indices = ['Channel', 'QC_Flag']
+        df.set_index(indices, inplace=True)
+
+        # Rename columns
+        df.columns = df.columns.str.lower()
+        for bias_type in ['unadjusted', 'adjusted']:
+            df = df.rename(columns={
+                f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
+                })
+            # Create hofx columns
+            df[f'hofx_{bias_type}'] = df['observation'] - df[f'omf_{bias_type}']
+
+        self.data_df = df
+
+    def get_data(self, diag_type, channel=None, qcflag=None, use_flag=False,
+                 separate_channels=False, separate_qc=False, errcheck=True,
+                 bias_correction=True):
         """
-        Given parameters, get the data from a radiance 
-        diagnostic file.
-        INPUT:
-            required:
-                diag_type : type of data to extract i.e. observation, omf, oma, hofx, water_fraction,
-                        land_fraction, ice_fraction, snow_fraction, cloud_fraction
+        Given parameters, get the data from a conventional diagnostic file
 
-            optional:  
-                channel           : observation channel number
-                qcflag            : qc flag (default: None) i.e. 0, 1
-                separate_channels : if True, calls _get_data_special() and returns dictionary
-                                    of separate data by specified channels
-                separate_qc       : if True, calls _get_data_special() and returns dictionary
-                                    of separate data by specified QC flags
-                errcheck          : when true, and qc==0, will toss out obs where inverse
-                                    obs error is zero (i.e. not assimilated in GSI)
-        OUTPUT:
-            data : requested data
-
+        Args:
+            diag_type : (str; Required) type of data to extract
+                        i.e. observation, omf, oma, hofx
+            channel : (list of ints; default=None) observation channel number
+            qcflag : (list of ints; default=None) qc flag number
+            separate_channels : (bool; default=False) if True, returns dict of separate 
+                                data by specified channels
+            separate_qc : (bool; default=False) if True, returns dict of separate data by
+                          specified qc flag
+            use_flag : (bool; default=False) if True, will only return where use_flag==1
+            errcheck : (bool; default=True) when True and qcflag==0, will toss out obs where
+                       inverse obs error is zero (i.e. not assimilated in GSI)
+            bias_correction : (bool; default=True) If True, will return bias
+                              corrected data.
+        Returns:
+            data : requested indexed data
         """
-       
+        if diag_type not in _VALID_RADIANCE_DIAG_TYPES:
+            raise ValueError((f'{diag_type} is not a valid diag_type. '
+                              'Valid choices are: '
+                              f'{" | ".join(_VALID_RADIANCE_DIAG_TYPES)}'))
+
         self.metadata['Diag Type'] = diag_type
         self.metadata['QC Flag'] = qcflag
         self.metadata['Channels'] = channel
-        
+
         if separate_channels or separate_qc:
             data = self._get_data_special(
-                diag_type, channel, qcflag, separate_channels, separate_qc, errcheck=errcheck)
+                diag_type, channel, qcflag, use_flag, 
+                separate_channels, separate_qc, errcheck, bias_correction)
             return data
 
         else:
-            idx = self._get_idx_sat(channel, qcflag, errcheck=errcheck)
-
-            data = self.query_diag_type(diag_type, idx)
+            indexed_df = self._select_radiance(channel, qcflag, use_flag, errcheck)
+            data = self._query_diag_type(indexed_df, diag_type, bias_correction)
 
             data[data > 1e5] = np.nan
 
             return data
 
-    def _get_idx_sat(self, channel=None, qcflag=None, errcheck=True):
+    def _select_radiance(self, channel=None, qcflag=None, use_flag=False, errcheck=True):
         """
         Given parameters, get the indices of the observation
         locations from a radiance diagnostic file.
         """
+        df = self.data_df
 
-        if not channel or channel == [None]:
-            channel = None
-        if not qcflag or qcflag == [None]:
-            qcflag = None
+        # index dataframe by channel
+        if channel is not None:
+            idx_col = 'Channel'
+            indx = df.index.get_level_values(idx_col) == ''
+            for chan in channel:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
 
-        idx = self.channel_idx
-        valid_idx = np.full_like(idx, True, dtype=bool)
-        if qcflag != None:
-            idxqc = self.qc_flag
-            valid_idx_qc = np.isin(idxqc, qcflag)
-            valid_idx = np.logical_and(valid_idx, valid_idx_qc)
-        if channel != None:
-            chidx = np.where(self.sensor_chan == channel)
-            if len(chidx) > 0 and len(chidx[0]) > 0:
-                channel = self.chaninfo_idx[chidx[0][0]]
-            else:
-                print('Channel specified not in sensor_chan, using relative index')
-            valid_idx_ch = np.isin(self.channel_idx, channel)
-            valid_idx = np.logical_and(valid_idx, valid_idx_ch)
-        if errcheck and qcflag == 0:
-            valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
-            valid_idx = np.logical_and(valid_idx, valid_idx_err)
+                # If channel not valid, raise TypeError
+                if not any(indx):
+                    VALIDCHANS = df.index.get_level_values('Channel').unique().to_numpy()
+                    raise TypeError(f'Channel {chan} is not a valid channel. '
+                                     'Valid channels include: '
+                                     f'{", ".join(str(i) for i in VALIDCHANS)}')
+            df = df.iloc[indx]
 
-        idx = np.where(valid_idx)
-        return idx
+        # index dataframe by qcflag
+        if qcflag is not None:
+            idx_col = 'QC_Flag'
+            indx = df.index.get_level_values(idx_col) == ''
+            for qcf in qcflag:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == qcf)
 
-    def _get_data_special(self, diag_type, channel, qcflag,
-                         separate_channels, separate_qc, errcheck=True):
+            df = df.iloc[indx]
+
+            # remove obs where inverse obs error is zero
+            if errcheck and 0 in qcflag:
+                indx = df.index.get_level_values(idx_col) == ''
+
+                # Grab index where inverse ob error is not zero
+                err_indx = np.isin(df['inverse_observation_error'], 0, invert=True)
+                indx = np.ma.logical_or(indx, err_indx)
+
+                df = df.iloc[indx]
+
+        return df
+    
+    def _get_data_special(self, diag_type, channel, qcflag, use_flag,
+                         separate_channels, separate_qc, errcheck,
+                         bias_correction):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
         separate_qc
         """
         data_dict = {}
+        
+        # If no channels given, return all channels
+        if channel is None:
+            channel = self.chan_info['sensor_chan']
+            
+        # If no qc flags given, return all qc flags
+        if qcflag is None:
+            qcflag = self.data_df.index.get_level_values('QC_Flag').unique().to_numpy()
 
         if separate_channels and not separate_qc:
             for c in channel:
-                idx = self._get_idx_sat(c, qcflag, errcheck=errcheck)
-
-                data = self.query_diag_type(diag_type, idx)
-
+                indexed_df = self._select_radiance([c], qcflag, errcheck=errcheck)
+                data = self._query_diag_type(indexed_df, diag_type, bias_correction)
                 data[data > 1e5] = np.nan
 
                 data_dict['Channel %s' % c] = data
 
-            return data_dict
-
-        if not separate_channels and separate_qc:
+        if not separate_channels and separate_qc:                
             for qc in qcflag:
-                idx = self._get_idx_sat(channel, qc, errcheck=errcheck)
-
-                data = self.query_diag_type(diag_type, idx)
-
+                indexed_df = self._select_radiance(channel, [qc], errcheck=errcheck)
+                data = self._query_diag_type(diag_type, idx)
                 data[data > 1e5] = np.nan
 
                 data_dict['QC Flag %s' % qc] = data
-
-            return data_dict
 
         if separate_channels and separate_qc:
             for c in channel:
                 data_dict['Channel %s' % c] = {}
                 for qc in qcflag:
-                    idx = self._get_idx_sat(c, qc, errcheck=errcheck)
-
-                    data = self.query_diag_type(diag_type, idx)
-
+                    indexed_df = self._select_radiance([c], [qc], errcheck=errcheck)
+                    data = self._query_diag_type(indexed_df, diag_type, bias_correction)
                     data[data > 1e5] = np.nan
 
                     data_dict['Channel %s' % c]['QC Flag %s' % qc] = data
 
-            return data_dict
-
+        return data_dict
+    
     def get_lat_lon(self, channel=None, qcflag=None, errcheck=True):
         """
-        Gets lats and lons with desired indices
+        Gets lats and lons with desired indices.
+
+        Args:
+            channel : (list of ints; default=None) observation channel number
+            qcflag : (list of ints; default=None) qc flag number
+            errcheck : (bool; default=True) when True and qcflag==0, will toss out obs where
+                       inverse obs error is zero (i.e. not assimilated in GSI)
+        Returns:
+            lat, lon : (array like) indexed latitude and longitude values
         """
-        idx = self._get_idx_sat(channel, qcflag, errcheck=errcheck)
-        return self.lats[idx], self.lons[idx]
+        indexed_df = self._select_radiance(channel, qcflag, errcheck=errcheck)
+        return indexed_df['latitude'].to_numpy(), indexed_df['longitude'].to_numpy()
+
 
 class Ozone(GSIdiag):
 
