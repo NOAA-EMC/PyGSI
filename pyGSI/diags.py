@@ -10,7 +10,8 @@ _VALID_CONV_DIAG_TYPES = ["omf", "oma", "observation", "hofx"]
 _VALID_RADIANCE_DIAG_TYPES = ["omf", "oma", "observation", "hofx",
                               "water_fraction", "land_fraction",
                               "cloud_fraction", "snow_fraction",
-                              "ice_fraction"]
+                              "ice_fraction", "vegetation_fraction"]
+_VALID_OZONE_DIAG_TYPES = ["omf", "oma", "observation", "hofx"]
 
 
 class GSIdiag:
@@ -61,7 +62,7 @@ class GSIdiag:
             return u.to_numpy(), v.to_numpy()
 
         else:
-            if diag_type in ['observation']:
+            if diag_type in ['observation']: #will be error with land/water/etc._fraction
                 data = df[f'{diag_type}']
             else:
                 data = df[f'{diag_type}_{bias}']
@@ -687,6 +688,10 @@ class Radiance(GSIdiag):
 
         # Rename columns
         df.columns = df.columns.str.lower()
+        
+        # Rename cloud_frac to cloud_fraction
+        df = df.rename(columns={'cloud_frac': 'cloud_fraction'})
+        
         for bias_type in ['unadjusted', 'adjusted']:
             df = df.rename(columns={
                 f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
@@ -933,6 +938,11 @@ class Ozone(GSIdiag):
         Returns:
             data_dict : (dict) requested indexed data
         """
+        if diag_type not in _VALID_OZONE_DIAG_TYPES:
+            raise ValueError((f'{diag_type} is not a valid diag_type. '
+                              'Valid choices are: '
+                              f'{" | ".join(_VALID_OZONE_DIAG_TYPES)}'))
+        
         self.metadata['Diag Type'] = diag_type
         self.metadata['Anl Use'] = analysis_use
 
