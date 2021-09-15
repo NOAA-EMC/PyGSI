@@ -51,7 +51,7 @@ class GSIdiag:
         bias = 'adjusted' if bias_correction else 'unadjusted'
 
         if self.variable == 'uv':
-            if diag_type in ['Observation']:
+            if diag_type in ['observation']:
                 u = df[f'u_{diag_type}']
                 v = df[f'v_{diag_type}']
             else:
@@ -61,7 +61,7 @@ class GSIdiag:
             return u.to_numpy(), v.to_numpy()
 
         else:
-            if diag_type in ['Observation']:
+            if diag_type in ['observation']:
                 data = df[f'{diag_type}']
             else:
                 data = df[f'{diag_type}_{bias}']
@@ -165,7 +165,7 @@ class Conventional(GSIdiag):
                          station id, default=None
             analysis_use : (bool; defaul=False) if True, will return
                            three sets of data:
-                           assimlated (analysis_use_flag=1, qc<7),
+                           assimilated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
                            monitored (analysis_use_flag=-1, qc>7)
             lvls : (list type; default=None) List of pressure or height
@@ -871,11 +871,13 @@ class Ozone(GSIdiag):
 
     def __init__(self, path):
         """
-        Initialize an ozone GSI diagnostic object
-        INPUT:
-            path   : path to ozone GSI diagnostic object
-        RESULT:
-            self   : GSI ozone diag object containing the path to extract data
+        Initialize an Ozone GSI diagnostic object
+
+        Args:
+            path : (str) path to ozone GSI diagnostic object
+        Returns:
+            self : GSI diag ozone object containing the path
+                   to extract data
         """
         super().__init__(path)
 
@@ -887,188 +889,198 @@ class Ozone(GSIdiag):
 
     def _read_obs(self):
         """
-        Reads the data from the ozone diagnostic file during initialization.
+        Reads the data from the ozone diagnostic file during
+        initialization into a multidimensional pandas dataframe.
         """
+        df_dict = {}
 
-        with Dataset(self.path, mode='r') as f:
-            self.lons = f.variables['Longitude'][:]
-            self.lats = f.variables['Latitude'][:]
-            self.ref_pressure = f.variables['Reference_Pressure'][:]
-            self.time = f.variables['Time'][:]
-            self.anl_use = f.variables['Analysis_Use_Flag'][:]
-            self.o = f.variables['Observation'][:]
-            self.omf = f.variables['Obs_Minus_Forecast_adjusted'][:]
-            self.inv_ob_err = f.variables['Inverse_Observation_Error'][:]
+        with Dataset(file, mode='r') as f:
+            for var in f.variables:
+                df_dict[var] = f.variables[var][:]
 
-    def get_data(self, diag_type, analysis_use=False, errcheck=True):
+        # Create pandas dataframe from dict
+        df = pd.DataFrame(df_dict)
+        indices = ['Reference_Pressure', 'Analysis_Use_Flag']
+        df.set_index(indices, inplace=True)
+
+        # Rename columns
+        df.columns = df.columns.str.lower()
+        for bias_type in ['unadjusted', 'adjusted']:
+            df = df.rename(columns={
+                f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
+                })
+            # Create hofx columns
+            df[f'hofx_{bias_type}'] = df['observation'] - \
+                df[f'omf_{bias_type}']
+
+        self.data_df = df
+
+    def get_data(self, diag_type, analysis_use=False, errcheck=True,
+                 bias_correction=True):
         """
         Given parameters, get the data from an ozone diagnostic file
-        INPUT:
-            required:
-                data_type  : type of data to extract i.e. observation, omf, oma, hofx
 
-            optional:    
-                analysis_use : if True, will return two sets of data: assimlated
-                               (analysis_use_flag=1), and monitored (analysis_use
-                               _flag=-1); default = False
-                errcheck     : when True, will toss out obs where inverse
-                               obs error is zero (i.e. not assimilated in GSI)
-
-        OUTPUT:
-            data   : requested data as a dictionary
+        Args:
+            diag_type : (str; Required) type of data to extract
+                        i.e. observation, omf, oma, hofx
+            analysis_use : (bool; defaul=False) if True, will return
+                           two sets of data:
+                           assimilated (analysis_use_flag=1),
+                           monitored (analysis_use_flag=-1)
+            errcheck : (bool; default=True) when True, will toss out
+                       obs where inverse obs error is zero (i.e.
+                       not assimilated in GSI)
+        Returns:
+            data_dict : (dict) requested indexed data
         """
-        
         self.metadata['Diag Type'] = diag_type
         self.metadata['Anl Use'] = analysis_use
 
         data_dict = {}
 
-        if not analysis_use:
+        pressures = df.index.get_level_values(
+            'Reference_Pressure').unique().to_numpy()
 
-            for layer in self.ref_pressure:
-                if layer != 0:
-                    layer_idx = np.isin(self.ref_pressure, layer)
-                    idx = self._get_idx_ozone(layer_idx, errcheck=errcheck)
-                    data = self.query_diag_type(diag_type, idx)
+        # Loop through all pressures. If pressure is 0, save in
+        # data_dict as 'column total', else save as pressure level
+        for p in pressures:
+            if analysis_use:
+                assimilated_df, monitored_df = self._select_ozone(
+                    p, analysis_use, errcheck)
 
-                    data_dict[layer] = data
+                assimilated_data = self._query_diag_type(
+                    assimilated_df, diag_type, bias_correction)
+                monitored_data = self._query_diag_type(
+                    monitored_df, diag_type, bias_correction)
+
+                if p == 0:
+                    data_dict['column total'] = {
+                        'assimilated': assimilated_data,
+                        'monitored': monitored_data
+                    }
                 else:
-                    break
+                    data_dict[p] = {
+                        'assimilated': assimilated_data,
+                        'monitored': monitored_data
+                    }
 
-            column_total_idx = np.isin(self.ref_pressure, 0)
-            idx = self._get_idx_ozone(column_total_idx, errcheck=errcheck)
+            else:
+                indexed_df = self._select_ozone(
+                    p, analysis_use, errcheck)
 
-            data = self.query_diag_type(diag_type, idx)
-            data_dict['column total'] = data
+                data = self._query_diag_type(
+                    indexed_df, diag_type, bias_correction)
 
-        else:
-            for layer in self.ref_pressure:
-                if layer != 0.:
-                    layer_idx = np.isin(self.ref_pressure, layer)
-
-                    assimilated_idx, monitored_idx = self._get_idx_ozone(
-                        layer_idx, analysis_use=analysis_use, errcheck=errcheck)
-
-                    assimilated_data = self.query_diag_type(
-                        diag_type, assimilated_idx)
-                    monitored_data = self.query_diag_type(
-                        diag_type, monitored_idx)
-
-                    data_dict[layer] = {'assimilated': assimilated_data,
-                                        'monitored': monitored_data
-                                        }
+                if p == 0:
+                    data_dict['column total'] = data
                 else:
-                    break
-
-            column_total_idx = np.isin(self.ref_pressure, 0)
-
-            assimilated_idx, monitored_idx = self._get_idx_ozone(
-                column_total_idx, analysis_use=analysis_use, errcheck=errcheck)
-
-            assimilated_data = self.query_diag_type(diag_type, assimilated_idx)
-            monitored_data = self.query_diag_type(diag_type, monitored_idx)
-
-            data_dict['column total'] = {'assimilated': assimilated_data,
-                                         'monitored': monitored_data
-                                         }
+                    data_dict[p] = data
 
         return data_dict
 
-    def _get_idx_ozone(self, index, analysis_use=False, errcheck=True):
+    def _select_ozone(self, pressure, analysis_use, errcheck):
         """
-        Returns the index of data that was assimilated
-        and monitored. 
-        INPUT:
-            index    : array of booleans that is used to
-                       to find where they match assimilated
-                       or monitored data
-            errcheck : when True, will toss out obs where inverse
-                       obs error is zero (i.e. not assimilated in GSI)
-        OUTPUT:
-            assimilated_idx, monitored_idx : if analysis_use is True
-            index : if analysis_use is False
+        Given parameters, multidimensional dataframe is indexed
+        to only include selected locations from an ozone
+        diagnostic file.
+
+        Args:
+            pressure : (float) pressure level of ozone data
+            analysis_use : (bool) if True, will separate into two
+                           indexed dataframes: assimilated, monitored
+            errcheck : (bool) when True, will toss out obs where
+                       inverse obs error is zero (i.e. not
+                       assimilated in GSI)
+        Returns:
+            df : (pandas dataframe) indexed multidimentsional
+                 dataframe from selected data
         """
+        df = self.data_df
+
+        idx_col = 'Reference_Pressure'
+        indx = df.index.get_level_values(idx_col) == ''
+        indx = np.ma.logical_or(
+            indx, df.index.get_level_values(idx_col) == pressure)
+
+        df = df[indx]
 
         if analysis_use:
+            assimilated_indx = (
+                df.index.get_level_values('Analysis_Use_Flag') == 1)
+            monitored_indx = (
+                df.index.get_level_values('Analysis_Use_Flag') == -1)
 
-            valid_assimilated_idx = np.isin(self.anl_use, 1)
-            valid_monitored_idx = np.isin(self.anl_use, -1)
+            assimilated_df = df.iloc[assimilated_indx]
+            monitored_df = df.iloc[monitored_indx]
 
             if errcheck:
-                valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
-                index = np.logical_and(index, valid_idx_err)
-            
-            valid_assimilated_idx = np.logical_and(
-                valid_assimilated_idx, index)
-            valid_monitored_idx = np.logical_and(
-                valid_monitored_idx, index)
+                assimilated_err_indx = np.isin(
+                    assimilated_df['inverse_observation_error'],
+                    0, invert=True)
+                monitored_err_indx = np.isin(
+                    monitored_df['inverse_observation_error'], 0, invert=True)
 
-            assimilated_idx = np.where(valid_assimilated_idx)
-            monitored_idx = np.where(valid_monitored_idx)
+                assimilated_df = assimilated_df.iloc[assimilated_err_indx]
+                monitored_df = monitored_df.iloc[monitored_err_indx]
 
-            return assimilated_idx, monitored_idx
+            return assimilated_df, monitored_df
 
         else:
             if errcheck:
-                valid_idx_err = np.isin(self.inv_ob_err, 0, invert=True)
-                index = np.logical_and(index, valid_idx_err)
+                err_indx = np.isin(
+                    df['inverse_observation_error'], 0, invert=True)
+                df = df.iloc[err_indx]
 
-            return index
+            return df
 
     def get_lat_lon(self, analysis_use=False, errcheck=True):
         """
         Gets lats and lons with desired indices. Returns dictionary for
         each level in the ozone data.
         """
-
         lats_dict = {}
         lons_dict = {}
-        
-        for layer in self.ref_pressure:
-            if layer != 0:
-                layer_idx = np.isin(self.ref_pressure, layer)
-                
-                if analysis_use:
-                    assimilated_idx, monitored_idx = self._get_idx_ozone(
-                        layer_idx, analysis_use=analysis_use, errcheck=errcheck)
-                    
-                    lats = {'assimilated': self.lats[assimilated_idx],
-                            'monitored': self.lats[monitored_idx]
-                           }
-                    lons = {'assimilated': self.lons[assimilated_idx],
-                            'monitored': self.lons[monitored_idx]
-                           }
-                    
+
+        pressures = df.index.get_level_values(
+            'Reference_Pressure').unique().to_numpy()
+
+        # Loop through all pressures. If pressure is 0, save in
+        # dicts as 'column total', else save as pressure level
+        for p in pressures:
+            if analysis_use:
+                assimilated_df, monitored_df = self._select_ozone(
+                    p, analysis_use, errcheck)
+
+                if p == 0:
+                    lats_dict['column total'] = {
+                        'assimilated': assimilated_df['latitude'].to_numpy(),
+                        'monitored': monitored_df['latitude'].to_numpy()
+                        }
+                    lons_dict['column total'] = {
+                        'assimilated': assimilated_df['longitude'].to_numpy(),
+                        'monitored': monitored_df['longitude'].to_numpy()
+                        }
                 else:
-                    idx = self._get_idx_ozone(layer_idx, errcheck=errcheck)
-                    lats = self.lats[idx]
-                    lons = self.lons[idx]
+                    lats_dict[p] = {
+                        'assimilated': assimilated_df['latitude'].to_numpy(),
+                        'monitored': monitored_df['latitude'].to_numpy()
+                    }
+                    lons_dict[p] = {
+                      'assimilated': assimilated_df['longitude'].to_numpy(),
+                      'monitored': monitored_df['longitude'].to_numpy()
+                    }
 
-                lats_dict[layer] = lats
-                lons_dict[layer] = lons
             else:
-                break
-        
-        column_total_idx = np.isin(self.ref_pressure, 0)
-        
-        if analysis_use:
-            assimilated_idx, monitored_idx = self._get_idx_ozone(
-                        column_total_idx, analysis_use=analysis_use, errcheck=errcheck)
-                    
-            lats = {'assimilated': self.lats[assimilated_idx],
-                    'monitored': self.lats[monitored_idx]
-                   }
-            lons = {'assimilated': self.lons[assimilated_idx],
-                    'monitored': self.lons[monitored_idx]
-                   }
-        else:
+                indexed_df = self._select_ozone(
+                    p, analysis_use, errcheck)
 
-            idx = self._get_idx_ozone(column_total_idx, errcheck=errcheck)
-
-            lats = self.lats[idx]
-            lons = self.lons[idx]
-
-        lats_dict['column total'] = lats
-        lons_dict['column total'] = lons
+                if p == 0:
+                    lats_dict['column total'] = \
+                        indexed_df['latitude'].to_numpy()
+                    lons_dict['column total'] = \
+                        indexed_df['longitude'].to_numpy()
+                else:
+                    lats_dict[p] = indexed_df['latitude'].to_numpy()
+                    lons_dict[p] = indexed_df['longitude'].to_numpy()
 
         return lats_dict, lons_dict
