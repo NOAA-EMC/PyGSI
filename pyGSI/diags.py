@@ -165,7 +165,7 @@ class Conventional(GSIdiag):
             diag_type : (str; Required) type of data to extract
                         i.e. observation, omf, oma, hofx
             obsid : (list of ints; optional; default=None) observation
-                    measurement ID number; default=None
+                    type ID number; default=None
             subtype : (list of ints; optional; default=None) observation
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
@@ -178,6 +178,12 @@ class Conventional(GSIdiag):
             lvls : (list type; default=None) List of pressure or height
                    levels i.e. [250,500,750,1000]. List must be arranged
                    low to high.
+                   For pressure, will return a dictionary of data with data
+                   greater than the low bound, and less than or equal to the
+                   high bound.
+                   For height, will return a dictionary of data with data
+                   greater than or equal to the low bound, and less than the
+                   high bound.
             lvl_type : (str; default='pressure') lvls definition as
                        'pressure' or 'height'.
             bias_correction : (bool; default=True) If True, will return bias
@@ -273,8 +279,8 @@ class Conventional(GSIdiag):
         diagnostic file.
 
         Args:
-            obsid : (list of ints; default=None) observation measurement
-                    ID number
+            obsid : (list of ints; default=None) observation
+                    type ID number
             subtype : (list of ints; default=None) subtype number
             station_id : (list of str; default=None) station id tag
             analysis_use : (bool; deafault=False) if True, will separate
@@ -452,7 +458,7 @@ class Conventional(GSIdiag):
 
         Args:
             obsid : (list of ints; optional; default=None) observation
-                    measurement ID number; default=None
+                    type ID number; default=None
             subtype : (list of ints; optional; default=None) observation
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
@@ -489,7 +495,7 @@ class Conventional(GSIdiag):
 
         Args:
             obsid : (list of ints; optional; default=None) observation
-                    measurement ID number; default=None
+                    type ID number; default=None
             subtype : (list of ints; optional; default=None) observation
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
@@ -526,7 +532,7 @@ class Conventional(GSIdiag):
 
         Args:
             obsid : (list of ints; optional; default=None) observation
-                    measurement ID number; default=None
+                    type ID number; default=None
             subtype : (list of ints; optional; default=None) observation
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
@@ -539,6 +545,12 @@ class Conventional(GSIdiag):
             lvls : (list type; default=None) List of pressure or height
                    levels i.e. [250,500,750,1000]. List must be arranged
                    low to high.
+                   For pressure, will return a dictionary of data with data
+                   greater than the low bound, and less than or equal to the
+                   high bound.
+                   For height, will return a dictionary of data with data
+                   greater than or equal to the low bound, and less than the
+                   high bound.
             lvl_type : (str; default='pressure') lvls definition as
                        'pressure' or 'height'.
         Returns:
