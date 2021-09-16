@@ -50,6 +50,7 @@ class GSIdiag:
         """
 
         bias = 'adjusted' if bias_correction else 'unadjusted'
+        diag_type = 'omf' if diag_type in ['oma'] else diag_type
 
         if self.variable == 'uv':
             if diag_type in ['observation']:
@@ -62,7 +63,12 @@ class GSIdiag:
             return u.to_numpy(), v.to_numpy()
 
         else:
-            if diag_type in ['observation']: #will be error with land/water/etc._fraction
+            # uv is not a variable for radiance so the fraction
+            # variables only need to be considered here
+            if diag_type in ['observation', "water_fraction",
+                             "land_fraction", "cloud_fraction",
+                             "snow_fraction", "ice_fraction",
+                             "vegetation_fraction"]: 
                 data = df[f'{diag_type}']
             else:
                 data = df[f'{diag_type}_{bias}']
@@ -164,7 +170,7 @@ class Conventional(GSIdiag):
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
                          station id, default=None
-            analysis_use : (bool; defaul=False) if True, will return
+            analysis_use : (bool; default=False) if True, will return
                            three sets of data:
                            assimilated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
@@ -451,7 +457,7 @@ class Conventional(GSIdiag):
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
                          station id, default=None
-            analysis_use : (bool; defaul=False) if True, will return
+            analysis_use : (bool; default=False) if True, will return
                            three sets of data:
                            assimlated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
@@ -488,7 +494,7 @@ class Conventional(GSIdiag):
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
                          station id, default=None
-            analysis_use : (bool; defaul=False) if True, will return
+            analysis_use : (bool; default=False) if True, will return
                            three sets of data:
                            assimlated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
@@ -525,7 +531,7 @@ class Conventional(GSIdiag):
                       measurement ID subtype number, default=None
             station_id : (list of str; optional; default=None)
                          station id, default=None
-            analysis_use : (bool; defaul=False) if True, will return
+            analysis_use : (bool; default=False) if True, will return
                            three sets of data:
                            assimlated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
@@ -654,7 +660,7 @@ class Radiance(GSIdiag):
         df_dict = {}
         chan_info = {}
 
-        with Dataset(file, mode='r') as f:
+        with Dataset(self.path, mode='r') as f:
 
             # Grab dimensions to get lens
             nchans = f.dimensions['nchans']
@@ -899,7 +905,7 @@ class Ozone(GSIdiag):
         """
         df_dict = {}
 
-        with Dataset(file, mode='r') as f:
+        with Dataset(self.path, mode='r') as f:
             for var in f.variables:
                 df_dict[var] = f.variables[var][:]
 
@@ -928,7 +934,7 @@ class Ozone(GSIdiag):
         Args:
             diag_type : (str; Required) type of data to extract
                         i.e. observation, omf, oma, hofx
-            analysis_use : (bool; defaul=False) if True, will return
+            analysis_use : (bool; default=False) if True, will return
                            two sets of data:
                            assimilated (analysis_use_flag=1),
                            monitored (analysis_use_flag=-1)
@@ -948,7 +954,7 @@ class Ozone(GSIdiag):
 
         data_dict = {}
 
-        pressures = df.index.get_level_values(
+        pressures = self.data_df.index.get_level_values(
             'Reference_Pressure').unique().to_numpy()
 
         # Loop through all pressures. If pressure is 0, save in
