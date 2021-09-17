@@ -68,7 +68,7 @@ class GSIdiag:
             if diag_type in ['observation', "water_fraction",
                              "land_fraction", "cloud_fraction",
                              "snow_fraction", "ice_fraction",
-                             "vegetation_fraction"]: 
+                             "vegetation_fraction"]:
                 data = df[f'{diag_type}']
             else:
                 data = df[f'{diag_type}_{bias}']
@@ -465,7 +465,7 @@ class Conventional(GSIdiag):
                          station id, default=None
             analysis_use : (bool; default=False) if True, will return
                            three sets of data:
-                           assimlated (analysis_use_flag=1, qc<7),
+                           assimilated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
                            monitored (analysis_use_flag=-1, qc>7)
         Returns:
@@ -502,7 +502,7 @@ class Conventional(GSIdiag):
                          station id, default=None
             analysis_use : (bool; default=False) if True, will return
                            three sets of data:
-                           assimlated (analysis_use_flag=1, qc<7),
+                           assimilated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
                            monitored (analysis_use_flag=-1, qc>7)
         Returns:
@@ -539,7 +539,7 @@ class Conventional(GSIdiag):
                          station id, default=None
             analysis_use : (bool; default=False) if True, will return
                            three sets of data:
-                           assimlated (analysis_use_flag=1, qc<7),
+                           assimilated (analysis_use_flag=1, qc<7),
                            rejected (analysis_use_flag=-1, qc<8),
                            monitored (analysis_use_flag=-1, qc>7)
             lvls : (list type; default=None) List of pressure or height
@@ -706,10 +706,10 @@ class Radiance(GSIdiag):
 
         # Rename columns
         df.columns = df.columns.str.lower()
-        
+
         # Rename cloud_frac to cloud_fraction
         df = df.rename(columns={'cloud_frac': 'cloud_fraction'})
-        
+
         for bias_type in ['unadjusted', 'adjusted']:
             df = df.rename(columns={
                 f'obs_minus_forecast_{bias_type}': f'omf_{bias_type}',
@@ -960,7 +960,7 @@ class Ozone(GSIdiag):
             raise ValueError((f'{diag_type} is not a valid diag_type. '
                               'Valid choices are: '
                               f'{" | ".join(_VALID_OZONE_DIAG_TYPES)}'))
-        
+
         self.metadata['Diag Type'] = diag_type
         self.metadata['Anl Use'] = analysis_use
 
