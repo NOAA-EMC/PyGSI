@@ -789,7 +789,7 @@ class Radiance(GSIdiag):
         if use_flag:
             use_flag_indx = np.where(self.chan_info['use_flag'] == 1)
             use_flag_channel = self.chan_info[
-                'sensor_chan']\[use_flag_indx].tolist()
+                'sensor_chan'][use_flag_indx].tolist()
 
             self.metadata['Channels'] = use_flag_channel
 
@@ -979,6 +979,7 @@ class Ozone(GSIdiag):
                               'Valid choices are: '
                               f'{" | ".join(_VALID_OZONE_DIAG_TYPES)}'))
 
+        self.metadata['Variable'] = 'Ozone'
         self.metadata['Diag Type'] = diag_type
         self.metadata['Anl Use'] = analysis_use
 
@@ -1087,7 +1088,7 @@ class Ozone(GSIdiag):
         lats_dict = {}
         lons_dict = {}
 
-        pressures = df.index.get_level_values(
+        pressures = self.data_df.index.get_level_values(
             'Reference_Pressure').unique().to_numpy()
 
         # Loop through all pressures. If pressure is 0, save in
