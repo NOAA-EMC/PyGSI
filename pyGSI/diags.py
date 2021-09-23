@@ -724,7 +724,7 @@ class Radiance(GSIdiag):
                  separate_channels=False, separate_qc=False, errcheck=True,
                  bias_correction=True):
         """
-        Given parameters, get the data from a conventional diagnostic file
+        Given parameters, get the data from a radiance diagnostic file
 
         Args:
             diag_type : (str; Required) type of data to extract
