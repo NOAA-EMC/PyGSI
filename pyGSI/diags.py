@@ -750,9 +750,17 @@ class Radiance(GSIdiag):
                               'Valid choices are: '
                               f'{" | ".join(_VALID_RADIANCE_DIAG_TYPES)}'))
 
+        self.metadata['Variable'] = 'brightness_temperature'
         self.metadata['Diag Type'] = diag_type
-        self.metadata['QC Flag'] = qcflag
-        self.metadata['Channels'] = channel
+        self.metadata['Anl Use'] = False
+
+        # If no channels given, return all channels
+        self.metadata['Channels'] = 'All Channels' if channel is None \
+            else channel
+
+        # If no qc flags given, return all qc flags
+        self.metadata['QC Flag'] = 'All QC Flags' if qcflag is None \
+            else qcflag
 
         if separate_channels or separate_qc:
             data = self._get_data_special(
@@ -777,6 +785,22 @@ class Radiance(GSIdiag):
         locations from a radiance diagnostic file.
         """
         df = self.data_df
+
+        if use_flag:
+            use_flag_indx = np.where(self.chan_info['use_flag'] == 1)
+            use_flag_channel = self.chan_info[
+                'sensor_chan']\[use_flag_indx].tolist()
+
+            self.metadata['Channels'] = use_flag_channel
+
+            idx_col = 'Channel'
+            indx = df.index.get_level_values(idx_col) == ''
+
+            for chan in use_flag_channel:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
+
+            df = df.iloc[indx]
 
         # index dataframe by channel
         if channel is not None:
@@ -828,15 +852,6 @@ class Radiance(GSIdiag):
         """
         data_dict = {}
 
-        # If no channels given, return all channels
-        if channel is None:
-            channel = self.chan_info['sensor_chan']
-
-        # If no qc flags given, return all qc flags
-        if qcflag is None:
-            qcflag = self.data_df.index.get_level_values(
-                'QC_Flag').unique().to_numpy()
-
         if separate_channels and not separate_qc:
             for c in channel:
                 indexed_df = self._select_radiance(
@@ -870,20 +885,23 @@ class Radiance(GSIdiag):
 
         return data_dict
 
-    def get_lat_lon(self, channel=None, qcflag=None, errcheck=True):
+    def get_lat_lon(self, channel=None, qcflag=None, use_flag=False,
+                    errcheck=True):
         """
         Gets lats and lons with desired indices.
 
         Args:
             channel : (list of ints; default=None) observation channel number
             qcflag : (list of ints; default=None) qc flag number
+            use_flag : (bool; default=False) if True, will only return where
+                       use_flag==1
             errcheck : (bool; default=True) when True and qcflag==0, will
                        toss out obs where inverse obs error is zero (i.e.
                        not assimilated in GSI)
         Returns:
             lat, lon : (array like) indexed latitude and longitude values
         """
-        indexed_df = self._select_radiance(channel, qcflag, errcheck=errcheck)
+        indexed_df = self._select_radiance(channel, qcflag, use_flag, errcheck)
         lats = indexed_df['latitude'].to_numpy()
         lons = indexed_df['longitude'].to_numpy()
 
