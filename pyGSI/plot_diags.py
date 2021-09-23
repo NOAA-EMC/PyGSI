@@ -1,18 +1,14 @@
 #!/usr/bin/env python
-# Created by Kevin Dougherty
-# October 2020
-# Updated January 2021
 
+matplotlib.use('agg')
 from datetime import datetime
-from netCDF4 import Dataset
-import cartopy.feature as cfeature
-import cartopy.crs as ccrs
-import matplotlib.colors as mcolors
-import matplotlib.pyplot as plt
 import numpy as np
 from textwrap import TextWrapper
-import matplotlib
-matplotlib.use('agg')
+import matplotlib.pyplot as plt
+from emcpy.plots.plots import Scatter, Histogram, VerticalLine
+from emcpy.plots.map_plots import MapScatter
+from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
+from emcpy.plots.map_tools import Domain, MapProjection
 
 def _get_obs_type(obs_id):
     """
