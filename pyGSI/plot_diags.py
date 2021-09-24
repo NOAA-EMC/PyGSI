@@ -359,8 +359,8 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
 def _no_data_map(plotmap, domain, metadata):
     """
-    Creates a plot if there is no data that displays
-    'No Data' across the map.
+    Creates a plot with 'No Data' across the map if
+    there is no data.
     """
     # Titles
     labels = _get_labels(metadata)
