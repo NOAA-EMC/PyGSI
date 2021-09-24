@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-matplotlib.use('agg')
 from datetime import datetime
 import numpy as np
 from textwrap import TextWrapper
@@ -9,6 +8,8 @@ from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
+matplotlib.use('agg')
+
 
 def _get_obs_type(obs_id):
     """
@@ -31,7 +32,8 @@ def _get_obs_type(obs_id):
         134: "Aircraft: TAMDAR",
         135: "Aircraft: Canadian AMDAR",
         153: "GPS-Integrated Precipitable Water",
-        180: "Surface Marine w/ Station Pressure (Ship, Buoy, C-MAN, Tide Guage)",
+        180: ("Surface Marine w/ Station Pressure (Ship, Buoy, C-MAN, "
+              "Tide Guage)"),
         181: "Surface Land w/ Station Pressure (Synoptic, METAR)",
         182: "Splash-Level Dropsonde Over Ocean",
         183: "Surface Marine or Land - Missing Station Pressure",
@@ -48,20 +50,30 @@ def _get_obs_type(obs_id):
         233: "Aircraft: MDCRS ACARS",
         234: "Aircraft: TAMDAR",
         235: "Aircraft: Canadian AMDAR",
-        242: "JMA IR (Longwave) and Visible Cloud Drift Below 850mb (GMS, MTSAT, HIMAWARI)",
-        243: "EUMETSAT IR (Longwave) and Visible Cloud Drift Below 850mb (METEOSAT)",
+        242: ("JMA IR (Longwave) and Visible Cloud Drift Below 850mb "
+              "(GMS, MTSAT, HIMAWARI)"),
+        243: ("EUMETSAT IR (Longwave) and Visible Cloud Drift Below "
+              " 850mb (METEOSAT)"),
         244: "AVHRR/POES IR (Longwave) Cloud Drift",
         245: "NESDIS IR (Longwave) Cloud Drift (All Levels)",
         246: "NESDIS Imager Water Vapor (All Levels) - Cloud Top (GOES)",
-        250: "JMA Imager Water Vapor (All Levels) - Cloud Top & Deep Layer (GMS, MTSAT, HIMAWARI)",
+        250: ("JMA Imager Water Vapor (All Levels) - Cloud Top & Deep "
+              "Layer (GMS, MTSAT, HIMAWARI)"),
         251: "NESDIS Visible Cloud Drift (All Levels) (GOES)",
-        252: "JMA IR (Longwave) and Visible Cloud Drift Above 850mb (GMS, MTSAT, HIMAWARI)",
-        253: "EUMETSAT IR (Longwave) and Visible Cloud Drift Above 850mb (METEOSAT)",
-        254: "EUMETSAT Imager Water Vapor (All Levels) - Cloud Top & Deep Layer (METEOSAT)",
-        257: "MODIS/POES IR (Longwave) Cloud Drift (All Levels) (AQUA, TERRA)",
-        258: "MODIS/POES Imager Water Vapor (All Levels) - Cloud Top (AQUA, TERRA)",
-        259: "MODIS/POES Imager Water Vapor (All Levels) - Deep Layer (AQUA, TERRA)",
-        280: "Surface Marine w/ Station Pressure (Ship, Buoy, C-MAN, Tide Guage)",
+        252: ("JMA IR (Longwave) and Visible Cloud Drift Above 850mb "
+              "(GMS, MTSAT, HIMAWARI)"),
+        253: ("EUMETSAT IR (Longwave) and Visible Cloud Drift Above "
+              "850mb (METEOSAT)"),
+        254: ("EUMETSAT Imager Water Vapor (All Levels) - Cloud Top "
+              " & Deep Layer (METEOSAT)"),
+        257: ("MODIS/POES IR (Longwave) Cloud Drift (All Levels) "
+              "(AQUA, TERRA)"),
+        258: ("MODIS/POES Imager Water Vapor (All Levels) - Cloud Top "
+              "(AQUA, TERRA)"),
+        259: ("MODIS/POES Imager Water Vapor (All Levels) - Deep Layer "
+              "(AQUA, TERRA)"),
+        280: ("Surface Marine w/ Station Pressure (Ship, Buoy, C-MAN, "
+              "Tide Guage)"),
         281: "Surface Land w/ Station Pressure (Synoptic, METAR)",
         282: "ATLAS Buoy",
         284: "Surface Marine or Land - Missing Station Pressure",
@@ -73,15 +85,15 @@ def _get_obs_type(obs_id):
     descripts = list()
     if obs_id is None:
         return ['All Observations']
-    
+
     else:
         for ids in obs_id:
-            if (ids in obs_indicators.keys()) == True:
+            if ids in obs_indicators.keys():
                 descripts.append(obs_indicators[ids])
-            
+
             else:
                 descripts.append(str(ids))
-        
+
         return descripts
 
 
@@ -95,13 +107,14 @@ def _get_bins(eval_type, stats):
         bins = np.arange(0-(4*stats['Std']),
                          0+(4*stats['Std']),
                          binsize)
-        
+
     else:
         bins = np.arange(stats['Mean']-(4*stats['Std']),
                          stats['Mean']+(4*stats['Std']),
                          binsize)
-        
+
     return bins
+
 
 def _calculate_stats(data):
     """
@@ -129,55 +142,61 @@ def _calculate_stats(data):
 
     return stats
 
+
 def _get_labels(metadata):
     """
     Creates a dictionary of title, date title, and the save
     file name using information from the metadata.
     """
-        
-    var = metadata['Satellite'] if 'Satellite' in metadata else metadata['Variable']
-    
+
+    var = metadata['Satellite'] if 'Satellite' in metadata \
+        else metadata['Variable']
+
     # Get title and save file name
     if metadata['Anl Use Type'] is not None:
         title = (f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
                  f" - Data {metadata['Anl Use Type']}")
-        
+
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
-                     f"{var}_{metadata['Diag Type']}_{metadata['Anl Use Type']}")
-        
+                     f"{var}_{metadata['Diag Type']}_"
+                     f"{metadata['Anl Use Type']}")
+
     else:
         title = f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_")
-    
+
     # Adds on specific obsid, channel, or layer info to title/save file
     if metadata['Diag File Type'] == 'conventional':
         title = title + '\n%s' % '\n'.join(metadata['ObsID Name'])
-        save_file = save_file + '%s' % '_'.join(str(x) for x in metadata['ObsID Name'])
+        save_file = save_file + '%s' % '_'.join(
+            str(x) for x in metadata['ObsID Name'])
 
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
             title = title + '\nAll Channels'
             save_file = save_file + 'All_Channels'
-        
+
         else:
-            title = title + '\nChannels: %s' % ', '.join(str(x) for x in metadata['Channels'])
-            save_file = save_file + 'channels_%s' % '_'.join(str(x) for x in metadata['Channels'])
-        
+            title = title + '\nChannels: %s' % ', '.join(
+                str(x) for x in metadata['Channels'])
+            save_file = save_file + 'channels_%s' % '_'.join(
+                str(x) for x in metadata['Channels'])
+
     else:
         layer = metadata['Layer']
         title = title + f'\nLayer: {layer}'
         save_file = save_file + '%s' % layer
-        
+
     # Get date label
     date_title = metadata['Date'].strftime("%d %b %Y %Hz")
-    
+
     labels = {
         'title': title,
         'date title': date_title,
         'save file': save_file
     }
-    
+
     return labels
 
 
@@ -204,6 +223,7 @@ def _varspecs_name(variable):
 
     return spec_variable
 
+
 def _no_data_histogram(data, plotobj, metadata):
     """
     Creates histogram with either 'No Data' or
@@ -212,30 +232,29 @@ def _no_data_histogram(data, plotobj, metadata):
     # Titles
     labels = _get_labels(metadata)
     plotobj.add_title(labels['title'], loc='left', fontsize=12)
-    
+
     plotobj.add_title(label=labels['date title'],
                       loc='right', fontsize=12,
                       fontweight='semibold')
-    
+
     if len(data) == 0:
         text = 'No Data'
     else:
         text = 'Single\nObservation'
-        
+
         # Annotate Stats
         stats_dict = _calculate_stats(data)
         plotobj.add_stats_dict(stats_dict, fontsize=12)
-        
-    
+
     plotobj.add_text(0.5, 0.5, text, fontsize=32,
-                    alpha=0.6, horizontalalignment='center')
-    
+                     alpha=0.6, horizontalalignment='center')
+
     # Return figure
     fig = plotobj.return_figure()
     plt.savefig(outdir + f"{labels['save file']}_hist.png",
                 bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
-    
+
     return
 
 
@@ -247,51 +266,52 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     Function to create histogram plot.
     """
     # Create plot object
-    myplot=CreatePlot()
-    
+    myplot = CreatePlot()
+
     # Grab variable specs
     spec_variable = _varspecs_name(metadata['Variable'])
 
     # Set evaluation type to either diff or magnitude
-    eval_type = 'diff' if metadata['Diag Type'] in ['omf', 'oma'] else 'magnitude'
+    eval_type = 'diff' if metadata['Diag Type'] in \
+        ['omf', 'oma'] else 'magnitude'
     varspecs = VariableSpecs(variable=spec_variable,
                              eval_type=eval_type)
     metadata['Variable'] = varspecs.name
-    
+
     # Plot special histogram for if len of data is 0 or 1
     if len(data) <= 1:
         _no_data_histogram(data, myplot, metadata)
-        
+
         return
-    
+
     # Get Stats
     stats_dict = _calculate_stats(data)
-    
+
     # Get bins
     bins = _get_bins(eval_type, stats_dict)
-    
+
     # Create histogram plot object
     histobj = Histogram(data)
-    histobj.bins=bins
-    histobj.color=color
+    histobj.bins = bins
+    histobj.color = color
 
     myplot.draw_data([histobj])
-    
+
     if eval_type == 'diff' and plot_zero:
         zeroline = VerticalLine(0)
         zeroline.color = 'k'
         zeroline.linestyle = 'dashed'
         zeroline.linewidth = 1.5
-        
+
         myplot.draw_data([zeroline])
-    
+
     if plot_mean:
         meanline = VerticalLine(0)
         meanline.color = 'red'
         meanline.linestyle = 'solid'
         meanline.linewidth = 1
         meanline.label = 'Mean'
-        
+
         myplot.draw_data([meanline])
 
     if legend:
@@ -299,33 +319,33 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     if grid:
         myplot.add_grid()
-        
+
     # Titles
     labels = _get_labels(metadata)
-    
+
     title = labels['title'] if title is None else title
     myplot.add_title(title, loc='left', fontsize=12)
-    
+
     date_title = labels['date title'] if date_title is None else date_title
     myplot.add_title(label=date_title,
                      loc='right', fontsize=12,
                      fontweight='semibold')
-    
+
     # X and Y labels
     xlabel = f"{varspecs.name.capitalize()} ({varspecs.units})" \
         if xlabel is None else xlabel
     ylabel = "Count" if ylabel is None else ylabel
-    
+
     myplot.add_xlabel(xlabel, fontsize=12)
     myplot.add_ylabel(ylabel, fontsize=12)
-        
+
     if annotate_stats:
         # Make stats dict values str because when annotating,
         # they refuse to round??
         for key in stats_dict:
             val = str(stats_dict[key])
             stats_dict[key] = val
-            
+
         myplot.add_stats_dict(stats_dict, yloc=-0.15, fontsize=12)
 
     # Return figure
@@ -333,8 +353,9 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     plt.savefig(outdir + f"{labels['save file']}_hist.png",
                 bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
-    
+
     return
+
 
 def _no_data_map(plotmap, domain, metadata):
     """
@@ -344,11 +365,11 @@ def _no_data_map(plotmap, domain, metadata):
     # Titles
     labels = _get_labels(metadata)
     plotmap.add_title(labels['title'], loc='left', fontsize=12)
-    
+
     plotmap.add_title(label=labels['date title'],
                       loc='right', fontsize=12,
                       fontweight='semibold')
-    
+
     # Get center of map location
     lon1 = domain.extent[0]+180
     lon2 = domain.extent[1]+180
@@ -357,24 +378,24 @@ def _no_data_map(plotmap, domain, metadata):
     lat1 = domain.extent[2]+90
     lat2 = domain.extent[3]+90
     yloc = (lat2 - (lat2-lat1)/2) - 90
-    
+
     # Plot text
     plotmap.add_text(xloc, yloc, 'No Data', fontsize=32,
-                   alpha=0.6, horizontalalignment='center')
-    
+                     alpha=0.6, horizontalalignment='center')
+
     # Return figure
     fig = plotmap.return_figure()
     plt.savefig(outdir + f"{labels['save file']}_map.png",
                 bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
-    
+
     return
-    
+
 
 def _create_map_plot(lats, lons, data, metadata,
                      outdir, domain, projection,
                      title, date_title, xlabel,
-                     ylabel, annotate_stats, 
+                     ylabel, annotate_stats,
                      colorbar, cbar_label, grid):
     """
     Function to create map plot.
@@ -386,9 +407,10 @@ def _create_map_plot(lats, lons, data, metadata,
                       proj_obj=MapProjection(projection))
     # Add coastlines
     mymap.add_features(['coastlines'])
-    
+
     # Set evaluation type to either diff or magnitude
-    eval_type = 'diff' if metadata['Diag Type'] in ['omf', 'oma'] else 'magnitude'
+    eval_type = 'diff' if metadata['Diag Type'] in ['omf', 'oma'] \
+        else 'magnitude'
 
     # Get variable specs
     spec_variable = _varspecs_name(metadata['Variable'])
@@ -396,7 +418,7 @@ def _create_map_plot(lats, lons, data, metadata,
     varspecs = VariableSpecs(variable=spec_variable,
                              eval_type=eval_type)
     metadata['Variable'] = varspecs.name
-    
+
     if len(data) == 0:
         _no_data_map(mymap, Domain(domain), metadata)
         return
@@ -415,18 +437,18 @@ def _create_map_plot(lats, lons, data, metadata,
     # Add features to the plot
     # Colorbar
     if colorbar:
-        cbar_label = f"{metadata['Variable'].capitalize()} ({varspecs.units})" \
-            if cbar_label is None else cbar_label
+        label = f"{metadata['Variable'].capitalize()} ({varspecs.units})"
+        cbar_label = label if cbar_label is None else cbar_label
 
         mymap.add_colorbar(label=cbar_label,
                            label_fontsize=12,
                            extend='both')
     # Titles
     labels = _get_labels(metadata)
-    
+
     title = labels['title'] if title is None else title
     mymap.add_title(title, loc='left', fontsize=12)
-    
+
     date_title = labels['date title'] if date_title is None else date_title
     mymap.add_title(label=date_title,
                     loc='right', fontsize=12,
@@ -435,10 +457,10 @@ def _create_map_plot(lats, lons, data, metadata,
     # X and Y labels
     xlabel = "Longitude" if xlabel is None else xlabel
     ylabel = "Latitude" if ylabel is None else ylabel
-    
+
     mymap.add_xlabel(xlabel, fontsize=12)
     mymap.add_ylabel(ylabel, fontsize=12)
-    
+
     # Annotate Stats
     if annotate_stats:
         stats_dict = _calculate_stats(data)
@@ -447,7 +469,7 @@ def _create_map_plot(lats, lons, data, metadata,
         for key in stats_dict:
             val = str(stats_dict[key])
             stats_dict[key] = val
-        
+
         # Each domain changes so need to set
         # values for each domain
         yloc_dict = {
@@ -459,7 +481,7 @@ def _create_map_plot(lats, lons, data, metadata,
 
         mymap.add_stats_dict(stats_dict, yloc=yloc_dict[domain],
                              fontsize=12)
-    
+
     # Grid
     if grid:
         mymap.add_grid()
@@ -469,7 +491,7 @@ def _create_map_plot(lats, lons, data, metadata,
     plt.savefig(outdir + f"{labels['save file']}_map.png",
                 bbox_inches='tight', pad_inches=0.1)
     plt.close('all')
-    
+
     return
 
 
@@ -480,51 +502,60 @@ def _binned_plot_features(binned_var, metadata, stats):
     extend the colorbar based on the type of data being used.
     """
 
-    features_dict = {'binned_nobs': {'cmap': 'plasma',
-                                     'extend': 'max',
-                                     'upperbound': np.round(stats['Max']),
-                                     'lowerbound': 0,
-                                     'bins': _myround(stats['Max'], 25)/10,
-                                     'x label': '# of Observations',
-                                     'title': 'Binned Number of Observations'},
-                     'binned_mean': {'x label': 'Binned Average',
-                                     'title': 'Binned Mean'},
-                     'binned_max':  {'cmap': 'Reds',
-                                     'extend': 'max',
-                                     'upperbound': np.round(stats['Max']),
-                                     'lowerbound': np.round(stats['Min']),
-                                     'bins': _myround(stats['Std'], 2),
-                                     'x label': 'Binned Max',
-                                     'title': 'Binned Max'
-                                    },
-                     'binned_min':  {'cmap': 'Blues_r',
-                                     'extend': 'min',
-                                     'upperbound': np.round(stats['Max']),
-                                     'lowerbound': np.round(stats['Min']),
-                                     'bins': _myround(stats['Std'], 2),
-                                     'x label': 'Binned Min',
-                                     'title': 'Binned Min'
-                                    },
-                     'binned_std':  {'cmap': 'plasma',
-                                     'extend': 'max',
-                                     'upperbound': np.round(stats['Max']),
-                                     'lowerbound': np.round(stats['Min']),
-                                     'bins':  _myround(stats['Std'], 0.5),
-                                     'x label': 'Binned Std. Dev.',
-                                     'title': 'Binned Standard Deviation'
-                                    },
-                     'binned_rmse': {'cmap': 'plasma',
-                                     'extend': 'max',
-                                     'upperbound': np.round(stats['Max']),
-                                     'lowerbound': np.round(stats['Min']),
-                                     'bins': _myround(stats['Std'], 0.5),
-                                     'x label': 'Binned RMSE',
-                                     'title': 'Binned Root Mean Square Error'
-                                    }
-                    }
+    features_dict = {
+        'binned_nobs': {
+            'cmap': 'plasma',
+            'extend': 'max',
+            'upperbound': np.round(stats['Max']),
+            'lowerbound': 0,
+            'bins': _myround(stats['Max'], 25)/10,
+            'x label': '# of Observations',
+            'title': 'Binned Number of Observations'
+        },
+        'binned_mean': {
+            'x label': 'Binned Average',
+            'title': 'Binned Mean'
+        },
+        'binned_max':  {
+            'cmap': 'Reds',
+            'extend': 'max',
+            'upperbound': np.round(stats['Max']),
+            'lowerbound': np.round(stats['Min']),
+            'bins': _myround(stats['Std'], 2),
+            'x label': 'Binned Max',
+            'title': 'Binned Max'
+        },
+        'binned_min':  {
+            'cmap': 'Blues_r',
+            'extend': 'min',
+            'upperbound': np.round(stats['Max']),
+            'lowerbound': np.round(stats['Min']),
+            'bins': _myround(stats['Std'], 2),
+            'x label': 'Binned Min',
+            'title': 'Binned Min'
+        },
+        'binned_std':  {
+            'cmap': 'plasma',
+            'extend': 'max',
+            'upperbound': np.round(stats['Max']),
+            'lowerbound': np.round(stats['Min']),
+            'bins':  _myround(stats['Std'], 0.5),
+            'x label': 'Binned Std. Dev.',
+            'title': 'Binned Standard Deviation'
+        },
+        'binned_rmse': {
+            'cmap': 'plasma',
+            'extend': 'max',
+            'upperbound': np.round(stats['Max']),
+            'lowerbound': np.round(stats['Min']),
+            'bins': _myround(stats['Std'], 0.5),
+            'x label': 'Binned RMSE',
+            'title': 'Binned Root Mean Square Error'
+        }
+    }
 
     # Get cmap, bins, norm and extend for O-F and O-A
-    if metadata['Diag Type'] in ['omf', 'o-f', 'omb', 'o-b', 'oma', 'o-a'] and binned_var =='binned_mean':
+    if metadata['Diag Type'] in ['omf', 'oma'] and binned_var == 'binned_mean':
         cmap = 'bwr'
 
         upperbound = (np.round(stats['Std']*2)/2)*5
@@ -539,7 +570,6 @@ def _binned_plot_features(binned_var, metadata, stats):
 
         extend = 'both'
 
-
     else:
         cmap = features_dict[binned_var]['cmap']
         extend = features_dict[binned_var]['extend']
@@ -550,7 +580,6 @@ def _binned_plot_features(binned_var, metadata, stats):
 
         norm = mcolors.BoundaryNorm(boundaries=np.arange(
                 lowerbound, upperbound+bins, bins), ncolors=256)
-
 
     # Stats label
     if not stats:
@@ -582,7 +611,6 @@ def _binned_plot_features(binned_var, metadata, stats):
               'save file': save_file
               }
 
-
     return labels, cmap, norm, extend
 
 
@@ -593,7 +621,7 @@ def plot_histogram(data, metadata, outdir='./', color='tab:blue',
                    annotate_stats=True):
     """
     Plots data on a map.
-    
+
     Args:
         data : (array-like) data to plot
         metadata : (dict) dictionary of metadata
@@ -622,11 +650,11 @@ def plot_histogram(data, metadata, outdir='./', color='tab:blue',
 
     # Handles analysis use data
     anl_use = metadata['Anl Use']
-        
+
     if anl_use:
         for anl_type in data.keys():
             metadata['Anl Use Type'] = anl_type
-            
+
             _create_hist_plot(data[anl_type],
                               metadata, outdir,
                               color, legend, grid,
@@ -634,14 +662,14 @@ def plot_histogram(data, metadata, outdir='./', color='tab:blue',
                               title, date_title,
                               xlabel, ylabel,
                               annotate_stats)
-            
-    else:     
+
+    else:
         metadata['Anl Use Type'] = None
         _create_hist_plot(data, metadata, outdir, color,
                           legend, grid, plot_mean, plot_zero,
                           title, date_title, xlabel, ylabel,
                           annotate_stats)
-        
+
     return
 
 
@@ -651,7 +679,7 @@ def plot_map(lats, lons, data, metadata, outdir='./', domain='global',
              cbar_label=None, grid=False):
     """
     Plots data on a map.
-    
+
     Args:
         data : (array-like) data to plot
         metadata : (dict) dictionary of metadata
@@ -682,33 +710,34 @@ def plot_map(lats, lons, data, metadata, outdir='./', domain='global',
 
     # Handles analysis use data
     anl_use = metadata['Anl Use']
-        
-        
+
     if anl_use:
         for anl_type in data.keys():
             metadata['Anl Use Type'] = anl_type
-            
+
             _create_map_plot(lats[anl_type], lons[anl_type],
                              data[anl_type], metadata,
                              outdir, domain, projection,
                              title, date_title, xlabel,
-                             ylabel, annotate_stats, 
+                             ylabel, annotate_stats,
                              colorbar, cbar_label, grid)
-            
-    else:     
+
+    else:
         metadata['Anl Use Type'] = None
         _create_map_plot(lats, lons, data, metadata, outdir,
                          domain, projection, title, date_title,
-                         xlabel, ylabel, annotate_stats, 
+                         xlabel, ylabel, annotate_stats,
                          colorbar, cbar_label, grid)
-        
+
     return
 
 
-def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='./'):
+def plot_binned_spatial(data, metadata, binned_var=None,
+                        binsize='1x1', outdir='./'):
 
     if binned_var is None:
-        print('Please select a binned variable type i.e. binned_nobs, binned_mean,\n',
+        print('Please select a binned variable type i.e. '
+              'binned_nobs, binned_mean,\n',
               'binned_max, binned_min, binned_std, binned_rmse.')
         return
 
@@ -726,7 +755,8 @@ def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='
     lat_upperlim = 90
 
     if binsize.split('x')[0] != binsize.split('x')[1]:
-        print('ERROR: Binsize must be square i.e. 1x1, 2x2, 5x5 etc. Please use different binsize.')
+        print('ERROR: Binsize must be square i.e. 1x1, 2x2, '
+              '5x5 etc. Please use different binsize.')
 
     binsize = int(binsize.split('x')[0])
 
@@ -747,7 +777,8 @@ def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='
 
     stats = _calculate_stats(data[binned_var])
 
-    labels, cmap, norm, extend = _binned_plot_features(binned_var, metadata, stats)
+    labels, cmap, norm, extend = _binned_plot_features(
+        binned_var, metadata, stats)
 
     fig = plt.figure(figsize=(15, 12))
     ax = fig.add_subplot(
@@ -756,7 +787,7 @@ def plot_binned_spatial(data, metadata, binned_var=None, binsize='1x1', outdir='
     ax.add_feature(cfeature.GSHHSFeature(scale='auto'))
     ax.set_extent([-180, 180, -90, 90])
 
-    cs = plt.pcolormesh(xx, yy, data[binned_var], #cmap='bwr',
+    cs = plt.pcolormesh(xx, yy, data[binned_var],
                         norm=norm, cmap=cmap,
                         transform=ccrs.PlateCarree())
 
