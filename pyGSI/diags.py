@@ -41,7 +41,7 @@ class GSIdiag:
                          }
 
     def __len__(self):
-        return len(self.lats)
+        return self.data_df.shape[0]
 
     def _query_diag_type(self, df, diag_type, bias_correction):
         """
