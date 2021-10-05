@@ -1143,4 +1143,3 @@ class Ozone(GSIdiag):
     def return_df(self):
         """Returns working dataframe."""
         return self.data_df
-
