@@ -643,9 +643,9 @@ class Conventional(GSIdiag):
 
                 return lats, lons
 
-	def return_df(self):
-		"""Returns working dataframe."""
-		return self.data_df
+    def return_df(self):
+        """Returns working dataframe."""
+        return self.data_df
 
 
 class Radiance(GSIdiag):
@@ -911,7 +911,7 @@ class Radiance(GSIdiag):
 
         return lats, lons
 
-	def return_df(self):
+    def return_df(self):
         """Returns working dataframe."""
         return self.data_df
 
@@ -1140,7 +1140,7 @@ class Ozone(GSIdiag):
 
         return lats_dict, lons_dict
 
-	def return_df(self):
+    def return_df(self):
         """Returns working dataframe."""
         return self.data_df
 
