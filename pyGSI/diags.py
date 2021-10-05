@@ -157,7 +157,7 @@ class Conventional(GSIdiag):
 
     def get_data(self, diag_type, obsid=None, subtype=None, station_id=None,
                  analysis_use=False, lvls=None, lvl_type='pressure',
-                 bias_correction=True):
+                 bias_correction=True, return_df=False):
         """
         Given parameters, get the data from a conventional diagnostic file
 
@@ -188,6 +188,8 @@ class Conventional(GSIdiag):
                        'pressure' or 'height'.
             bias_correction : (bool; default=True) If True, will return bias
                               corrected data.
+			return_df : (bool; defualt=False) If True, will return entire
+						indexed dataframe rather than numpy array of data
         Returns:
             data : requested indexed data
         """
@@ -215,7 +217,8 @@ class Conventional(GSIdiag):
 
             data = self._get_lvl_data(
                 diag_type, obsid, subtype, station_id,
-                analysis_use, lvls, lvl_type, bias_correction)
+                analysis_use, lvls, lvl_type, bias_correction,
+				return_df)
 
             return data
 
@@ -224,52 +227,64 @@ class Conventional(GSIdiag):
                 assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                if self.variable == 'uv':
-                    u_assimilated, v_assimilated = self._query_diag_type(
-                        assimilated_df, diag_type, bias_correction)
-                    u_rejected, v_rejected = self._query_diag_type(
-                        rejected_df, diag_type, bias_correction)
-                    u_monitored, v_monitored = self._query_diag_type(
-                        monitored_df, diag_type, bias_correction)
+				if return_df:
+					df_dict = {'assimilated': assimilated_df,
+                               'rejected': rejected_df,
+                               'monitored': monitored_df
+                              }
+					return df_dict
 
-                    u = {'assimilated': u_assimilated,
-                         'rejected': u_rejected,
-                         'monitored': u_monitored}
-                    v = {'assimilated': v_assimilated,
-                         'rejected': v_rejected,
-                         'monitored': v_monitored}
+				else:
+                	if self.variable == 'uv':
+                    	u_assimilated, v_assimilated = self._query_diag_type(
+                        	assimilated_df, diag_type, bias_correction)
+                    	u_rejected, v_rejected = self._query_diag_type(
+                        	rejected_df, diag_type, bias_correction)
+                    	u_monitored, v_monitored = self._query_diag_type(
+                        	monitored_df, diag_type, bias_correction)
 
-                    return u, v
+                    	u = {'assimilated': u_assimilated,
+                        	 'rejected': u_rejected,
+                         	 'monitored': u_monitored}
+                    	v = {'assimilated': v_assimilated,
+                        	 'rejected': v_rejected,
+                        	 'monitored': v_monitored}
 
-                else:
-                    assimilated_data = self._query_diag_type(
-                        assimilated_df, diag_type, bias_correction)
-                    rejected_data = self._query_diag_type(
-                        rejected_df, diag_type, bias_correction)
-                    monitored_data = self._query_diag_type(
-                        monitored_df, diag_type, bias_correction)
+                    	return u, v
 
-                    data = {'assimilated': assimilated_data,
-                            'rejected': rejected_data,
-                            'monitored': monitored_data
-                            }
+                	else:
+                    	assimilated_data = self._query_diag_type(
+                        	assimilated_df, diag_type, bias_correction)
+                    	rejected_data = self._query_diag_type(
+                        	rejected_df, diag_type, bias_correction)
+                    	monitored_data = self._query_diag_type(
+                        	monitored_df, diag_type, bias_correction)
 
-                    return data
+                    	data = {'assimilated': assimilated_data,
+                        	    'rejected': rejected_data,
+                            	'monitored': monitored_data
+                           	   }
+
+                    	return data
 
             else:
                 indexed_df = self._select_conv(obsid, subtype, station_id)
 
-                if self.variable == 'uv':
-                    u, v = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
+				if return_df:
+					return indexed_df
 
-                    return u, v
+				else:
+                	if self.variable == 'uv':
+                    	u, v = self._query_diag_type(
+                        	indexed_df, diag_type, bias_correction)
 
-                else:
-                    data = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
+                    	return u, v
 
-                    return data
+                	else:
+                    	data = self._query_diag_type(
+                        	indexed_df, diag_type, bias_correction)
+
+                    	return data
 
     def _select_conv(self, obsid=None, subtype=None, station_id=None,
                      analysis_use=False):
@@ -354,7 +369,8 @@ class Conventional(GSIdiag):
 
     def _get_lvl_data(self, diag_type, obsid=None, subtype=None,
                       station_id=None, analysis_use=False, lvls=None,
-                      lvl_type='pressure', bias_correction=True):
+                      lvl_type='pressure', bias_correction=True,
+					  return_df=False):
         """
         Given a list of levels, will create a dictionary of data that is
         selected between each level. Will return a dictionary with subsetted
@@ -372,63 +388,77 @@ class Conventional(GSIdiag):
             if analysis_use:
                 assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
-
-                assimilated_lvl_df = self._select_levels(
-                    assimilated_df, low_bound, high_bound, lvl_type)
+				
+				assimilated_lvl_df = self._select_levels(
+					assimilated_df, low_bound, high_bound, lvl_type)
                 rejected_lvl_df = self._select_levels(
                     rejected_df, low_bound, high_bound, lvl_type)
                 monitored_lvl_df = self._select_levels(
                     monitored_df, low_bound, high_bound, lvl_type)
 
-                if self.variable == 'uv':
-                    u_assimilated, v_assimilated = self._query_diag_type(
-                        assimilated_lvl_df, diag_type, bias_correction)
-                    u_rejected, v_rejected = self._query_diag_type(
-                        rejected_lvl_df, diag_type, bias_correction)
-                    u_monitored, v_monitored = self._query_diag_type(
-                        monitored_lvl_df, diag_type, bias_correction)
+				if return_df:
+					df_dict = {
+						'assimilated': assimilated_lvl_df,
+                        'rejected': rejected_lvl_df,
+                        'monitored': monitored_lvl_df
+					}
 
-                    u = {'assimilated': u_assimilated,
-                         'rejected': u_rejected,
-                         'monitored': u_monitored}
-                    v = {'assimilated': v_assimilated,
-                         'rejected': v_rejected,
-                         'monitored': v_monitored}
+					binned_data[f'{low_bound}-{high_bound}'] = df_dict
+				
+				else:
+					if self.variable == 'uv':
+						u_assimilated, v_assimilated = self._query_diag_type(
+							assimilated_lvl_df, diag_type, bias_correction)
+						u_rejected, v_rejected = self._query_diag_type(
+							rejected_lvl_df, diag_type, bias_correction)
+						u_monitored, v_monitored = self._query_diag_type(
+							monitored_lvl_df, diag_type, bias_correction)
 
-                    data = {'u': u,
-                            'v': v}
-                else:
-                    assimilated_data = self._query_diag_type(
-                        assimilated_lvl_df, diag_type, bias_correction)
-                    rejected_data = self._query_diag_type(
-                        rejected_lvl_df, diag_type, bias_correction)
-                    monitored_data = self._query_diag_type(
-                        monitored_lvl_df, diag_type, bias_correction)
+						u = {'assimilated': u_assimilated,
+		 					 'rejected': u_rejected,
+		 					 'monitored': u_monitored}
+						v = {'assimilated': v_assimilated,
+		 					 'rejected': v_rejected,
+		 					 'monitored': v_monitored}
 
-                    data = {'assimilated': assimilated_data,
-                            'rejected': rejected_data,
-                            'monitored': monitored_data
-                            }
+						data = {'u': u,
+								'v': v}
+					else:
+						assimilated_data = self._query_diag_type(
+						assimilated_lvl_df, diag_type, bias_correction)
+						rejected_data = self._query_diag_type(
+						rejected_lvl_df, diag_type, bias_correction)
+						monitored_data = self._query_diag_type(
+						monitored_lvl_df, diag_type, bias_correction)
 
-                binned_data[f'{low_bound}-{high_bound}'] = data
+						data = {'assimilated': assimilated_data,
+								'rejected': rejected_data,
+								'monitored': monitored_data
+							   }
+
+					binned_data[f'{low_bound}-{high_bound}'] = data
 
             else:
                 indexed_df = self._select_conv(obsid, subtype, station_id)
 
                 lvl_df = self._select_levels(
                     indexed_df, low_bound, high_bound, lvl_type)
+				
+				if return_df:
+					binned_data[f'{low_bound}-{high_bound}'] = indexed_df
+			
+				else:
+                	if self.variable == 'uv':
+                    	u, v = self._query_diag_type(
+                        	lvl_df, diag_type, bias_correction)
 
-                if self.variable == 'uv':
-                    u, v = self._query_diag_type(
-                        lvl_df, diag_type, bias_correction)
+                    	data = {'u': u,
+                            	'v': v}
+                	else:
+                    	data = self._query_diag_type(
+                        	lvl_df, diag_type, bias_correction)
 
-                    data = {'u': u,
-                            'v': v}
-                else:
-                    data = self._query_diag_type(
-                        lvl_df, diag_type, bias_correction)
-
-                binned_data[f'{low_bound}-{high_bound}'] = data
+                	binned_data[f'{low_bound}-{high_bound}'] = data
 
         return binned_data
 
@@ -643,10 +673,6 @@ class Conventional(GSIdiag):
 
                 return lats, lons
 
-    def return_df(self):
-        """Returns working dataframe."""
-        return self.data_df
-
 
 class Radiance(GSIdiag):
 
@@ -726,7 +752,7 @@ class Radiance(GSIdiag):
 
     def get_data(self, diag_type, channel=None, qcflag=None, use_flag=False,
                  separate_channels=False, separate_qc=False, errcheck=True,
-                 bias_correction=True):
+                 bias_correction=True, return_df=False):
         """
         Given parameters, get the data from a radiance diagnostic file
 
@@ -746,6 +772,8 @@ class Radiance(GSIdiag):
                        not assimilated in GSI)
             bias_correction : (bool; default=True) If True, will return bias
                               corrected data.
+			return_df : (bool; default=False) If True, will return entire
+                        indexed dataframe rather than numpy array of data
         Returns:
             data : requested indexed data
         """
@@ -769,18 +797,23 @@ class Radiance(GSIdiag):
         if separate_channels or separate_qc:
             data = self._get_data_special(
                 diag_type, channel, qcflag, use_flag, separate_channels,
-                separate_qc, errcheck, bias_correction)
+                separate_qc, errcheck, bias_correction, return_df)
             return data
 
         else:
             indexed_df = self._select_radiance(
                 channel, qcflag, use_flag, errcheck)
-            data = self._query_diag_type(
-                indexed_df, diag_type, bias_correction)
 
-            data[data > 1e5] = np.nan
+			if return_df:
+				return indexed_df
 
-            return data
+			else:
+            	data = self._query_diag_type(
+                	indexed_df, diag_type, bias_correction)
+
+            	data[data > 1e5] = np.nan
+
+            	return data
 
     def _select_radiance(self, channel=None, qcflag=None, use_flag=False,
                          errcheck=True):
@@ -848,7 +881,7 @@ class Radiance(GSIdiag):
 
     def _get_data_special(self, diag_type, channel, qcflag, use_flag,
                           separate_channels, separate_qc, errcheck,
-                          bias_correction):
+                          bias_correction, return_df):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
@@ -860,20 +893,28 @@ class Radiance(GSIdiag):
             for c in channel:
                 indexed_df = self._select_radiance(
                     [c], qcflag, errcheck=errcheck)
-                data = self._query_diag_type(
-                    indexed_df, diag_type, bias_correction)
-                data[data > 1e5] = np.nan
+				if return_df:
+					data_dict['Channel %s' % c] = indexed_df
 
-                data_dict['Channel %s' % c] = data
+				else:
+                	data = self._query_diag_type(
+                    	indexed_df, diag_type, bias_correction)
+                	data[data > 1e5] = np.nan
+
+                	data_dict['Channel %s' % c] = data
 
         if not separate_channels and separate_qc:
             for qc in qcflag:
                 indexed_df = self._select_radiance(
                     channel, [qc], errcheck=errcheck)
-                data = self._query_diag_type(diag_type, idx)
-                data[data > 1e5] = np.nan
+				if return_df:
+					data_dict['QC Flag %s' % qc] = indexed_df
 
-                data_dict['QC Flag %s' % qc] = data
+				else:
+                	data = self._query_diag_type(diag_type, idx)
+                	data[data > 1e5] = np.nan
+
+                	data_dict['QC Flag %s' % qc] = data
 
         if separate_channels and separate_qc:
             for c in channel:
@@ -881,11 +922,15 @@ class Radiance(GSIdiag):
                 for qc in qcflag:
                     indexed_df = self._select_radiance(
                         [c], [qc], errcheck=errcheck)
-                    data = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
-                    data[data > 1e5] = np.nan
+					if return_df:
+						data_dict['Channel %s' % c]['QC Flag %s' % qc] = indexed_df
 
-                    data_dict['Channel %s' % c]['QC Flag %s' % qc] = data
+					else:
+                    	data = self._query_diag_type(
+                        	indexed_df, diag_type, bias_correction)
+                    	data[data > 1e5] = np.nan
+
+                    	data_dict['Channel %s' % c]['QC Flag %s' % qc] = data
 
         return data_dict
 
@@ -910,10 +955,6 @@ class Radiance(GSIdiag):
         lons = indexed_df['longitude'].to_numpy()
 
         return lats, lons
-
-    def return_df(self):
-        """Returns working dataframe."""
-        return self.data_df
 
 
 class Ozone(GSIdiag):
@@ -965,7 +1006,7 @@ class Ozone(GSIdiag):
         self.data_df = df
 
     def get_data(self, diag_type, analysis_use=False, errcheck=True,
-                 bias_correction=True):
+                 bias_correction=True, return_df=False):
         """
         Given parameters, get the data from an ozone diagnostic file
 
@@ -979,6 +1020,10 @@ class Ozone(GSIdiag):
             errcheck : (bool; default=True) when True, will toss out
                        obs where inverse obs error is zero (i.e.
                        not assimilated in GSI)
+			bias_correction : (bool; default=True) If True, will return bias
+                              corrected data.
+            return_df : (bool; default=False) If True, will return entire
+                        indexed dataframe rather than numpy array of data
         Returns:
             data_dict : (dict) requested indexed data
         """
@@ -1009,15 +1054,27 @@ class Ozone(GSIdiag):
                     monitored_df, diag_type, bias_correction)
 
                 if p == 0:
-                    data_dict['column total'] = {
-                        'assimilated': assimilated_data,
-                        'monitored': monitored_data
-                    }
+					if return_df:
+						data_dict['column total'] = {
+                        	'assimilated': assimilated_df,
+                        	'monitored': monitored_df
+                    	}
+					else:
+                    	data_dict['column total'] = {
+                        	'assimilated': assimilated_data,
+                        	'monitored': monitored_data
+                    	}
                 else:
-                    data_dict[p] = {
-                        'assimilated': assimilated_data,
-                        'monitored': monitored_data
-                    }
+					if return_df:
+						data_dict[p] = {
+                            'assimilated': assimilated_df,
+                            'monitored': monitored_df
+                        }
+					else:
+                    	data_dict[p] = {
+                        	'assimilated': assimilated_data,
+                        	'monitored': monitored_data
+                    	}
 
             else:
                 indexed_df = self._select_ozone(
@@ -1027,9 +1084,15 @@ class Ozone(GSIdiag):
                     indexed_df, diag_type, bias_correction)
 
                 if p == 0:
-                    data_dict['column total'] = data
+					if return_df:
+						data_dict['column total'] = indexed_df
+					else:
+                    	data_dict['column total'] = data
                 else:
-                    data_dict[p] = data
+					if return_df:
+                    	data_dict[p] = indexed_df
+					else:
+						data_dict[p] = data
 
         return data_dict
 
@@ -1139,7 +1202,3 @@ class Ozone(GSIdiag):
                     lons_dict[p] = indexed_df['longitude'].to_numpy()
 
         return lats_dict, lons_dict
-
-    def return_df(self):
-        """Returns working dataframe."""
-        return self.data_df
