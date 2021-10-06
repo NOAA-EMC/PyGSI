@@ -416,6 +416,11 @@ class Radiance(GSIdiag):
         Args:
             channel : (list of ints; default=None) observation channel number
             qcflag : (list of ints; default=None) qc flag number
+            analysis_use : (bool; default=False) if True, will return
+                           three sets of data:
+                           assimilated (QC_Flag=0, inv_observation_error!=0),
+                           rejected (QC_Flag!=0),
+                           monitored (use_flag!=1)
             separate_channels : (bool; default=False) if True, returns
                                 dict of separate data by specified channels
             separate_qc : (bool; default=False) if True, returns dict of
