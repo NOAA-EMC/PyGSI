@@ -274,14 +274,7 @@ class Conventional(GSIdiag):
                     return indexed_df
 
                 else:
-                    if self.variable == 'uv':
-                        u, v = self._query_diag_type(
-                            indexed_df, diag_type, bias_correction)
-
-                        return u, v
-
-                    else:
-                        data = self._query_diag_type(
+                    return self._query_diag_type(
                             indexed_df, diag_type, bias_correction)
 
                         return data
