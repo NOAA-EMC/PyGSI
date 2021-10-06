@@ -28,32 +28,38 @@ def plotting(conv_config):
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             u, v = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
-            
+
             data = {'assimilated': {'u': u['assimilated'],
                                     'v': v['assimilated'],
-                                    'windspeed': np.sqrt(np.square(u['assimilated']) + np.square(v['assimilated']))
-                                   },
+                                    'windspeed': np.sqrt(
+                                        np.square(u['assimilated']) +
+                                        np.square(v['assimilated']))
+                                    },
                     'rejected':    {'u': u['rejected'],
                                     'v': v['rejected'],
-                                    'windspeed': np.sqrt(np.square(u['rejected']) + np.square(v['rejected']))
-                                   },
+                                    'windspeed': np.sqrt(
+                                        np.square(u['rejected']) +
+                                        np.square(v['rejected']))
+                                    },
                     'monitored':   {'u': u['monitored'],
                                     'v': v['monitored'],
-                                    'windspeed': np.sqrt(np.square(u['monitored']) + np.square(v['monitored']))
-                                   }
-                   }
+                                    'windspeed': np.sqrt(
+                                        np.square(u['monitored']) +
+                                        np.square(v['monitored']))
+                                    }
+                    }
 
         else:
             data = diag.get_data(diag_type, obsid=obsid,
                                  analysis_use=analysis_use)
-            
+
             data = {'assimilated': data['assimilated'],
                     'rejected': data['rejected'],
                     'monitored': data['monitored']
-                   }
+                    }
 
         lats, lons = diag.get_lat_lon(obsid=obsid, analysis_use=analysis_use)
-        
+
         metadata = diag.metadata
 
         if np.isin('histogram', plot_type):
