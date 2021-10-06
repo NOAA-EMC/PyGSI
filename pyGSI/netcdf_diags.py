@@ -15,15 +15,15 @@ def _calculate_stats(data):
     if n == 0:
 
         stat_dict = {'n': 0,
-                    'min': np.nan,
-                    'max': np.nan,
-                    'mean': np.nan,
-                    'std': np.nan,
-                    'q25': np.nan,
-                    'q50': np.nan,
-                    'q75': np.nan,
-                    'rmse': np.nan
-                    }
+                     'min': np.nan,
+                     'max': np.nan,
+                     'mean': np.nan,
+                     'std': np.nan,
+                     'q25': np.nan,
+                     'q50': np.nan,
+                     'q75': np.nan,
+                     'rmse': np.nan
+                     }
 
         return stat_dict
 
@@ -39,15 +39,15 @@ def _calculate_stats(data):
         rmse = np.sqrt(np.nanmean(np.square(data)))
 
         stat_dict = {'n': n,
-                    'min': mn,
-                    'max': mx,
-                    'mean': mean,
-                    'std': std,
-                    'q25': q25,
-                    'q50': q50,
-                    'q75': q75,
-                    'rmse': rmse
-                    }
+                     'min': mn,
+                     'max': mx,
+                     'mean': mean,
+                     'std': std,
+                     'q25': q25,
+                     'q50': q50,
+                     'q75': q75,
+                     'rmse': rmse
+                     }
 
         return stat_dict
 
@@ -511,29 +511,34 @@ def _append_ncfile_uv(uv_stat_dict, binned_data, ncfilename):
 
 
 def _get_filename(metadata):
-    
-    metadata['Diag Type'] = 'omf' if metadata['Diag Type'] in ['o-f', 'omb', 'o-b'] else metadata['Diag Type']
-    metadata['Diag Type'] = 'oma' if metadata['Diag Type'] in ['o-a'] else metadata['Diag Type']        
-        
+
+    metadata['Diag Type'] = 'omf' if metadata['Diag Type'] in [
+        'o-f', 'omb', 'o-b'] else metadata['Diag Type']
+    metadata['Diag Type'] = 'oma' if metadata['Diag Type'] in [
+        'o-a'] else metadata['Diag Type']
+
     if metadata['Diag File Type'] == 'conventional':
         ncfilename = '{Obs Type}_{Variable}_{ObsID[0]}_{Diag Type}.nc'.format(
-                **metadata)
-        
+            **metadata)
+
     elif metadata['Diag File Type'] == 'ozone':
-        layer = '_'.join(metadata['Layer'].split()) if metadata['Layer'] == 'column total' else f"{metadata['Layer']:.3f}"
+        layer = '_'.join(metadata['Layer'].split(
+        )) if metadata['Layer'] == 'column total' else \
+            f"{metadata['Layer']:.3f}"
 
         ncfilename = '{Obs Type}_{Satellite}_{Diag Type}_'.format(
             **metadata) + '%s.nc' % layer
     else:
-        ncfilename = '{Obs Type}_{Satellite}_Ch{Channel[0]}_{Diag Type}.nc'.format(
-                **metadata)
+        ncfilename = ('{Obs Type}_{Satellite}_Ch{Channel[0]}_'
+                      '{Diag Type}.nc').format(**metadata)
 
     return ncfilename
 
 
 def write_netcdf(data, binned_data, metadata, outdir):
 
-    if metadata['Diag File Type'] == 'conventional' and metadata['Variable'] == 'uv':
+    if metadata['Diag File Type'] == 'conventional' \
+            and metadata['Variable'] == 'uv':
 
         uv_stat_dict = {}
 
@@ -552,7 +557,7 @@ def write_netcdf(data, binned_data, metadata, outdir):
         ncpath = outdir+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
-        if os.path.isfile(ncpath) != True:
+        if not os.path.isfile(ncpath):
             _write_ncfile_uv(uv_stat_dict, binned_data, ncpath)
 
         # else, append data to that file
@@ -575,11 +580,12 @@ def write_netcdf(data, binned_data, metadata, outdir):
         ncpath = outdir+'/'+ncfilename
 
         # See if the file exists. If it doesn't, create it
-        if os.path.isfile(ncpath) != True:
+        if not os.path.isfile(ncpath):
             _write_ncfile(stat_dict, binned_data, ncpath, metadata['Obs Type'])
 
         # else, append data to that file
         else:
-            _append_ncfile(stat_dict, binned_data, ncpath, metadata['Obs Type'])
+            _append_ncfile(stat_dict, binned_data,
+                           ncpath, metadata['Obs Type'])
 
     return

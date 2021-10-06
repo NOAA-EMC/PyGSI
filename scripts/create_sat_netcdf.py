@@ -15,7 +15,7 @@ start_time = datetime.now()
 
 
 def create_netcdf(sat_config):
-    
+
     diagfile = sat_config['radiance input']['path'][0]
     diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
