@@ -407,8 +407,9 @@ class Radiance(GSIdiag):
 
         self.data_df = df
 
-    def get_data(self, channel=None, qcflag=None, use_flag=False,
-                 separate_channels=False, separate_qc=False, errcheck=True):
+    def get_data(self, channel=None, qcflag=None, analysis_use=False,
+                 use_flag=False, separate_channels=False, separate_qc=False,
+                 errcheck=True):
         """
         Given parameters, get indexed dataframe from a radiance diagnostic file
 
@@ -447,13 +448,26 @@ class Radiance(GSIdiag):
             return df_dict
 
         else:
-            indexed_df = self._select_radiance(
-                channel, qcflag, use_flag, errcheck)
+            if analysis_use:
+                assimilated_df, rejected_df, monitored_df = \
+                    self._select_radiance(channel, qcflag,
+                                          analysis_use, use_flag,
+                                          errcheck)
+
+                indexed_df = {
+                    'assimilated': assimilated_df,
+                    'rejected': rejected_df,
+                    'monitored': monitored_df
+                }
+
+            else:
+                indexed_df = self._select_radiance(
+                    channel, qcflag, analysis_use, use_flag, errcheck)
 
             return indexed_df
 
-    def _select_radiance(self, channel=None, qcflag=None, use_flag=False,
-                         errcheck=True):
+    def _select_radiance(self, channel, qcflag, analysis_use,
+                         use_flag, errcheck):
         """
         Given parameters, get the indices of the observation
         locations from a radiance diagnostic file.
@@ -514,7 +528,58 @@ class Radiance(GSIdiag):
 
                 df = df.iloc[indx]
 
-        return df
+        if analysis_use:
+            # Separate into 3 dataframes; assimilated, rejected, and monitored
+            # First step, separate use_flag=1 and useflag!=1
+            good_use_flag_indx = np.where(self.chan_info['use_flag'] == 1)
+            bad_use_flag_indx = np.where(self.chan_info['use_flag'] != 1)
+
+            assimilated_channels = self.chan_info[
+                'sensor_chan'][good_use_flag_indx].tolist()
+            monitored_channels = self.chan_info[
+                'sensor_chan'][bad_use_flag_indx].tolist()
+
+            # Create assimilated channels
+            idx_col = 'Channel'
+            indx = df.index.get_level_values(idx_col) == ''
+
+            for chan in assimilated_channels:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
+
+            good_channels_df = df.iloc[indx]
+
+            # reset index and get monitored dataframe
+            indx = df.index.get_level_values(idx_col) == ''
+
+            for chan in monitored_channels:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
+
+            monitored_df = df.iloc[indx]
+
+            # Get assimilated data where QC Flag = 0 and inverse ob error != 0
+            idx_col = 'QC_Flag'
+            indx = good_channels_df.index.get_level_values(idx_col) == ''
+
+            assimilated_indx = np.ma.logical_or(
+                indx, good_channels_df.index.get_level_values('QC_Flag') == 0)
+            err_indx = np.isin(
+                good_channels_df['inverse_observation_error'], 0, invert=True)
+            assimilated_indx = np.ma.logical_or(assimilated_indx, err_indx)
+
+            assimilated_df = good_channels_df.iloc[assimilated_indx]
+
+            # Get rejected data where QC != 1
+            rejected_indx = np.ma.logical_or(
+                indx, good_channels_df.index.get_level_values('QC_Flag') != 0)
+
+            rejected_df = good_channels_df.iloc[rejected_indx]
+
+            return assimilated_df, rejected_df, monitored_df
+
+        else:
+            return df
 
     def _get_data_special(self, channel, qcflag, use_flag,
                           separate_channels, separate_qc, errcheck):
