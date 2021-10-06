@@ -33,7 +33,7 @@ def first_occurrence(worklist):
 
 
 def create_netcdf(conv_config):
-    
+
     diagfile = conv_config['conventional input']['path'][0]
     diag_type = conv_config['conventional input']['data type'][0].lower()
     obsid = conv_config['conventional input']['observation id']
@@ -51,20 +51,22 @@ def create_netcdf(conv_config):
 
             data = {'u': u['assimilated'],
                     'v': v['assimilated'],
-                    'windspeed': np.sqrt(np.square(u['assimilated']) + np.square(v['assimilated']))
+                    'windspeed': np.sqrt(
+                        np.square(u['assimilated']) +
+                        np.square(v['assimilated']))
                     }
 
         else:
             data = diag.get_data(diag_type, obsid=obsid,
                                  subtype=subtype, analysis_use=analysis_use)
-            
+
             data = data['assimilated']
 
         lats, lons = diag.get_lat_lon(
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
         lats = lats['assimilated']
         lons = lons['assimilated']
-        
+
         pressure = diag.get_pressure(
             obsid=obsid, subtype=subtype, analysis_use=analysis_use)
         pressure = pressure['assimilated']
@@ -76,7 +78,8 @@ def create_netcdf(conv_config):
         # Get binned data
         if diag_components[1] == 'conv' and diag_components[2] == 'uv':
             binned_data = spatial_bin(
-                data, lats, lons, binsize='1x1', uv_data=True, pressure=pressure)
+                data, lats, lons, binsize='1x1', uv_data=True,
+                pressure=pressure)
         else:
             binned_data = spatial_bin(
                 data, lats, lons, binsize='1x1', pressure=pressure)
@@ -148,7 +151,7 @@ for w in parsed_yaml_file['diagnostic']:
 
 condition = True
 
-while condition == True:
+while condition:
     worklist, repeatinglist = first_occurrence(worklist)
 
     # run multiprocessing pool with worklist

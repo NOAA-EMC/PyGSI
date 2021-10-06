@@ -9,6 +9,7 @@ from datetime import datetime
 
 start_time = datetime.now()
 
+
 def plotting(ozone_config):
 
     diagfile = ozone_config['ozone input']['path'][0]
@@ -21,9 +22,9 @@ def plotting(ozone_config):
     diag = Ozone(diagfile)
 
     data = diag.get_data(diag_type, analysis_use=analysis_use)
-        
+
     lats, lons = diag.get_lat_lon(analysis_use=analysis_use)
-        
+
     if layer == 0:
         dict_key = 'column total'
     else:
@@ -35,12 +36,11 @@ def plotting(ozone_config):
     if np.isin('histogram', plot_type):
         plot_histogram(data[dict_key], metadata, outdir)
     if np.isin('spatial', plot_type):
-        plot_spatial(data[dict_key], metadata, lats[dict_key], lons[dict_key], outdir)
-       
-    
+        plot_spatial(data[dict_key], metadata,
+                     lats[dict_key], lons[dict_key], outdir)
+
 
 ###############################################
-
 
 # Parse command line
 ap = argparse.ArgumentParser()
