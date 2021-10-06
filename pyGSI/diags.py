@@ -277,7 +277,6 @@ class Conventional(GSIdiag):
                     return self._query_diag_type(
                             indexed_df, diag_type, bias_correction)
 
-
     def _select_conv(self, obsid=None, subtype=None, station_id=None,
                      analysis_use=False):
         """
