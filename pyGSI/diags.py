@@ -435,7 +435,7 @@ class Radiance(GSIdiag):
         """
 
         self.metadata['Variable'] = 'brightness_temperature'
-        self.metadata['Anl Use'] = False
+        self.metadata['Anl Use'] = analysis_use
 
         # If no channels given, return all channels
         self.metadata['Channels'] = 'All Channels' if channel is None \

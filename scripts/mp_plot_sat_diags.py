@@ -6,7 +6,7 @@ import yaml
 from multiprocessing import Pool
 import sys
 from pyGSI.diags import Radiance
-from pyGSI.plot_diags import plot_spatial, plot_histogram
+from pyGSI.plot_diags import plot_map, plot_histogram
 from datetime import datetime
 
 start_time = datetime.now()
@@ -18,20 +18,54 @@ def plotting(sat_config):
     diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
     qcflag = sat_config['radiance input']['qc flag']
+    analysis_use = sat_config['radiance input']['analysis use'][0]
     plot_type = sat_config['radiance input']['plot type']
     outdir = sat_config['outdir']
 
     diag = Radiance(diagfile)
-
-    data = diag.get_data(diag_type, channel=channel, qcflag=qcflag)
-    lats, lons = diag.get_lat_lon(channel=channel, qcflag=qcflag)
-
+    
+    df = diag.get_data(channel=channel, qcflag=qcflag,
+                       analysis_use=analysis_use)
     metadata = diag.metadata
-
+    metadata['Diag Type'] = diag_type
+    
+    column = f'{diag_type}' if diag_type in ['observation'] \
+                else f'{diag_type}_adjusted'
+    
+    if analysis_use:
+        lats = {
+            'assimilated': df['assimilated']['latitude'].to_numpy(),
+            'rejected': df['rejected']['latitude'].to_numpy(),
+            'monitored': df['monitored']['latitude'].to_numpy()
+        }
+        lons = {
+            'assimilated': df['assimilated']['longitude'].to_numpy(),
+            'rejected': df['rejected']['longitude'].to_numpy(),
+            'monitored': df['monitored']['longitude'].to_numpy()
+        }
+        
+        data = {
+            'assimilated': df['assimilated'][column].to_numpy(),
+            'rejected': df['rejected'][column].to_numpy(),
+            'monitored': df['monitored'][column].to_numpy()
+        }
+        
+        for key in data.keys():
+            data[key][data[key] > 1e5] = np.nan
+            
+    else:
+        lats = df['latitude'].to_numpy()
+        lons = df['longitude'].to_numpy()
+        
+        data = df[column].to_numpy()
+        
+        data[data > 1e5] = np.nan
+    
+    
     if np.isin('histogram', plot_type):
         plot_histogram(data, metadata, outdir)
     if np.isin('spatial', plot_type):
-        plot_spatial(data, metadata, lats, lons, outdir)
+        plot_map(lats, lons, data, metadata, outdir)
 
 
 ###############################################

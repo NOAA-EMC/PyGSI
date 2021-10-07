@@ -4,7 +4,7 @@ import yaml
 from multiprocessing import Pool
 import sys
 from pyGSI.diags import Ozone
-from pyGSI.plot_diags import plot_spatial, plot_histogram
+from pyGSI.plot_diags import plot_map, plot_histogram
 from datetime import datetime
 
 start_time = datetime.now()
@@ -21,23 +21,44 @@ def plotting(ozone_config):
 
     diag = Ozone(diagfile)
 
-    data = diag.get_data(diag_type, analysis_use=analysis_use)
-
-    lats, lons = diag.get_lat_lon(analysis_use=analysis_use)
+    df = diag.get_data(analysis_use=analysis_use)
+    metadata = diag.metadata
+    metadata['Diag Type'] = diag_type
+    
+    column = f'{diag_type}' if diag_type in ['observation'] \
+        else f'{diag_type}_adjusted'
 
     if layer == 0:
         dict_key = 'column total'
     else:
-        dict_key = list(data)[layer]
-
-    metadata = diag.metadata
+        dict_key = list(df)[layer]
     metadata['Layer'] = dict_key
+    
+    if analysis_use:
+        lats = {
+            'assimilated': df[dict_key]['assimilated']['latitude'].to_numpy(),
+            'monitored': df[dict_key]['monitored']['latitude'].to_numpy()
+        }
+        lons = {
+            'assimilated': df[dict_key]['assimilated']['longitude'].to_numpy(),
+            'monitored': df[dict_key]['monitored']['longitude'].to_numpy()
+        }
+        
+        data = {
+            'assimilated': df[dict_key]['assimilated'][column].to_numpy(),
+            'monitored': df[dict_key]['monitored'][column].to_numpy()
+        }
+        
+    else:
+        lats = df[dict_key]['latitude'].to_numpy()
+        lons = df[dict_key]['longitude'].to_numpy()
+    
+        data = df[dict_key][column].to_numpy()
 
     if np.isin('histogram', plot_type):
-        plot_histogram(data[dict_key], metadata, outdir)
+        plot_histogram(data, metadata, outdir)
     if np.isin('spatial', plot_type):
-        plot_spatial(data[dict_key], metadata,
-                     lats[dict_key], lons[dict_key], outdir)
+        plot_map(lats, lons, data, metadata, outdir)
 
 
 ###############################################
