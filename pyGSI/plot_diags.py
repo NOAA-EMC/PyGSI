@@ -4,15 +4,12 @@ from datetime import datetime
 import numpy as np
 from textwrap import TextWrapper
 import matplotlib.pyplot as plt
-
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/emcpy/src/')
-
 from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
-# plt.use('agg')
+import matplotlib
+matplotlib.use('agg')
 
 
 def _get_obs_type(obs_id):

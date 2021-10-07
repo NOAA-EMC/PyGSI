@@ -9,23 +9,23 @@ from pyGSI.plot_diags import plot_map, plot_histogram
 start_time = datetime.now()
 
 
-def _uv_plotting(df, lats, lons, diag_type, analysis_use, 
+def _uv_plotting(df, lats, lons, diag_type, analysis_use,
                  metadata, plot_type, outdir):
-    
+
     # Creates column name fo u and v data
     u = f'u_{diag_type}' if diag_type in ['observation'] \
         else f'u_{diag_type}_adjusted'
     v = f'v_{diag_type}' if diag_type in ['observation'] \
         else f'v_{diag_type}_adjusted'
-    
+
     if analysis_use:
         data = {
-            'u' : {
+            'u': {
                 'assimilated': df['assimilated'][u].to_numpy(),
                 'rejected': df['rejected'][u].to_numpy(),
                 'monitored': df['monitored'][u].to_numpy()
             },
-            'v' : {
+            'v': {
                 'assimilated': df['assimilated'][v].to_numpy(),
                 'rejected': df['rejected'][v].to_numpy(),
                 'monitored': df['monitored'][v].to_numpy()
@@ -43,7 +43,8 @@ def _uv_plotting(df, lats, lons, diag_type, analysis_use,
             plot_histogram(data[key], metadata, outdir)
         if np.isin('spatial', plot_type):
             plot_map(lats, lons, data[key], metadata, outdir)
-    
+
+
 def plotting(conv_config):
 
     diagfile = conv_config['conventional input']['path'][0]
@@ -58,10 +59,10 @@ def plotting(conv_config):
     df = diag.get_data(obsid=obsid, analysis_use=analysis_use)
     metadata = diag.metadata
     metadata['Diag Type'] = diag_type
-    
+
     column = f'{diag_type}' if diag_type in ['observation'] \
-                else f'{diag_type}_adjusted'
-    
+        else f'{diag_type}_adjusted'
+
     if analysis_use:
         lats = {
             'assimilated': df['assimilated']['latitude'].to_numpy(),
@@ -73,32 +74,31 @@ def plotting(conv_config):
             'rejected': df['rejected']['longitude'].to_numpy(),
             'monitored': df['monitored']['longitude'].to_numpy()
         }
-        
+
         if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
             _uv_plotting(df, lats, lons, diag_type, analysis_use,
                          metadata, plot_type, outdir)
 
-        else:            
+        else:
             data = {
                 'assimilated': df['assimilated'][column].to_numpy(),
                 'rejected': df['rejected'][column].to_numpy(),
                 'monitored': df['monitored'][column].to_numpy()
             }
 
-
             if np.isin('histogram', plot_type):
                 plot_histogram(data, metadata, outdir)
             if np.isin('spatial', plot_type):
                 plot_map(lats, lons, data, metadata, outdir)
 
-    else:        
+    else:
         lats = df['latitude'].to_numpy()
         lons = df['longitude'].to_numpy()
-        
+
         if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
             _uv_plotting(df, lats, lons, diag_type, analysis_use,
                          metadata, plot_type, outdir)
-            
+
         else:
             data = df[column].to_numpy()
 
@@ -106,7 +106,7 @@ def plotting(conv_config):
                 plot_histogram(data, metadata, outdir)
             if np.isin('spatial', plot_type):
                 plot_map(lats, lons, data, metadata, outdir)
-                
+
 ###############################################
 
 
