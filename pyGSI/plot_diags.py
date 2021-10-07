@@ -4,11 +4,15 @@ from datetime import datetime
 import numpy as np
 from textwrap import TextWrapper
 import matplotlib.pyplot as plt
+
+import sys
+sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/emcpy/src/')
+
 from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
-matplotlib.use('agg')
+# plt.use('agg')
 
 
 def _get_obs_type(obs_id):
@@ -133,11 +137,11 @@ def _calculate_stats(data):
     rmse = np.sqrt(np.nanmean(np.square(data)))
 
     stats = {'Nobs': n,
-             'Min': np.round(mn, 3),
-             'Max': np.round(mx, 3),
-             'Mean': np.round(mean, 3),
-             'Std': np.round(std, 3),
-             'RMSE': np.round(rmse, 3)
+             'Min': mn,
+             'Max': mx,
+             'Mean': mean,
+             'Std': std,
+             'RMSE': rmse,
              }
 
     return stats
@@ -173,7 +177,7 @@ def _get_labels(metadata):
     if metadata['Diag File Type'] == 'conventional':
         title = title + '\n%s' % '\n'.join(metadata['ObsID Name'])
         save_file = save_file + '_%s' % '_'.join(
-            str(x).replace(" ", "_") for x in metadata['ObsID Name'])
+            str(x).replace(" ", "_") for x in metadata['ObsID'])
 
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
@@ -213,6 +217,10 @@ def _varspecs_name(variable):
             'u': ['eastward wind', 'ugrd', 'zonal wind'],
             'v': ['northward wind', 'vgrd', 'meridional wind'],
             'wind speed': ['windspeed'],
+            'surface pressure': ['p', 'ps'],
+            'sea surface temperature': ['sst'],
+            'tc pressure': ['tcp'],
+            'bending angle': ['gps'],
             'brightness temperature': ['bt'],
             'integrated layer ozone in air': ['ozone', 'o3']
         }
@@ -244,10 +252,6 @@ def _no_data_histogram(data, plotobj, metadata, outdir):
         text = 'No Data'
     else:
         text = 'Single\nObservation'
-
-        # Annotate Stats
-        stats_dict = _calculate_stats(data)
-        plotobj.add_stats_dict(stats_dict, fontsize=12)
 
     plotobj.add_text(0.5, 0.5, text, fontsize=32,
                      alpha=0.6, horizontalalignment='center')
@@ -346,7 +350,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
         # Make stats dict values str because when annotating,
         # they refuse to round??
         for key in stats_dict:
-            val = str(stats_dict[key])
+            val = str(np.round(stats_dict[key], 3))
             stats_dict[key] = val
 
         myplot.add_stats_dict(stats_dict, yloc=-0.15, fontsize=12)
@@ -470,7 +474,7 @@ def _create_map_plot(lats, lons, data, metadata,
         # Make stats dict values str because when annotating,
         # they refuse to round??
         for key in stats_dict:
-            val = str(stats_dict[key])
+            val = str(np.round(stats_dict[key], 3))
             stats_dict[key] = val
 
         # Each domain changes so need to set
