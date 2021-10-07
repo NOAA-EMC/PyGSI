@@ -4,10 +4,9 @@ import argparse
 import numpy as np
 import yaml
 from multiprocessing import Pool
-import sys
+from datetime import datetime
 from pyGSI.diags import Radiance
 from pyGSI.plot_diags import plot_map, plot_histogram
-from datetime import datetime
 
 start_time = datetime.now()
 
@@ -18,7 +17,8 @@ def plotting(sat_config):
     diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
     qcflag = sat_config['radiance input']['qc flag']
-    analysis_use = sat_config['radiance input']['analysis use'][0]
+#     analysis_use = sat_config['radiance input']['analysis use'][0]
+    analysis_use = True
     plot_type = sat_config['radiance input']['plot type']
     outdir = sat_config['outdir']
 

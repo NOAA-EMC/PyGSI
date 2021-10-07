@@ -3,8 +3,6 @@ import numpy as np
 import yaml
 from multiprocessing import Pool
 from datetime import datetime
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI')
 from pyGSI.diags import Conventional
 from pyGSI.plot_diags import plot_map, plot_histogram
 
