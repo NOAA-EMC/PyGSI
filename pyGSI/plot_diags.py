@@ -4,15 +4,11 @@ from datetime import datetime
 import numpy as np
 from textwrap import TextWrapper
 import matplotlib.pyplot as plt
-
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/emcpy/src/')
-
 from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
-# matplotlib.use('agg')
+matplotlib.use('agg')
 
 
 def _get_obs_type(obs_id):
@@ -160,7 +156,7 @@ def _get_labels(metadata):
     if metadata['Anl Use Type'] is not None:
         title = (f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
                  f" - Data {metadata['Anl Use Type']}")
-        
+
         var = var.replace(" ", "_")
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_"
@@ -168,7 +164,7 @@ def _get_labels(metadata):
 
     else:
         title = f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
-        
+
         var = var.replace(" ", "_")
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_")

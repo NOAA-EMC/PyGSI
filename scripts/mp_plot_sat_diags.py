@@ -23,15 +23,15 @@ def plotting(sat_config):
     outdir = sat_config['outdir']
 
     diag = Radiance(diagfile)
-    
+
     df = diag.get_data(channel=channel, qcflag=qcflag,
                        analysis_use=analysis_use)
     metadata = diag.metadata
     metadata['Diag Type'] = diag_type
-    
+
     column = f'{diag_type}' if diag_type in ['observation'] \
-                else f'{diag_type}_adjusted'
-    
+        else f'{diag_type}_adjusted'
+
     if analysis_use:
         lats = {
             'assimilated': df['assimilated']['latitude'].to_numpy(),
@@ -43,25 +43,24 @@ def plotting(sat_config):
             'rejected': df['rejected']['longitude'].to_numpy(),
             'monitored': df['monitored']['longitude'].to_numpy()
         }
-        
+
         data = {
             'assimilated': df['assimilated'][column].to_numpy(),
             'rejected': df['rejected'][column].to_numpy(),
             'monitored': df['monitored'][column].to_numpy()
         }
-        
+
         for key in data.keys():
             data[key][data[key] > 1e5] = np.nan
-            
+
     else:
         lats = df['latitude'].to_numpy()
         lons = df['longitude'].to_numpy()
-        
+
         data = df[column].to_numpy()
-        
+
         data[data > 1e5] = np.nan
-    
-    
+
     if np.isin('histogram', plot_type):
         plot_histogram(data, metadata, outdir)
     if np.isin('spatial', plot_type):

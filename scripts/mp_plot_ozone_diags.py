@@ -24,7 +24,7 @@ def plotting(ozone_config):
     df = diag.get_data(analysis_use=analysis_use)
     metadata = diag.metadata
     metadata['Diag Type'] = diag_type
-    
+
     column = f'{diag_type}' if diag_type in ['observation'] \
         else f'{diag_type}_adjusted'
 
@@ -33,7 +33,7 @@ def plotting(ozone_config):
     else:
         dict_key = list(df)[layer]
     metadata['Layer'] = dict_key
-    
+
     if analysis_use:
         lats = {
             'assimilated': df[dict_key]['assimilated']['latitude'].to_numpy(),
@@ -43,16 +43,16 @@ def plotting(ozone_config):
             'assimilated': df[dict_key]['assimilated']['longitude'].to_numpy(),
             'monitored': df[dict_key]['monitored']['longitude'].to_numpy()
         }
-        
+
         data = {
             'assimilated': df[dict_key]['assimilated'][column].to_numpy(),
             'monitored': df[dict_key]['monitored'][column].to_numpy()
         }
-        
+
     else:
         lats = df[dict_key]['latitude'].to_numpy()
         lons = df[dict_key]['longitude'].to_numpy()
-    
+
         data = df[dict_key][column].to_numpy()
 
     if np.isin('histogram', plot_type):
