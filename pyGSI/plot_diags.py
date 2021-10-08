@@ -8,6 +8,7 @@ from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
+import matplotlib
 matplotlib.use('agg')
 
 
@@ -133,11 +134,11 @@ def _calculate_stats(data):
     rmse = np.sqrt(np.nanmean(np.square(data)))
 
     stats = {'Nobs': n,
-             'Min': np.round(mn, 3),
-             'Max': np.round(mx, 3),
-             'Mean': np.round(mean, 3),
-             'Std': np.round(std, 3),
-             'RMSE': np.round(rmse, 3)
+             'Min': mn,
+             'Max': mx,
+             'Mean': mean,
+             'Std': std,
+             'RMSE': rmse,
              }
 
     return stats
@@ -157,36 +158,39 @@ def _get_labels(metadata):
         title = (f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
                  f" - Data {metadata['Anl Use Type']}")
 
+        var = var.replace(" ", "_")
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_"
                      f"{metadata['Anl Use Type']}")
 
     else:
         title = f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
+
+        var = var.replace(" ", "_")
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_")
 
     # Adds on specific obsid, channel, or layer info to title/save file
     if metadata['Diag File Type'] == 'conventional':
         title = title + '\n%s' % '\n'.join(metadata['ObsID Name'])
-        save_file = save_file + '%s' % '_'.join(
-            str(x) for x in metadata['ObsID Name'])
+        save_file = save_file + '_%s' % '_'.join(
+            str(x).replace(" ", "_") for x in metadata['ObsID'])
 
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
             title = title + '\nAll Channels'
-            save_file = save_file + 'All_Channels'
+            save_file = save_file + '_All_Channels'
 
         else:
             title = title + '\nChannels: %s' % ', '.join(
                 str(x) for x in metadata['Channels'])
-            save_file = save_file + 'channels_%s' % '_'.join(
+            save_file = save_file + '_channels_%s' % '_'.join(
                 str(x) for x in metadata['Channels'])
 
     else:
         layer = metadata['Layer']
         title = title + f'\nLayer: {layer}'
-        save_file = save_file + '%s' % layer
+        save_file = save_file + '_%s' % layer
 
     # Get date label
     date_title = metadata['Date'].strftime("%d %b %Y %Hz")
@@ -210,6 +214,10 @@ def _varspecs_name(variable):
             'u': ['eastward wind', 'ugrd', 'zonal wind'],
             'v': ['northward wind', 'vgrd', 'meridional wind'],
             'wind speed': ['windspeed'],
+            'surface pressure': ['p', 'ps'],
+            'sea surface temperature': ['sst'],
+            'tc pressure': ['tcp'],
+            'bending angle': ['gps'],
             'brightness temperature': ['bt'],
             'integrated layer ozone in air': ['ozone', 'o3']
         }
@@ -224,7 +232,7 @@ def _varspecs_name(variable):
     return spec_variable
 
 
-def _no_data_histogram(data, plotobj, metadata):
+def _no_data_histogram(data, plotobj, metadata, outdir):
     """
     Creates histogram with either 'No Data' or
     'Single Observation' depending on length of data.
@@ -241,10 +249,6 @@ def _no_data_histogram(data, plotobj, metadata):
         text = 'No Data'
     else:
         text = 'Single\nObservation'
-
-        # Annotate Stats
-        stats_dict = _calculate_stats(data)
-        plotobj.add_stats_dict(stats_dict, fontsize=12)
 
     plotobj.add_text(0.5, 0.5, text, fontsize=32,
                      alpha=0.6, horizontalalignment='center')
@@ -280,7 +284,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     # Plot special histogram for if len of data is 0 or 1
     if len(data) <= 1:
-        _no_data_histogram(data, myplot, metadata)
+        _no_data_histogram(data, myplot, metadata, outdir)
 
         return
 
@@ -343,7 +347,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
         # Make stats dict values str because when annotating,
         # they refuse to round??
         for key in stats_dict:
-            val = str(stats_dict[key])
+            val = str(np.round(stats_dict[key], 3))
             stats_dict[key] = val
 
         myplot.add_stats_dict(stats_dict, yloc=-0.15, fontsize=12)
@@ -357,7 +361,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     return
 
 
-def _no_data_map(plotmap, domain, metadata):
+def _no_data_map(plotmap, domain, metadata, outdir):
     """
     Creates a plot with 'No Data' across the map if
     there is no data.
@@ -420,7 +424,7 @@ def _create_map_plot(lats, lons, data, metadata,
     metadata['Variable'] = varspecs.name
 
     if len(data) == 0:
-        _no_data_map(mymap, Domain(domain), metadata)
+        _no_data_map(mymap, Domain(domain), metadata, outdir)
         return
 
     # Generate plot object
@@ -467,7 +471,7 @@ def _create_map_plot(lats, lons, data, metadata,
         # Make stats dict values str because when annotating,
         # they refuse to round??
         for key in stats_dict:
-            val = str(stats_dict[key])
+            val = str(np.round(stats_dict[key], 3))
             stats_dict[key] = val
 
         # Each domain changes so need to set
