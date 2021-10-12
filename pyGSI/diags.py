@@ -115,6 +115,12 @@ class Conventional(GSIdiag):
                 df[f'hofx_{bias_type}'] = df['observation'] - \
                     df[f'omf_{bias_type}']
 
+        # Get index values
+        self.obs_ids = df.index.get_level_values(
+            'Observation_Type').unique().to_numpy()
+        self.stn_ids = df.index.get_level_values(
+            'Station_ID').unique().to_numpy()
+
         self.data_df = df
 
     def get_data(self, obsid=None, subtype=None, station_id=None,
@@ -330,6 +336,24 @@ class Conventional(GSIdiag):
 
         return df
 
+    def list_obsids(self):
+        """
+        Prints all the unique observation ids in the diagnostic file.
+        """
+        obsids = sorted(self.obs_ids)
+
+        print('Observation IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in obsids])}')
+
+    def list_stationids(self):
+        """
+        Prints all the unique station ids in the diagnostic file.
+        """
+        stnids = sorted(self.stn_ids)
+
+        print('Station IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in stnids])}')
+
 
 class Radiance(GSIdiag):
 
@@ -404,6 +428,12 @@ class Radiance(GSIdiag):
             # Create hofx columns
             df[f'hofx_{bias_type}'] = df['observation'] - \
                 df[f'omf_{bias_type}']
+
+        # Get index values
+        self.channels = df.index.get_level_values(
+            'Channel').unique().to_numpy()
+        self.qc_flags = df.index.get_level_values(
+            'QC_Flag').unique().to_numpy()
 
         self.data_df = df
 
@@ -620,6 +650,24 @@ class Radiance(GSIdiag):
 
         return df_dict
 
+    def list_channels(self):
+        """
+        Prints all the unique channels in the diagnostic file.
+        """
+        chans = sorted(self.channels)
+
+        print('Channel numbers in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in chans])}')
+
+    def list_qcflags(self):
+        """
+        Prints all the unique qcflags in the diagnostic file.
+        """
+        qcflags = sorted(self.qc_flags)
+
+        print('QC Flags in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in qcflags])}')
+
 
 class Ozone(GSIdiag):
 
@@ -667,6 +715,10 @@ class Ozone(GSIdiag):
             df[f'hofx_{bias_type}'] = df['observation'] - \
                 df[f'omf_{bias_type}']
 
+        # Get index values
+        self.pressures = df.index.get_level_values(
+            'Reference_Pressure').unique().to_numpy()
+
         self.data_df = df
 
     def get_data(self, analysis_use=False, errcheck=True):
@@ -690,8 +742,7 @@ class Ozone(GSIdiag):
 
         df_dict = {}
 
-        pressures = self.data_df.index.get_level_values(
-            'Reference_Pressure').unique().to_numpy()
+        pressures = self.pressures
 
         # Loop through all pressures. If pressure is 0, save in
         # df_dict as 'column total', else save as pressure level
@@ -776,3 +827,13 @@ class Ozone(GSIdiag):
                 df = df.iloc[err_indx]
 
             return df
+
+    def list_pressures(self):
+        """
+        Prints all the unique pressure levels in the diagnostic file.
+        """
+        plvls = sorted(self.pressures)
+        plvls = ["Column Total" if x == 0 else str(x) for x in plvls]
+
+        print('Pressure levels in this diagnostic file include:\n'
+              f'{", ".join([x for x in plvls])}')
