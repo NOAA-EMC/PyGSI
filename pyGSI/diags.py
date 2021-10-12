@@ -330,6 +330,26 @@ class Conventional(GSIdiag):
 
         return df
 
+    def list_obsids(self):
+        """
+        Prints all the unique observation ids in the diagnostic file.
+        """
+        df = self.data_df.reset_index()
+        obsids = sorted(df.Observation_Type.unique())
+
+        print('Observation IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in obsids])}')
+
+    def list_stationids(self):
+        """
+        Prints all the unique station ids in the diagnostic file.
+        """
+        df = self.data_df.reset_index()
+        stnids = sorted(df.Station_ID.unique())
+
+        print('Station IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in stnids])}')
+
 
 class Radiance(GSIdiag):
 
@@ -620,6 +640,26 @@ class Radiance(GSIdiag):
 
         return df_dict
 
+    def list_channels(self):
+        """
+        Prints all the unique channels in the diagnostic file.
+        """
+        df = self.data_df.reset_index()
+        chans = sorted(df.Channel.unique())
+
+        print('Channel numbers in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in chans])}')
+
+    def list_qcflags(self):
+        """
+        Prints all the unique qcflags in the diagnostic file.
+        """
+        df = self.data_df.reset_index()
+        qcflags = sorted(df.QC_Flag.unique())
+
+        print('QC Flags in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in qcflags])}')
+
 
 class Ozone(GSIdiag):
 
@@ -776,3 +816,14 @@ class Ozone(GSIdiag):
                 df = df.iloc[err_indx]
 
             return df
+
+    def list_pressures(self):
+        """
+        Prints all the unique pressure levels in the diagnostic file.
+        """
+        df = self.data_df.reset_index()
+        plvls = sorted(df.Reference_Pressure.unique())
+        plvls = ["Column Total" if x == 0 else str(x) for x in plvls]
+
+        print('Pressure levels in this diagnostic file include:\n'
+              f'{", ".join([x for x in plvls])}')
