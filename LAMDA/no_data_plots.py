@@ -6,7 +6,7 @@ import plot_features as features
 def no_data_map(plotmap, domain, metadata):
     """
     Creates a plot with 'No Data' across the map if
-    there is no data.    
+    there is no data.
 
     Args:
         plotmap : (object) Map object created from emcpy
