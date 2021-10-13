@@ -46,7 +46,7 @@ def _create_map_qc(df, qc_unique, domain, projection,
 
         # Add legend
         ncol = 2 if len(plot_objects) > 4 else 1
-        legend = mymap.add_legend(loc='lower left', ncol=ncol, 
+        legend = mymap.add_legend(loc='lower left', ncol=ncol,
                                   title='QC Flags')
 
         # Titles
@@ -69,26 +69,28 @@ def _create_map_qc(df, qc_unique, domain, projection,
     return
 
 
-def map_qc_flags(config_file):
+def map_qc_flags(inputfile, channel=None, qcflag=None,
+                 analysis_use=False, domain='conus',
+                 projection='plcarr', plotdir='./'):
     """
     Create map plotting location of qcflags.
+
+    Args:
+        inputfile : (str) path to diagnostic file
+        channel : (list of ints; default=None) channel number
+                  to plot
+        qcflag : (list of ints; default=None) qc flags to
+                 plot
+        analysis_use : (bool; default=False) if True, will return
+                       three sets of data:
+                       assimilated (QC_Flag=0, inv_observation_error!=0),
+                       rejected (QC_Flag!=0),
+                       monitored (use_flag!=1)
+        domain : (str; default='conus') domain in which to plot data
+        projection : (str; default='plcarr') projection of map to plot
+                     data
+        plotdir : (str; default='./') path to where figures should be saved
     """
-
-    ###########################################
-
-    # this should probably come from an input yaml file
-    # another idea is to have a workflow script that reads
-    # an input yaml and then receives all the below args
-
-    inputfile = config_file['input file']
-    channel = config_file['channel']
-    qcflag = config_file['qc flag']
-    analysis_use = config_file['analysis_use']
-    domain = config_file['domain']
-    projection = config_file['projection']
-    plotdir = config_file['plotdir']
-
-    ###########################################
 
     diag = Radiance(inputfile)
 
@@ -116,4 +118,3 @@ def map_qc_flags(config_file):
         metadata['Anl Use Type'] = None
         _create_map_qc(df, qc_unique, domain,
                        projection, metadata, plotdir)
-    
