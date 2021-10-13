@@ -138,7 +138,7 @@ class GSIstat(object):
             return None
 
         tmp = []
-        pattern = "\s+\d+\s+\d+\s+%s_\S+\s+\d+\s+\d+\s+" % instrument
+        pattern = r"\s+\d+\s+\d+\s+%s_\S+\s+\d+\s+\d+\s+" % instrument
         for line in self._lines:
             if re.match(pattern, line):
                 tst = line.strip().split()
@@ -148,8 +148,9 @@ class GSIstat(object):
                     tst = tsttmp[0:7] + tsttmp[8:]
                 tmp.append(tst)
 
-        columns = ['it', 'channel', 'instrument', 'satellite', 'nassim',
-                   'nrej', 'oberr', 'OmF_bc', 'OmF_wobc', 'col1', 'col2', 'col3']
+        columns = ['it', 'channel', 'instrument', 'satellite',
+                   'nassim', 'nrej', 'oberr', 'OmF_bc', 'OmF_wobc',
+                   'col1', 'col2', 'col3']
         df = pd.DataFrame(data=tmp, columns=columns)
         df.drop(['col1', 'col2', 'col3'], inplace=True, axis=1)
         df[['channel', 'nassim', 'nrej']] = df[[
@@ -208,7 +209,8 @@ class GSIstat(object):
         """
 
         header = None
-        pattern = 'o-g\s+it\s+obs\s+use\s+typ\s+styp\s+count\s+bias\s+rms\s+cpen\s+qcpen'
+        pattern = (r'o-g\s+it\s+obs\s+use\s+typ\s+styp\s+count\s+bias\s'
+                   r'+rms\s+cpen\s+qcpen')
         for line in self._lines:
             if re.search(pattern, line):
                 header = line.strip()
@@ -219,7 +221,7 @@ class GSIstat(object):
             return None
 
         tmp = []
-        pattern = ' o-g\s+\d{2}\s+ps\s'
+        pattern = r' o-g\s+\d{2}\s+ps\s'
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
@@ -244,7 +246,7 @@ class GSIstat(object):
 
         # Get pressure levels
         ptops = []
-        pattern = 'o-g\s+ptop\s'
+        pattern = r'o-g\s+ptop\s'
         for line in self._lines:
             if re.search(pattern, line):
                 header = line.strip()
@@ -256,7 +258,7 @@ class GSIstat(object):
 
         header = None
         pbots = []
-        pattern = 'o-g\s+it\s+obs\s+use\s+typ\s+styp\s+pbot\s'
+        pattern = r'o-g\s+it\s+obs\s+use\s+typ\s+styp\s+pbot\s'
         for line in self._lines:
             if re.search(pattern, line):
                 header = line.strip()
@@ -272,7 +274,7 @@ class GSIstat(object):
             sys.exit(1)
 
         tmp = []
-        pattern = ' o-g\s+(\d\d)\s+%s\s' % name
+        pattern = r' o-g\s+(\d\d)\s+%s\s' % name
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
@@ -301,7 +303,7 @@ class GSIstat(object):
 
         # Get header
         header = None
-        pattern = 'it\s+sat\s+inst\s+'
+        pattern = r'it\s+sat\s+inst\s+'
         for line in self._lines:
             if re.search(pattern, line):
                 header = re.sub('#', ' ', line)
@@ -312,7 +314,7 @@ class GSIstat(object):
             sys.exit(1)
 
         tmp = []
-        pattern = 'o-g\s+(\d\d)\s+oz\s'
+        pattern = r'o-g\s+(\d\d)\s+oz\s'
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
@@ -342,7 +344,7 @@ class GSIstat(object):
 
         # Get header
         header = None
-        pattern = 'it\s+satellite\s+instrument\s+'
+        pattern = r'it\s+satellite\s+instrument\s+'
         for line in self._lines:
             if re.search(pattern, line):
                 header = re.sub('#', ' ', line)
@@ -353,7 +355,7 @@ class GSIstat(object):
             sys.exit(1)
 
         tmp = []
-        pattern = 'o-g (\d\d) %3s' % 'rad'
+        pattern = r'o-g (\d\d) %3s' % 'rad'
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
