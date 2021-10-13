@@ -35,7 +35,7 @@ class Increment:
                 validtime = anltime - dt.timedelta(hours=abs(tdiff))
             else:
                 validtime = anltime
-        except:
+        except TypeError:
             validtime = dt.datetime(2000, 1, 1)
             anltime = dt.datetime(2000, 1, 1)
             IAUhr = -9999
