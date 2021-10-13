@@ -188,8 +188,7 @@ class Conventional(GSIdiag):
                 }
 
             else:
-                indexed_df = self._select_conv(obsid, subtype, station_id,
-                                               analysis_use)
+                indexed_df = self._select_conv(obsid, subtype, station_id)
 
             return indexed_df
 
