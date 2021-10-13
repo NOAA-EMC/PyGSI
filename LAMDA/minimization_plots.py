@@ -90,20 +90,3 @@ def plot_minimization(inputfile, cyclestr, plotdir):
 
     # Plot single cycle gnorm
     _plot_gnorm_single_cycle(cost_df, cyclestr, plotdir)
-
-    # Need to add features that will plot 7 day average
-    # with last 4 cycles
-
-
-if __name__ == '__main__':
-    # called from command line
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--input", help="Path to GSI stat file",
-                    required=True)
-    ap.add_argument("-c", "--cycle", help="YYYYMMDDHH analysis cycle",
-                    required=True)
-    ap.add_argument("-p", "--plotdir", help="Path to output plot dir",
-                    default='./')
-    MyArgs = ap.parse_args()
-
-    plot_minimization(MyArgs.input, MyArgs.cycle, MyArgs.plotdir)
