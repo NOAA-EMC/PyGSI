@@ -6,12 +6,6 @@ from datetime import datetime
 from pathlib import Path
 
 _VALID_LVL_TYPES = ["pressure", "height"]
-_VALID_CONV_DIAG_TYPES = ["omf", "oma", "observation", "hofx"]
-_VALID_RADIANCE_DIAG_TYPES = ["omf", "oma", "observation", "hofx",
-                              "water_fraction", "land_fraction",
-                              "cloud_fraction", "snow_fraction",
-                              "ice_fraction", "vegetation_fraction"]
-_VALID_OZONE_DIAG_TYPES = ["omf", "oma", "observation", "hofx"]
 
 
 class GSIdiag:
@@ -42,38 +36,6 @@ class GSIdiag:
 
     def __len__(self):
         return self.data_df.shape[0]
-
-    def _query_diag_type(self, df, diag_type, bias_correction):
-        """
-        Query the data type being requested and returns
-        the appropriate indexed data
-        """
-
-        bias = 'adjusted' if bias_correction else 'unadjusted'
-        diag_type = 'omf' if diag_type in ['oma'] else diag_type
-
-        if self.variable == 'uv':
-            if diag_type in ['observation']:
-                u = df[f'u_{diag_type}']
-                v = df[f'v_{diag_type}']
-            else:
-                u = df[f'u_{diag_type}_{bias}']
-                v = df[f'v_{diag_type}_{bias}']
-
-            return u.to_numpy(), v.to_numpy()
-
-        else:
-            # uv is not a variable for radiance so the fraction
-            # variables only need to be considered here
-            if diag_type in ['observation', "water_fraction",
-                             "land_fraction", "cloud_fraction",
-                             "snow_fraction", "ice_fraction",
-                             "vegetation_fraction"]:
-                data = df[f'{diag_type}']
-            else:
-                data = df[f'{diag_type}_{bias}']
-
-            return data.to_numpy()
 
 
 class Conventional(GSIdiag):
@@ -153,17 +115,21 @@ class Conventional(GSIdiag):
                 df[f'hofx_{bias_type}'] = df['observation'] - \
                     df[f'omf_{bias_type}']
 
+        # Get index values
+        self.obs_ids = df.index.get_level_values(
+            'Observation_Type').unique().to_numpy()
+        self.stn_ids = df.index.get_level_values(
+            'Station_ID').unique().to_numpy()
+
         self.data_df = df
 
-    def get_data(self, diag_type, obsid=None, subtype=None, station_id=None,
-                 analysis_use=False, lvls=None, lvl_type='pressure',
-                 bias_correction=True):
+    def get_data(self, obsid=None, subtype=None, station_id=None,
+                 analysis_use=False, lvls=None, lvl_type='pressure'):
         """
-        Given parameters, get the data from a conventional diagnostic file
+        Given parameters, get indexed dataframe from a conventional diagnostic
+        file.
 
         Args:
-            diag_type : (str; Required) type of data to extract
-                        i.e. observation, omf, oma, hofx
             obsid : (list of ints; optional; default=None) observation
                     type ID number; default=None
             subtype : (list of ints; optional; default=None) observation
@@ -186,18 +152,10 @@ class Conventional(GSIdiag):
                    high bound.
             lvl_type : (str; default='pressure') lvls definition as
                        'pressure' or 'height'.
-            bias_correction : (bool; default=True) If True, will return bias
-                              corrected data.
         Returns:
-            data : requested indexed data
+            indexed_df : requested indexed dataframe
         """
 
-        if diag_type not in _VALID_CONV_DIAG_TYPES:
-            raise ValueError((f'{diag_type} is not a valid diag_type. '
-                              'Valid choices are: '
-                              f'{" | ".join(_VALID_CONV_DIAG_TYPES)}'))
-
-        self.metadata['Diag Type'] = diag_type
         self.metadata['ObsID'] = obsid
         self.metadata['Subtype'] = subtype
         self.metadata['Station ID'] = station_id
@@ -213,79 +171,33 @@ class Conventional(GSIdiag):
                                   'Valid choices are: '
                                   f'{" | ".join(_VALID_LVL_TYPES)}'))
 
-            data = self._get_lvl_data(
-                diag_type, obsid, subtype, station_id,
-                analysis_use, lvls, lvl_type, bias_correction)
+            binned_dfs = self._get_lvl_data(obsid, subtype, station_id,
+                                            analysis_use, lvls, lvl_type)
 
-            return data
+            return binned_dfs
 
         else:
             if analysis_use:
                 assimilated_df, rejected_df, monitored_df = self._select_conv(
                     obsid, subtype, station_id, analysis_use)
 
-                if self.variable == 'uv':
-                    u_assimilated, v_assimilated = self._query_diag_type(
-                        assimilated_df, diag_type, bias_correction)
-                    u_rejected, v_rejected = self._query_diag_type(
-                        rejected_df, diag_type, bias_correction)
-                    u_monitored, v_monitored = self._query_diag_type(
-                        monitored_df, diag_type, bias_correction)
-
-                    u = {'assimilated': u_assimilated,
-                         'rejected': u_rejected,
-                         'monitored': u_monitored}
-                    v = {'assimilated': v_assimilated,
-                         'rejected': v_rejected,
-                         'monitored': v_monitored}
-
-                    return u, v
-
-                else:
-                    assimilated_data = self._query_diag_type(
-                        assimilated_df, diag_type, bias_correction)
-                    rejected_data = self._query_diag_type(
-                        rejected_df, diag_type, bias_correction)
-                    monitored_data = self._query_diag_type(
-                        monitored_df, diag_type, bias_correction)
-
-                    data = {'assimilated': assimilated_data,
-                            'rejected': rejected_data,
-                            'monitored': monitored_data
-                            }
-
-                    return data
+                indexed_df = {
+                    'assimilated': assimilated_df,
+                    'rejected': rejected_df,
+                    'monitored': monitored_df
+                }
 
             else:
                 indexed_df = self._select_conv(obsid, subtype, station_id)
 
-                if self.variable == 'uv':
-                    u, v = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
+            return indexed_df
 
-                    return u, v
-
-                else:
-                    data = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
-
-                    return data
-
-    def _select_conv(self, obsid=None, subtype=None, station_id=None,
-                     analysis_use=False):
+    def _select_conv(self, obsid, subtype, station_id, analysis_use):
         """
         Given parameters, multidimensional dataframe is indexed
         to only include selected locations from a conventional
         diagnostic file.
 
-        Args:
-            obsid : (list of ints; default=None) observation
-                    type ID number
-            subtype : (list of ints; default=None) subtype number
-            station_id : (list of str; default=None) station id tag
-            analysis_use : (bool; deafault=False) if True, will separate
-                           into three indexed dataframes: assimilated,
-                           rejected, monitored
         Returns:
             df : (pandas dataframe) indexed multidimentsional
                  dataframe from selected data
@@ -352,9 +264,8 @@ class Conventional(GSIdiag):
         else:
             return df
 
-    def _get_lvl_data(self, diag_type, obsid=None, subtype=None,
-                      station_id=None, analysis_use=False, lvls=None,
-                      lvl_type='pressure', bias_correction=True):
+    def _get_lvl_data(self, obsid, subtype, station_id,
+                      analysis_use, lvls, lvl_type):
         """
         Given a list of levels, will create a dictionary of data that is
         selected between each level. Will return a dictionary with subsetted
@@ -364,7 +275,7 @@ class Conventional(GSIdiag):
                 500-750: <data>,
                 750-1000: <data>}
         """
-        binned_data = {}
+        binned_dfs = {}
 
         for i, low_bound in enumerate(lvls[:-1]):
             high_bound = lvls[i+1]
@@ -380,37 +291,13 @@ class Conventional(GSIdiag):
                 monitored_lvl_df = self._select_levels(
                     monitored_df, low_bound, high_bound, lvl_type)
 
-                if self.variable == 'uv':
-                    u_assimilated, v_assimilated = self._query_diag_type(
-                        assimilated_lvl_df, diag_type, bias_correction)
-                    u_rejected, v_rejected = self._query_diag_type(
-                        rejected_lvl_df, diag_type, bias_correction)
-                    u_monitored, v_monitored = self._query_diag_type(
-                        monitored_lvl_df, diag_type, bias_correction)
+                lvl_df = {
+                    'assimilated': assimilated_lvl_df,
+                    'rejected': rejected_lvl_df,
+                    'monitored': monitored_lvl_df
+                }
 
-                    u = {'assimilated': u_assimilated,
-                         'rejected': u_rejected,
-                         'monitored': u_monitored}
-                    v = {'assimilated': v_assimilated,
-                         'rejected': v_rejected,
-                         'monitored': v_monitored}
-
-                    data = {'u': u,
-                            'v': v}
-                else:
-                    assimilated_data = self._query_diag_type(
-                        assimilated_lvl_df, diag_type, bias_correction)
-                    rejected_data = self._query_diag_type(
-                        rejected_lvl_df, diag_type, bias_correction)
-                    monitored_data = self._query_diag_type(
-                        monitored_lvl_df, diag_type, bias_correction)
-
-                    data = {'assimilated': assimilated_data,
-                            'rejected': rejected_data,
-                            'monitored': monitored_data
-                            }
-
-                binned_data[f'{low_bound}-{high_bound}'] = data
+                binned_dfs[f'{low_bound}-{high_bound}'] = lvl
 
             else:
                 indexed_df = self._select_conv(obsid, subtype, station_id)
@@ -418,19 +305,9 @@ class Conventional(GSIdiag):
                 lvl_df = self._select_levels(
                     indexed_df, low_bound, high_bound, lvl_type)
 
-                if self.variable == 'uv':
-                    u, v = self._query_diag_type(
-                        lvl_df, diag_type, bias_correction)
+                binned_dfs[f'{low_bound}-{high_bound}'] = lvl_df
 
-                    data = {'u': u,
-                            'v': v}
-                else:
-                    data = self._query_diag_type(
-                        lvl_df, diag_type, bias_correction)
-
-                binned_data[f'{low_bound}-{high_bound}'] = data
-
-        return binned_data
+        return binned_dfs
 
     def _select_levels(self, df, low_bound, high_bound, lvl_type):
         """
@@ -451,197 +328,23 @@ class Conventional(GSIdiag):
 
         return df
 
-    def get_pressure(self, obsid=None, subtype=None, station_id=None,
-                     analysis_use=False):
+    def list_obsids(self):
         """
-        Grabs indexed pressure data.
-
-        Args:
-            obsid : (list of ints; optional; default=None) observation
-                    type ID number; default=None
-            subtype : (list of ints; optional; default=None) observation
-                      measurement ID subtype number, default=None
-            station_id : (list of str; optional; default=None)
-                         station id, default=None
-            analysis_use : (bool; default=False) if True, will return
-                           three sets of data:
-                           assimilated (analysis_use_flag=1, qc<7),
-                           rejected (analysis_use_flag=-1, qc<8),
-                           monitored (analysis_use_flag=-1, qc>7)
-        Returns:
-            height : indexed pressure values
+        Prints all the unique observation ids in the diagnostic file.
         """
-        if analysis_use:
-            assimilated_df, rejected_df, monitored_df = self._select_conv(
-                    obsid, subtype, station_id, analysis_use)
+        obsids = sorted(self.obs_ids)
 
-            pressure = {
-                'assimilated':
-                    assimilated_df.reset_index()['Pressure'].to_numpy(),
-                'rejected': rejected_df.reset_index()['Pressure'].to_numpy(),
-                'monitored': monitored_df.reset_index()['Pressure'].to_numpy()
-            }
+        print('Observation IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in obsids])}')
 
-        else:
-            indexed_df = self._select_conv(obsid, subtype, station_id)
-            pressure = indexed_df.reset_index()['Pressure'].to_numpy()
-
-        return pressure
-
-    def get_height(self, obsid=None, subtype=None, station_id=None,
-                   analysis_use=False):
+    def list_stationids(self):
         """
-        Grabs indexed height data.
-
-        Args:
-            obsid : (list of ints; optional; default=None) observation
-                    type ID number; default=None
-            subtype : (list of ints; optional; default=None) observation
-                      measurement ID subtype number, default=None
-            station_id : (list of str; optional; default=None)
-                         station id, default=None
-            analysis_use : (bool; default=False) if True, will return
-                           three sets of data:
-                           assimilated (analysis_use_flag=1, qc<7),
-                           rejected (analysis_use_flag=-1, qc<8),
-                           monitored (analysis_use_flag=-1, qc>7)
-        Returns:
-            height : indexed height values
+        Prints all the unique station ids in the diagnostic file.
         """
-        if analysis_use:
-            assimilated_df, rejected_df, monitored_df = self._select_conv(
-                    obsid, subtype, station_id, analysis_use)
+        stnids = sorted(self.stn_ids)
 
-            height = {
-                'assimilated':
-                    assimilated_df.reset_index()['Height'].to_numpy(),
-                'rejected': rejected_df.reset_index()['Height'].to_numpy(),
-                'monitored': monitored_df.reset_index()['Height'].to_numpy()
-            }
-
-        else:
-            indexed_df = self._select_conv(obsid, subtype, station_id)
-            height = indexed_df.reset_index()['Height'].to_numpy()
-
-        return height
-
-    def get_lat_lon(self, obsid=None, subtype=None, station_id=None,
-                    analysis_use=False, lvls=None, lvl_type='pressure'):
-        """
-        Grabs indexed lats and lons from inputs.
-
-        Args:
-            obsid : (list of ints; optional; default=None) observation
-                    type ID number; default=None
-            subtype : (list of ints; optional; default=None) observation
-                      measurement ID subtype number, default=None
-            station_id : (list of str; optional; default=None)
-                         station id, default=None
-            analysis_use : (bool; default=False) if True, will return
-                           three sets of data:
-                           assimilated (analysis_use_flag=1, qc<7),
-                           rejected (analysis_use_flag=-1, qc<8),
-                           monitored (analysis_use_flag=-1, qc>7)
-            lvls : (list type; default=None) List of pressure or height
-                   levels i.e. [250,500,750,1000]. List must be arranged
-                   low to high.
-                   For pressure, will return a dictionary of data with data
-                   greater than the low bound, and less than or equal to the
-                   high bound.
-                   For height, will return a dictionary of data with data
-                   greater than or equal to the low bound, and less than the
-                   high bound.
-            lvl_type : (str; default='pressure') lvls definition as
-                       'pressure' or 'height'.
-        Returns:
-            lat, lon : (array like) requested indexed latitude and longitude
-        """
-        # Selects proper levels
-        if lvls is not None:
-            # Check if level type is valid
-            if lvl_type not in _VALID_LVL_TYPES:
-                raise ValueError((f'{lvl_type} is not a valid lvl_type. '
-                                  'Valid choices are: '
-                                  f'{" | ".join(_VALID_LVL_TYPES)}'))
-
-        if analysis_use:
-            assimilated_df, rejected_df, monitored_df = self._select_conv(
-                        obsid, subtype, station_id, analysis_use)
-
-            # select by levels
-            if lvls is not None:
-                binned_lats = {}
-                binned_lons = {}
-
-                for i, low_bound in enumerate(lvls[:-1]):
-                    high_bound = lvls[i+1]
-
-                    assimilated_lvl_df = self._select_levels(
-                        assimilated_df, low_bound, high_bound, lvl_type)
-                    rejected_lvl_df = self._select_levels(
-                        rejected_df, low_bound, high_bound, lvl_type)
-                    monitored_lvl_df = self._select_levels(
-                        monitored_df, low_bound, high_bound, lvl_type)
-
-                    lats = {'assimilated':
-                            assimilated_lvl_df['latitude'].to_numpy(),
-                            'rejected':
-                            rejected_lvl_df['latitude'].to_numpy(),
-                            'monitored':
-                            monitored_lvl_df['latitude'].to_numpy()
-                            }
-                    lons = {'assimilated':
-                            assimilated_lvl_df['longitude'].to_numpy(),
-                            'rejected':
-                            rejected_lvl_df['longitude'].to_numpy(),
-                            'monitored':
-                            monitored_lvl_df['longitude'].to_numpy()
-                            }
-
-                    binned_lats[f'{low_bound}-{high_bound}'] = lats
-                    binned_lons[f'{low_bound}-{high_bound}'] = lons
-
-                return binned_lats, binned_lons
-
-            else:
-                lats = {'assimilated': assimilated_df['latitude'].to_numpy(),
-                        'rejected': rejected_df['latitude'].to_numpy(),
-                        'monitored': monitored_df['latitude'].to_numpy()
-                        }
-                lons = {'assimilated': assimilated_df['longitude'].to_numpy(),
-                        'rejected': rejected_df['longitude'].to_numpy(),
-                        'monitored': monitored_df['longitude'].to_numpy()
-                        }
-
-                return lats, lons
-
-        else:
-            indexed_df = self._select_conv(obsid, subtype, station_id)
-
-            # select by levels
-            if lvls is not None:
-                binned_lats = {}
-                binned_lons = {}
-
-                for i, low_bound in enumerate(lvls[:-1]):
-                    high_bound = lvls[i+1]
-
-                    lvl_df = self._select_levels(
-                        indexed_df, low_bound, high_bound, lvl_type)
-
-                    lats = lvl_df['latitude'].to_numpy()
-                    lons = lvl_df['longitude'].to_numpy()
-
-                    binned_lats[f'{low_bound}-{high_bound}'] = lats
-                    binned_lons[f'{low_bound}-{high_bound}'] = lons
-
-                return binned_lats, binned_lons
-
-            else:
-                lats = indexed_df['latitude'].to_numpy()
-                lons = indexed_df['longitude'].to_numpy()
-
-                return lats, lons
+        print('Station IDs in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in stnids])}')
 
 
 class Radiance(GSIdiag):
@@ -718,19 +421,28 @@ class Radiance(GSIdiag):
             df[f'hofx_{bias_type}'] = df['observation'] - \
                 df[f'omf_{bias_type}']
 
+        # Get index values
+        self.channels = df.index.get_level_values(
+            'Channel').unique().to_numpy()
+        self.qc_flags = df.index.get_level_values(
+            'QC_Flag').unique().to_numpy()
+
         self.data_df = df
 
-    def get_data(self, diag_type, channel=None, qcflag=None, use_flag=False,
-                 separate_channels=False, separate_qc=False, errcheck=True,
-                 bias_correction=True):
+    def get_data(self, channel=None, qcflag=None, analysis_use=False,
+                 use_flag=False, separate_channels=False, separate_qc=False,
+                 errcheck=True):
         """
-        Given parameters, get the data from a radiance diagnostic file
+        Given parameters, get indexed dataframe from a radiance diagnostic file
 
         Args:
-            diag_type : (str; Required) type of data to extract
-                        i.e. observation, omf, oma, hofx
             channel : (list of ints; default=None) observation channel number
             qcflag : (list of ints; default=None) qc flag number
+            analysis_use : (bool; default=False) if True, will return
+                           three sets of data:
+                           assimilated (QC_Flag=0, inv_observation_error!=0),
+                           rejected (QC_Flag!=0),
+                           monitored (use_flag!=1)
             separate_channels : (bool; default=False) if True, returns
                                 dict of separate data by specified channels
             separate_qc : (bool; default=False) if True, returns dict of
@@ -740,19 +452,12 @@ class Radiance(GSIdiag):
             errcheck : (bool; default=True) when True and qcflag==0, will
                        toss out obs where inverse obs error is zero (i.e.
                        not assimilated in GSI)
-            bias_correction : (bool; default=True) If True, will return bias
-                              corrected data.
         Returns:
-            data : requested indexed data
+            indexed_df : requested indexed dataframe
         """
-        if diag_type not in _VALID_RADIANCE_DIAG_TYPES:
-            raise ValueError((f'{diag_type} is not a valid diag_type. '
-                              'Valid choices are: '
-                              f'{" | ".join(_VALID_RADIANCE_DIAG_TYPES)}'))
 
         self.metadata['Variable'] = 'brightness_temperature'
-        self.metadata['Diag Type'] = diag_type
-        self.metadata['Anl Use'] = False
+        self.metadata['Anl Use'] = analysis_use
 
         # If no channels given, return all channels
         self.metadata['Channels'] = 'All Channels' if channel is None \
@@ -763,23 +468,33 @@ class Radiance(GSIdiag):
             else qcflag
 
         if separate_channels or separate_qc:
-            data = self._get_data_special(
-                diag_type, channel, qcflag, use_flag, separate_channels,
-                separate_qc, errcheck, bias_correction)
-            return data
+            df_dict = self._get_data_special(
+                channel, qcflag, use_flag, separate_channels,
+                separate_qc, errcheck)
+
+            return df_dict
 
         else:
-            indexed_df = self._select_radiance(
-                channel, qcflag, use_flag, errcheck)
-            data = self._query_diag_type(
-                indexed_df, diag_type, bias_correction)
+            if analysis_use:
+                assimilated_df, rejected_df, monitored_df = \
+                    self._select_radiance(channel, qcflag,
+                                          analysis_use, use_flag,
+                                          errcheck)
 
-            data[data > 1e5] = np.nan
+                indexed_df = {
+                    'assimilated': assimilated_df,
+                    'rejected': rejected_df,
+                    'monitored': monitored_df
+                }
 
-            return data
+            else:
+                indexed_df = self._select_radiance(
+                    channel, qcflag, analysis_use, use_flag, errcheck)
 
-    def _select_radiance(self, channel=None, qcflag=None, use_flag=False,
-                         errcheck=True):
+            return indexed_df
+
+    def _select_radiance(self, channel, qcflag, analysis_use,
+                         use_flag, errcheck):
         """
         Given parameters, get the indices of the observation
         locations from a radiance diagnostic file.
@@ -840,72 +555,110 @@ class Radiance(GSIdiag):
 
                 df = df.iloc[indx]
 
-        return df
+        if analysis_use:
+            # Separate into 3 dataframes; assimilated, rejected, and monitored
+            # First step, separate use_flag=1 and useflag!=1
+            use_indx = np.where(self.chan_info['use_flag'] == 1)
+            monitor_indx = np.where(self.chan_info['use_flag'] != 1)
 
-    def _get_data_special(self, diag_type, channel, qcflag, use_flag,
-                          separate_channels, separate_qc, errcheck,
-                          bias_correction):
+            assimilated_channels = self.chan_info[
+                'sensor_chan'][use_indx].tolist()
+            monitored_channels = self.chan_info[
+                'sensor_chan'][monitor_indx].tolist()
+
+            # Create assimilated channels
+            idx_col = 'Channel'
+            indx = df.index.get_level_values(idx_col) == ''
+
+            for chan in assimilated_channels:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
+
+            good_channels_df = df.iloc[indx]
+
+            # reset index and get monitored dataframe
+            indx = df.index.get_level_values(idx_col) == ''
+
+            for chan in monitored_channels:
+                indx = np.ma.logical_or(
+                    indx, df.index.get_level_values(idx_col) == chan)
+
+            monitored_df = df.iloc[indx]
+
+            # Get assimilated data where QC Flag = 0 and inverse ob error != 0
+            idx_col = 'QC_Flag'
+            indx = good_channels_df.index.get_level_values(idx_col) == ''
+
+            assimilated_indx = np.ma.logical_or(
+                indx, good_channels_df.index.get_level_values('QC_Flag') == 0)
+            err_indx = np.isin(
+                good_channels_df['inverse_observation_error'], 0, invert=True)
+            assimilated_indx = np.ma.logical_or(assimilated_indx, err_indx)
+
+            assimilated_df = good_channels_df.iloc[assimilated_indx]
+
+            # Get rejected data where QC != 1
+            rejected_indx = np.ma.logical_or(
+                indx, good_channels_df.index.get_level_values('QC_Flag') != 0)
+
+            rejected_df = good_channels_df.iloc[rejected_indx]
+
+            return assimilated_df, rejected_df, monitored_df
+
+        else:
+            return df
+
+    def _get_data_special(self, channel, qcflag, use_flag,
+                          separate_channels, separate_qc, errcheck):
         """
         Creates a dictionary that separates channels and qc flags
         depending on the conditions of seperate_channels and
         separate_qc
         """
-        data_dict = {}
+        df_dict = {}
 
         if separate_channels and not separate_qc:
             for c in channel:
                 indexed_df = self._select_radiance(
                     [c], qcflag, errcheck=errcheck)
-                data = self._query_diag_type(
-                    indexed_df, diag_type, bias_correction)
-                data[data > 1e5] = np.nan
 
-                data_dict['Channel %s' % c] = data
+                df_dict['Channel %s' % c] = indexed_df
 
         if not separate_channels and separate_qc:
             for qc in qcflag:
                 indexed_df = self._select_radiance(
                     channel, [qc], errcheck=errcheck)
-                data = self._query_diag_type(diag_type, idx)
-                data[data > 1e5] = np.nan
 
-                data_dict['QC Flag %s' % qc] = data
+                df_dict['QC Flag %s' % qc] = indexed_df
 
         if separate_channels and separate_qc:
             for c in channel:
-                data_dict['Channel %s' % c] = {}
+                df_dict['Channel %s' % c] = {}
                 for qc in qcflag:
                     indexed_df = self._select_radiance(
                         [c], [qc], errcheck=errcheck)
-                    data = self._query_diag_type(
-                        indexed_df, diag_type, bias_correction)
-                    data[data > 1e5] = np.nan
 
-                    data_dict['Channel %s' % c]['QC Flag %s' % qc] = data
+                    df_dict['Channel %s' % c]['QC Flag %s' % qc] = indexed_df
 
-        return data_dict
+        return df_dict
 
-    def get_lat_lon(self, channel=None, qcflag=None, use_flag=False,
-                    errcheck=True):
+    def list_channels(self):
         """
-        Gets lats and lons with desired indices.
-
-        Args:
-            channel : (list of ints; default=None) observation channel number
-            qcflag : (list of ints; default=None) qc flag number
-            use_flag : (bool; default=False) if True, will only return where
-                       use_flag==1
-            errcheck : (bool; default=True) when True and qcflag==0, will
-                       toss out obs where inverse obs error is zero (i.e.
-                       not assimilated in GSI)
-        Returns:
-            lat, lon : (array like) indexed latitude and longitude values
+        Prints all the unique channels in the diagnostic file.
         """
-        indexed_df = self._select_radiance(channel, qcflag, use_flag, errcheck)
-        lats = indexed_df['latitude'].to_numpy()
-        lons = indexed_df['longitude'].to_numpy()
+        chans = sorted(self.channels)
 
-        return lats, lons
+        print('Channel numbers in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in chans])}')
+
+    def list_qcflags(self):
+        """
+        Prints all the unique qcflags in the diagnostic file.
+        """
+        qcflags = sorted(self.qc_flags)
+
+        print('QC Flags in this diagnostic file include:\n'
+              f'{", ".join([str(x) for x in qcflags])}')
 
 
 class Ozone(GSIdiag):
@@ -954,16 +707,17 @@ class Ozone(GSIdiag):
             df[f'hofx_{bias_type}'] = df['observation'] - \
                 df[f'omf_{bias_type}']
 
+        # Get index values
+        self.pressures = df.index.get_level_values(
+            'Reference_Pressure').unique().to_numpy()
+
         self.data_df = df
 
-    def get_data(self, diag_type, analysis_use=False, errcheck=True,
-                 bias_correction=True):
+    def get_data(self, analysis_use=False, errcheck=True):
         """
-        Given parameters, get the data from an ozone diagnostic file
+        Given parameters, get indexed dataframes from an ozone diagnostic file
 
         Args:
-            diag_type : (str; Required) type of data to extract
-                        i.e. observation, omf, oma, hofx
             analysis_use : (bool; default=False) if True, will return
                            two sets of data:
                            assimilated (analysis_use_flag=1),
@@ -972,58 +726,44 @@ class Ozone(GSIdiag):
                        obs where inverse obs error is zero (i.e.
                        not assimilated in GSI)
         Returns:
-            data_dict : (dict) requested indexed data
+            df_dict : (dict) requested indexed dataframes
         """
-        if diag_type not in _VALID_OZONE_DIAG_TYPES:
-            raise ValueError((f'{diag_type} is not a valid diag_type. '
-                              'Valid choices are: '
-                              f'{" | ".join(_VALID_OZONE_DIAG_TYPES)}'))
 
         self.metadata['Variable'] = 'Ozone'
-        self.metadata['Diag Type'] = diag_type
         self.metadata['Anl Use'] = analysis_use
 
-        data_dict = {}
+        df_dict = {}
 
-        pressures = self.data_df.index.get_level_values(
-            'Reference_Pressure').unique().to_numpy()
+        pressures = self.pressures
 
         # Loop through all pressures. If pressure is 0, save in
-        # data_dict as 'column total', else save as pressure level
+        # df_dict as 'column total', else save as pressure level
         for p in pressures:
             if analysis_use:
                 assimilated_df, monitored_df = self._select_ozone(
                     p, analysis_use, errcheck)
 
-                assimilated_data = self._query_diag_type(
-                    assimilated_df, diag_type, bias_correction)
-                monitored_data = self._query_diag_type(
-                    monitored_df, diag_type, bias_correction)
-
                 if p == 0:
-                    data_dict['column total'] = {
-                        'assimilated': assimilated_data,
-                        'monitored': monitored_data
+                    df_dict['column total'] = {
+                        'assimilated': assimilated_df,
+                        'monitored': monitored_df
                     }
                 else:
-                    data_dict[p] = {
-                        'assimilated': assimilated_data,
-                        'monitored': monitored_data
+                    df_dict[p] = {
+                        'assimilated': assimilated_df,
+                        'monitored': monitored_df
                     }
 
             else:
                 indexed_df = self._select_ozone(
                     p, analysis_use, errcheck)
 
-                data = self._query_diag_type(
-                    indexed_df, diag_type, bias_correction)
-
                 if p == 0:
-                    data_dict['column total'] = data
+                    df_dict['column total'] = indexed_df
                 else:
-                    data_dict[p] = data
+                    df_dict[p] = indexed_df
 
-        return data_dict
+        return df_dict
 
     def _select_ozone(self, pressure, analysis_use, errcheck):
         """
@@ -1080,54 +820,12 @@ class Ozone(GSIdiag):
 
             return df
 
-    def get_lat_lon(self, analysis_use=False, errcheck=True):
+    def list_pressures(self):
         """
-        Gets lats and lons with desired indices. Returns dictionary for
-        each level in the ozone data.
+        Prints all the unique pressure levels in the diagnostic file.
         """
-        lats_dict = {}
-        lons_dict = {}
+        plvls = sorted(self.pressures)
+        plvls = ["Column Total" if x == 0 else str(x) for x in plvls]
 
-        pressures = self.data_df.index.get_level_values(
-            'Reference_Pressure').unique().to_numpy()
-
-        # Loop through all pressures. If pressure is 0, save in
-        # dicts as 'column total', else save as pressure level
-        for p in pressures:
-            if analysis_use:
-                assimilated_df, monitored_df = self._select_ozone(
-                    p, analysis_use, errcheck)
-
-                if p == 0:
-                    lats_dict['column total'] = {
-                        'assimilated': assimilated_df['latitude'].to_numpy(),
-                        'monitored': monitored_df['latitude'].to_numpy()
-                        }
-                    lons_dict['column total'] = {
-                        'assimilated': assimilated_df['longitude'].to_numpy(),
-                        'monitored': monitored_df['longitude'].to_numpy()
-                        }
-                else:
-                    lats_dict[p] = {
-                        'assimilated': assimilated_df['latitude'].to_numpy(),
-                        'monitored': monitored_df['latitude'].to_numpy()
-                    }
-                    lons_dict[p] = {
-                      'assimilated': assimilated_df['longitude'].to_numpy(),
-                      'monitored': monitored_df['longitude'].to_numpy()
-                    }
-
-            else:
-                indexed_df = self._select_ozone(
-                    p, analysis_use, errcheck)
-
-                if p == 0:
-                    lats_dict['column total'] = \
-                        indexed_df['latitude'].to_numpy()
-                    lons_dict['column total'] = \
-                        indexed_df['longitude'].to_numpy()
-                else:
-                    lats_dict[p] = indexed_df['latitude'].to_numpy()
-                    lons_dict[p] = indexed_df['longitude'].to_numpy()
-
-        return lats_dict, lons_dict
+        print('Pressure levels in this diagnostic file include:\n'
+              f'{", ".join([x for x in plvls])}')
