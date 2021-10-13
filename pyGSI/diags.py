@@ -192,20 +192,12 @@ class Conventional(GSIdiag):
 
             return indexed_df
 
-    def _select_conv(self, obsid, subtype, station_id, analysis_use=False):
+    def _select_conv(self, obsid, subtype, station_id, analysis_use):
         """
         Given parameters, multidimensional dataframe is indexed
         to only include selected locations from a conventional
         diagnostic file.
 
-        Args:
-            obsid : (list of ints; default=None) observation
-                    type ID number
-            subtype : (list of ints; default=None) subtype number
-            station_id : (list of str; default=None) station id tag
-            analysis_use : (bool; deafault=False) if True, will separate
-                           into three indexed dataframes: assimilated,
-                           rejected, monitored
         Returns:
             df : (pandas dataframe) indexed multidimentsional
                  dataframe from selected data
@@ -566,13 +558,13 @@ class Radiance(GSIdiag):
         if analysis_use:
             # Separate into 3 dataframes; assimilated, rejected, and monitored
             # First step, separate use_flag=1 and useflag!=1
-            good_use_flag_indx = np.where(self.chan_info['use_flag'] == 1)
-            bad_use_flag_indx = np.where(self.chan_info['use_flag'] != 1)
+            use_indx = np.where(self.chan_info['use_flag'] == 1)
+            monitor_indx = np.where(self.chan_info['use_flag'] != 1)
 
             assimilated_channels = self.chan_info[
-                'sensor_chan'][good_use_flag_indx].tolist()
+                'sensor_chan'][use_indx].tolist()
             monitored_channels = self.chan_info[
-                'sensor_chan'][bad_use_flag_indx].tolist()
+                'sensor_chan'][monitor_indx].tolist()
 
             # Create assimilated channels
             idx_col = 'Channel'

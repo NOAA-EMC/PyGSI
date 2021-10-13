@@ -179,7 +179,7 @@ def _get_labels(metadata):
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
             title = title + '\nAll Channels'
-            save_file = save_file + '_All_Channels'
+            save_file = save_file + '_all_channels'
 
         else:
             title = title + '\nChannels: %s' % ', '.join(

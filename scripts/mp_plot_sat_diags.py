@@ -17,8 +17,7 @@ def plotting(sat_config):
     diag_type = sat_config['radiance input']['data type'][0].lower()
     channel = sat_config['radiance input']['channel']
     qcflag = sat_config['radiance input']['qc flag']
-#     analysis_use = sat_config['radiance input']['analysis use'][0]
-    analysis_use = True
+    analysis_use = sat_config['radiance input']['analysis use'][0]
     plot_type = sat_config['radiance input']['plot type']
     outdir = sat_config['outdir']
 
