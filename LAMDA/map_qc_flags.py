@@ -1,5 +1,7 @@
 import numpy as np
 import yaml
+import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 import plot_features as features
 from no_data_plots import no_data_map
@@ -16,7 +18,10 @@ def _create_map_qc(df, qc_unique, domain, projection,
     plot_objects = []
     # Loop through unique QC Flags to create plot objects
     for i, flag in enumerate(qc_unique):
-        indx = (df.index.get_level_values('QC_Flag') == flag)
+        if metadata['Diag File Type'] == 'conventional':
+            indx = data_df.index[df['prep_qc_mark'] == flag]
+        else:
+            indx = (df.index.get_level_values('QC_Flag') == flag)
 
         lats = df['latitude'][indx].to_numpy()
         lons = df['longitude'][indx].to_numpy()
@@ -69,13 +74,15 @@ def _create_map_qc(df, qc_unique, domain, projection,
     return
 
 
-def map_qc_flags(inputfile, channel=None, qcflag=None,
-                 analysis_use=False, domain='conus',
-                 projection='plcarr', plotdir='./'):
+def map_qc_flags(config_file):
     """
     Create map plotting location of qcflags.
 
     Args:
+        config_file : (dict) configuration file that includes the
+                      appropriate inputs based on file type (i.e. 
+                      conventional or radiance data)
+    
         inputfile : (str) path to diagnostic file
         channel : (list of ints; default=None) channel number
                   to plot
@@ -92,13 +99,26 @@ def map_qc_flags(inputfile, channel=None, qcflag=None,
         plotdir : (str; default='./') path to where figures should be saved
     """
 
-    diag = Radiance(inputfile)
+    # Get filename to determing what the file type is
+    filename = os.path.splitext(Path(inputfile).stem)[0]
+    filetype = filename.split('_')[1]
+    
+    if filetype == 'conv':
+        diag = Conventional(inputfile)
 
-    df = diag.get_data(channel=channel, qcflag=qcflag,
-                       analysis_use=analysis_use)
+        df = diag.get_data(obsid=obsid, subtype=subtype, station_id=station_id,
+                           analysis_use=analysis_use)
 
-    # Grab qc flags
-    qc_unique = sorted(np.unique(np.abs(diag.qc_flags)))
+        qc_unique = sorted(np.unique(np.abs(df['prep_qc_mark'])))
+        
+    else:
+        diag = Radiance(inputfile)
+
+        df = diag.get_data(channel=channel, qcflag=qcflag,
+                           analysis_use=analysis_use)
+
+        # Grab qc flags
+        qc_unique = sorted(np.unique(np.abs(diag.qc_flags)))
 
     metadata = diag.metadata
     metadata['Diag Type'] = 'QC Flags'
