@@ -76,7 +76,10 @@ def main(config):
 
             if iuse != 1 and not config['monitor']:
                 continue  # only process assimilated obs for now
-            dictloop = {'layer': [int(ilayer)]}
+            dictloop = {
+                'layer': [int(ilayer)],
+                'bias correction': [True]
+            }
 
             yamlout['diagnostic']['ozone'].append(dictloop)
 
