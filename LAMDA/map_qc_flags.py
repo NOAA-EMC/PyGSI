@@ -80,9 +80,8 @@ def map_qc_flags(config_file):
 
     Args:
         config_file : (dict) configuration file that includes the
-                      appropriate inputs based on file type (i.e. 
+                      appropriate inputs based on file type (i.e.
                       conventional or radiance data)
-    
         inputfile : (str) path to diagnostic file
         channel : (list of ints; default=None) channel number
                   to plot
@@ -102,7 +101,7 @@ def map_qc_flags(config_file):
     # Get filename to determing what the file type is
     filename = os.path.splitext(Path(inputfile).stem)[0]
     filetype = filename.split('_')[1]
-    
+
     if filetype == 'conv':
         diag = Conventional(inputfile)
 
@@ -110,7 +109,7 @@ def map_qc_flags(config_file):
                            analysis_use=analysis_use)
 
         qc_unique = sorted(np.unique(np.abs(df['prep_qc_mark'])))
-        
+
     else:
         diag = Radiance(inputfile)
 
