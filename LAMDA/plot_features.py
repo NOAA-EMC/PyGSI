@@ -44,7 +44,7 @@ def qc_flag_colors(qcflag):
         56: 'darkgrey',
         57: 'dimgrey'
     }
-    
+
     return qc_flag_colors[qcflag]
 
 
