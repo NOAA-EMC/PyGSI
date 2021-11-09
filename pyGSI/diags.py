@@ -356,10 +356,10 @@ class Radiance(GSIdiag):
 
         Args:
             path      : (str) path to radiance GSI diagnostic object
-            var_names : (string array, optional) Names of state 
+            var_names : (string array, optional) Names of state
                         variables in Jacobians.
             read_jac  : (bool, optional) Option to read in Jacobians.
-                        Default = False. 
+                        Default = False.
         Returns:
             self : GSI diag radiance object containing the path
                    to extract data
@@ -368,10 +368,10 @@ class Radiance(GSIdiag):
 
         # The next two commands are for when the Jacobian is read in.
         # This is optional and defaults to false.  It also requires the
-        # state variables to be defined as they are not present in the 
+        # state variables to be defined as they are not present in the
         # diagnostic file.
         self.var_names = var_names or \
-                         ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
+                       ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
         self.read_jac = read_jac
         self._read_obs()
 
@@ -407,12 +407,12 @@ class Radiance(GSIdiag):
                         df_dict[var] = f.variables[var][:]
                 elif len(f.variables[var].shape) == 2:
                     if self.read_jac:
-                        if (var == \
-                            'Observation_Operator_Jacobian_stind'):
-                            jacstart = f.variables[var][:, :]
-                        if (var == \
-                            'Observation_Operator_Jacobian_endind'):
-                            jacend = f.variables[var][:, :]
+                        if (var ==
+                           'Observation_Operator_Jacobian_stind'):
+                                jacstart = f.variables[var][:, :]
+                        if (var ==
+                           'Observation_Operator_Jacobian_endind'):
+                                jacend = f.variables[var][:, :]
                         if (var == 'Observation_Operator_Jacobian_val'):
                             jac = f.variables[var][:, :]
                             jacobians_present = True
