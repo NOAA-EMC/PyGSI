@@ -375,6 +375,10 @@ class Radiance(GSIdiag):
         """
         df_dict = {}
         chan_info = {}
+        jacobians_present = 0
+        jacstart = {}
+        jacend = {}
+        jac = {}
 
         with Dataset(self.path, mode='r') as f:
 
@@ -389,6 +393,14 @@ class Radiance(GSIdiag):
                         chan_info[var] = f.variables[var][:]
                     elif len(f.variables[var][:]) == len(nobs):
                         df_dict[var] = f.variables[var][:]
+                elif len(f.variables[var].shape) == 2:
+                    if (var == 'Observation_Operator_Jacobian_stind'):
+                        jacstart = f.variables[var][:,:]
+                    if (var == 'Observation_Operator_Jacobian_endind'):
+                        jacend = f.variables[var][:,:]
+                    if (var == 'Observation_Operator_Jacobian_val'):
+                        jac = f.variables[var][:,:]
+                        jacobians_present = 1
 
         self.chan_info = chan_info
 
@@ -427,6 +439,41 @@ class Radiance(GSIdiag):
             'Channel').unique().to_numpy()
         self.qc_flags = df.index.get_level_values(
             'QC_Flag').unique().to_numpy()
+
+        # Process Jacobians if present
+        if (jacobians_present == 1):
+            # Hard-coded state variable names for now.  These are the
+            # ones used in the v16 global GFS.  This needs to be added
+            # to the netCDF files.
+            var_names=['sst','u','v','tv','q','oz','ql','qi']
+
+            # The jacstart and jacend arrays from the netCDF file 
+            # actually refer to internal GSI indicies.  We can use them
+            # to infer the length of each variable's section of the 
+            # Jacobian and set up indicies within the Jac array.
+
+            # Find the length of each variable's Jacobian assuming all 
+            # channels/locs are the same (they are)
+            len_jacs=np.array(jacend[0,:]-jacstart[0,:]+1)
+            # Make jac_indices dataframe with positions of each Jacoboian
+            end_index=np.cumsum(len_jacs)-1
+            start_index=np.roll(end_index,1)
+            start_index[0]=0
+            jac_indices= pd.DataFrame([start_index,end_index],columns=var_names)
+
+            jacobians = {}
+            for var in var_names:
+                jac_range = jac_indices[var][1]-jac_indices[var][0]+1
+                jacobians[var] = \
+                    pd.DataFrame(jac[:,jac_indices[var][0]:jac_indices[var][1]+1],\
+                    columns=np.arange(jac_range))
+                jacobians[var].index=df_dict['Channel_Index']
+                jacobians[var].insert(0,'Latitude',df_dict['Latitude'])
+                jacobians[var].insert(1,'Longitude',df_dict['Longitude'])
+
+            del jac
+
+            self.jacobians = jacobians
 
         self.data_df = df
 
