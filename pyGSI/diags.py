@@ -371,7 +371,7 @@ class Radiance(GSIdiag):
         # state variables to be defined as they are not present in the
         # diagnostic file.
         self.var_names = var_names or \
-                       ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
+            ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
         self.read_jac = read_jac
         self._read_obs()
 
@@ -409,10 +409,10 @@ class Radiance(GSIdiag):
                     if self.read_jac:
                         if (var ==
                            'Observation_Operator_Jacobian_stind'):
-                                jacstart = f.variables[var][:, :]
+                               jacstart = f.variables[var][:, :]
                         if (var ==
                            'Observation_Operator_Jacobian_endind'):
-                                jacend = f.variables[var][:, :]
+                               jacend = f.variables[var][:, :]
                         if (var == 'Observation_Operator_Jacobian_val'):
                             jac = f.variables[var][:, :]
                             jacobians_present = True
