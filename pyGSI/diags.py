@@ -408,10 +408,10 @@ class Radiance(GSIdiag):
                 elif len(f.variables[var].shape) == 2:
                     if self.read_jac:
                         if (var ==
-                            'Observation_Operator_Jacobian_stind'):
+                        'Observation_Operator_Jacobian_stind'):
                             jacstart = f.variables[var][:, :]
                         if (var ==
-                            'Observation_Operator_Jacobian_endind'):
+                        'Observation_Operator_Jacobian_endind'):
                             jacend = f.variables[var][:, :]
                         if (var == 'Observation_Operator_Jacobian_val'):
                             jac = f.variables[var][:, :]
@@ -484,7 +484,7 @@ class Radiance(GSIdiag):
                 jacobians[var].insert(1, 'Longitude', df_dict['Longitude'])
 
             del jac
-            
+
             self.jacobians = jacobians
 
         self.data_df = df
