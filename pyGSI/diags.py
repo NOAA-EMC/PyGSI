@@ -445,7 +445,7 @@ class Radiance(GSIdiag):
             # Hard-coded state variable names for now.  These are the
             # ones used in the v16 global GFS.  This needs to be added
             # to the netCDF files.
-            var_names = ['sst', 'u', 'v' , 'tv', 'q', 'oz' , 'ql', 'qi']
+            var_names = ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
 
             # The jacstart and jacend arrays from the netCDF file
             # actually refer to internal GSI indicies.  We can use them
@@ -459,16 +459,16 @@ class Radiance(GSIdiag):
             end_index = np.cumsum(len_jacs)-1
             start_index = np.roll(end_index, 1)
             start_index[0] = 0
-            jac_indices = pd.DataFrame([start_index, end_index], \
+            jac_indices = pd.DataFrame([start_index, end_index],
                                        columns=var_names)
 
             jacobians = {}
             for var in var_names:
                 jac_range = jac_indices[var][1]-jac_indices[var][0]+1
                 jacobians[var] = \
-                    pd.DataFrame(jac[:,jac_indices[var][0]: \
-                                     jac_indices[var][1]+1], \
-                                     columns=np.arange(jac_range))
+                    pd.DataFrame(jac[:, jac_indices[var][0]:
+                                     jac_indices[var][1]+1],
+                                 columns=np.arange(jac_range))
                 jacobians[var].index = df_dict['Channel_Index']
                 jacobians[var].insert(0, 'Latitude', df_dict['Latitude'])
                 jacobians[var].insert(1, 'Longitude', df_dict['Longitude'])
