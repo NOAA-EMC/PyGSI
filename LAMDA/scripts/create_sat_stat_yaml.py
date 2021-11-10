@@ -42,7 +42,7 @@ def main(config):
         yamlout['stat']['stat dir'] = config['statdir']
         yamlout['stat']['sensor'] = sensor
         yamlout['stat']['data type'] = 'radiance'
-        yamlout['stat']['observation id'] = channel_list
+        yamlout['stat']['channels'] = channel_list
         yamlout['stat']['obuse'] = obuse_list
 
         filetype = f'{sensor}_stats'
