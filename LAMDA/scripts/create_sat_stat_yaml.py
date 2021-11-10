@@ -40,7 +40,7 @@ def main(config):
         obuse_list = np.array(obuse)[sensorindx].tolist()
 
         yamlout['stat']['stat dir'] = config['statdir']
-        yamlout['stat']['sensor'] = sensor
+        yamlout['stat']['ob type'] = sensor
         yamlout['stat']['data type'] = 'radiance'
         yamlout['stat']['channels'] = channel_list
         yamlout['stat']['obuse'] = obuse_list
