@@ -16,7 +16,6 @@ __all__ = ['get_obs_type', 'get_bins', 'calculate_stats',
 def qc_flag_colors(qcflag):
     """
     Dictionary of colors to use for specific QC flag numbers.
-
     Args:
         qcflag : (int) qc flag number
     Returns:
@@ -55,7 +54,6 @@ def qc_flag_colors(qcflag):
 def get_obs_type(obs_id):
     """
     Grabs the full name of a specific observation.
-
     Args:
         obs_id: (list of ints) ID number(s) for conventional
                 diagnostic
@@ -143,7 +141,6 @@ def get_obs_type(obs_id):
 def get_bins(eval_type, stats):
     """
     Calculates bins to use for histogram plot.
-
     Args:
         eval_type : (str) determines how to create bins
                     whether 'diff' or 'magnitude'
@@ -172,7 +169,6 @@ def calculate_stats(data):
     Calculates n, mean, min, max,
     standard deviation, and RMSE.
     Returns dictionary with stats.
-
     Args:
         data : (array-like) array of data to calculate
                stats
@@ -204,7 +200,6 @@ def get_labels(metadata):
     """
     Creates a dictionary of title, date title, and the save
     file name using information from the metadata.
-
     Args:
         metadata : (dict) metadata dictionary created by diags.py
     Returns:
@@ -221,7 +216,7 @@ def get_labels(metadata):
 
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_"
-                     f"{metadata['Anl Use Type']}")
+                     f"{metadata['Anl Use Type']}_")
 
     else:
         title = f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
@@ -232,12 +227,12 @@ def get_labels(metadata):
     if metadata['Diag File Type'] == 'conventional':
         title = title + '\n%s' % '\n'.join(metadata['ObsID Name'])
         save_file = save_file + '%s' % '_'.join(
-            str(x) for x in metadata['ObsID Name'])
+            str(x) for x in metadata['ObsID'])
 
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
             title = title + '\nAll Channels'
-            save_file = save_file + 'All_Channels'
+            save_file = save_file + '_All_Channels'
 
         else:
             title = title + '\nChannels: %s' % ', '.join(
@@ -265,7 +260,6 @@ def get_labels(metadata):
 def varspecs_name(variable):
     """
     Grabs the specific variable name to utlitize emcpy's VariableSpecs.
-
     Args:
         variable : (str) variable name
     Returns:

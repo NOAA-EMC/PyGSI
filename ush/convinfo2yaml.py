@@ -72,9 +72,10 @@ def main(config):
                 continue  # only process assimilated obs for now
 
             dictloop = {
-                'observation id': int(itype),
-                'observation subtype': int(isub),
-                'analysis use': True
+                'observation id': [int(itype)],
+                'observation subtype': [int(isub)],
+                'analysis use': [True],
+                'bias correction': [True]
             }
 
             yamlout['diagnostic']['conventional'].append(dictloop)

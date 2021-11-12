@@ -7,6 +7,7 @@ import plot_features as features
 from no_data_plots import no_data_map
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap
+from emcpy.plots.map_tools import Domain, MapProjection
 from pyGSI.diags import Conventional, Radiance, Ozone
 
 
@@ -19,7 +20,7 @@ def _create_map_qc(df, qc_unique, domain, projection,
     # Loop through unique QC Flags to create plot objects
     for i, flag in enumerate(qc_unique):
         if metadata['Diag File Type'] == 'conventional':
-            indx = data_df.index[df['prep_qc_mark'] == flag]
+            indx = df.index[df['prep_qc_mark'] == flag]
         else:
             indx = (df.index.get_level_values('QC_Flag') == flag)
 
@@ -39,7 +40,7 @@ def _create_map_qc(df, qc_unique, domain, projection,
                       domain=Domain(domain),
                       proj_obj=MapProjection(projection))
     # Add coastlines
-    mymap.add_features(['coastlines'])
+    mymap.add_features(['coastlines', 'states'])
 
     # If there is no data, create figure that displays 'No Data'
     if len(plot_objects) == 0:
@@ -67,73 +68,76 @@ def _create_map_qc(df, qc_unique, domain, projection,
         # Return figure
         fig = mymap.return_figure()
 
-    plt.savefig(plotdir + f"{labels['save file']}_map.png",
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close('all')
+        str_domain = domain.replace(" ", "_")
+        plt.savefig(plotdir + f"{labels['save file']}_{str_domain}.png",
+                    bbox_inches='tight', pad_inches=0.1)
+        plt.close('all')
 
     return
 
 
-def map_qc_flags(config_file):
+def map_qc_flags(config):
     """
     Create map plotting location of qcflags.
 
     Args:
-        config_file : (dict) configuration file that includes the
-                      appropriate inputs based on file type (i.e.
-                      conventional or radiance data)
-        inputfile : (str) path to diagnostic file
-        channel : (list of ints; default=None) channel number
-                  to plot
-        qcflag : (list of ints; default=None) qc flags to
-                 plot
-        analysis_use : (bool; default=False) if True, will return
-                       three sets of data:
-                       assimilated (QC_Flag=0, inv_observation_error!=0),
-                       rejected (QC_Flag!=0),
-                       monitored (use_flag!=1)
-        domain : (str; default='conus') domain in which to plot data
-        projection : (str; default='plcarr') projection of map to plot
-                     data
-        plotdir : (str; default='./') path to where figures should be saved
+        config : (dict) configuration file that includes the
+                 appropriate inputs based on file type (i.e.
+                 conventional or radiance data)
     """
 
     # Get filename to determing what the file type is
-    filename = os.path.splitext(Path(inputfile).stem)[0]
+    filename = os.path.splitext(Path(config['diag file']).stem)[0]
     filetype = filename.split('_')[1]
 
     if filetype == 'conv':
-        diag = Conventional(inputfile)
+        diag = Conventional(config['diag file'])
 
-        df = diag.get_data(obsid=obsid, subtype=subtype, station_id=station_id,
-                           analysis_use=analysis_use)
-
-        qc_unique = sorted(np.unique(np.abs(df['prep_qc_mark'])))
+        df = diag.get_data(obsid=[config['observation id']],
+                           subtype=[config['observation subtype']],
+                           analysis_use=config['analysis use'])
+        metadata = diag.metadata
+        metadata['ObsID Name'] = features.get_obs_type(
+            [config['observation id']])
 
     else:
-        diag = Radiance(inputfile)
+        diag = Radiance(config['diag file'])
 
         df = diag.get_data(channel=channel, qcflag=qcflag,
                            analysis_use=analysis_use)
+        metadata = diag.metadata
 
         # Grab qc flags
         qc_unique = sorted(np.unique(np.abs(diag.qc_flags)))
 
-    metadata = diag.metadata
-    metadata['Diag Type'] = 'QC Flags'
+    metadata['Diag Type'] = 'QC_Flags'
 
     # Handles analysis use data
     anl_use = metadata['Anl Use']
 
     if anl_use:
-        for anl_type in data.keys():
+        for anl_type in df.keys():
             metadata['Anl Use Type'] = anl_type
 
+            if filetype == 'conv':
+                # Need to grab qc_unique here for conv based on
+                # analysis type (assimilated, rejected, monitored)
+                qc_unique = sorted(np.unique(
+                    np.abs(df[anl_type]['prep_qc_mark'])))
+
             _create_map_qc(df[anl_type], qc_unique,
-                           domain, projection, metadata,
-                           plotdir)
+                           config['domain'], config['projection'],
+                           metadata, config['plot dir'])
 
     else:
         metadata['Anl Use Type'] = None
-        _create_map_qc(df, qc_unique, domain,
-                       projection, metadata, plotdir)
+
+        if filetype == 'conv':
+            # Need to grab qc_unique here for conv based on
+            # analysis type (assimilated, rejected, monitored)
+            qc_unique = sorted(np.unique(
+                np.abs(df['prep_qc_mark'])))
+
+        _create_map_qc(df, qc_unique, config['domain'],
+                       config['projection'], metadata,
+                       config['plot dir'])
