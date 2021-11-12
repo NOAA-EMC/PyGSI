@@ -216,7 +216,7 @@ def get_labels(metadata):
 
         save_file = (f"{metadata['Date']:%Y%m%d%H}_{metadata['Obs Type']}_"
                      f"{var}_{metadata['Diag Type']}_"
-                     f"{metadata['Anl Use Type']}")
+                     f"{metadata['Anl Use Type']}_")
 
     else:
         title = f"{metadata['Obs Type']}: {var} - {metadata['Diag Type']}"
@@ -227,12 +227,12 @@ def get_labels(metadata):
     if metadata['Diag File Type'] == 'conventional':
         title = title + '\n%s' % '\n'.join(metadata['ObsID Name'])
         save_file = save_file + '%s' % '_'.join(
-            str(x) for x in metadata['ObsID Name'])
+            str(x) for x in metadata['ObsID'])
 
     elif metadata['Diag File Type'] == 'radiance':
         if metadata['Channels'] == 'All Channels':
             title = title + '\nAll Channels'
-            save_file = save_file + 'All_Channels'
+            save_file = save_file + '_All_Channels'
 
         else:
             title = title + '\nChannels: %s' % ', '.join(
