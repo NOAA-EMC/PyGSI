@@ -120,7 +120,7 @@ def create_minimization_plots(data_dict, outdir):
             cycles.append(cycle)
 
         # Concatenate all files into one dataframe
-        fits2_df = concatenate_dfs(fits_data, 'cost', cycles,
+        fits2_df = concatenate_dfs(fits2_data, 'cost', cycles,
                                    data_type='cost')
 
         # Create plot by calling plotting script
