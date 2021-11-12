@@ -7,6 +7,7 @@ import yaml
 import glob
 import csv
 import os
+import numpy as np
 
 
 def read_ozinfo(infofile):
@@ -44,64 +45,79 @@ def main(config):
     suffix = '.'.join((tmpsuffix[-2][10:], tmpsuffix[-1]))
 
     # initialize YAML dictionary for output
-    yamlout = {'diagnostic': []}
     if config['variable'] == 'obs':
         diagtype = 'observation'
     elif config['variable'] == 'hofx':
         diagtype = 'hofx'
     else:
-        diagtype = 'O-A' if config['loop'] == 'anl' else 'O-F'
-    figs = ['histogram', 'spatial']
+        diagtype = 'oma' if config['loop'] == 'anl' else 'omf'
 
-    # loop through obtypes
-    for isensor, iuse, ichan in zip(sensor, obuse, layer):
+    unique_sensors = np.unique(sensor)
+
+    for isensor in unique_sensors:
+        yamlout = {'diagnostic': {}}
+
+        sensorindx = np.where(np.array(sensor) == isensor)
+
         # first get filename and verify it exists
         diagfile = os.path.join(f"{config['diagdir']}",
                                 (f"diag_{isensor}_{config['loop']}"
                                  f".{config['cycle']}{suffix}"))
         if diagfile not in diagfiles:
             continue  # skip if diag file is missing
-        if iuse != 1 and not config['monitor']:
-            continue  # only process assimilated obs for now
-        dictloop = {
-                   'path': [diagfile],
-                   'layer': [ichan],
-                   'analysis use': [True],
-                   'data type': [diagtype],
-                   'plot type': figs,
-                   }
-        yamlout['diagnostic'].append({'ozone input': dictloop})
 
-    # write out the YAML
-    with open(config['yaml'], 'w') as file:
-        yaml.dump(yamlout, file, default_flow_style=False)
-    print('YAML written to '+config['yaml'])
+        yamlout['diagnostic']['path'] = diagfile
+        yamlout['diagnostic']['data type'] = diagtype
+        yamlout['diagnostic']['ozone'] = []
+
+        # loop through obtypes
+        for iuse, ichan in zip(np.array(obuse)[sensorindx],
+                               np.array(layer)[sensorindx]):
+
+            if iuse != 1 and not config['monitor']:
+                continue  # only process assimilated obs for now
+            dictloop = {
+                'layer': [int(ilayer)],
+                'bias correction': [True]
+            }
+
+            yamlout['diagnostic']['ozone'].append(dictloop)
+
+        filetype = os.path.basename(diagfile).split('.')[0]
+        output_yamlfile = config['yaml'] + filetype + '.yaml'
+
+        # write out the YAML
+        with open(output_yamlfile, 'w') as file:
+            yaml.dump(yamlout, file, default_flow_style=False)
+        print('YAML written to ' + output_yamlfile)
 
 
-parser = argparse.ArgumentParser(description=('Given an input ozinfo ',
-                                              'GSI file and path to ',
-                                              'GSI diags, generate an output ',
-                                              'YAML file for use by PyGSI'))
-parser.add_argument('-d', '--diagdir', type=str,
-                    help='path to GSI netCDF diags', required=True)
-parser.add_argument('-c', '--cycle', type=str,
-                    help='cycle YYYYMMDDHH', required=True)
-parser.add_argument('-i', '--ozinfo', type=str,
-                    help='path to GSI ozinfo file', required=True)
-parser.add_argument('-y', '--yaml', type=str,
-                    help='path to output YAML file', required=True)
-parser.add_argument('-l', '--loop', type=str,
-                    help='guess or analysis?',
-                    choices=['ges', 'anl'], default='ges',
-                    required=False)
-parser.add_argument('-v', '--variable', type=str,
-                    help='read departures, obs, or H(x)',
-                    choices=['omf', 'obs', 'hofx'],
-                    default='omf', required=False)
-parser.add_argument('-m', '--monitor', action='store_true',
-                    help='include monitored obs?', required=False)
-args = parser.parse_args()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=(
+        'Given an input ozinfo ',
+        'GSI file and path to ',
+        'GSI diags, generate an output ',
+        'YAML file for use by PyGSI'))
+    parser.add_argument('-d', '--diagdir', type=str,
+                        help='path to GSI netCDF diags', required=True)
+    parser.add_argument('-c', '--cycle', type=str,
+                        help='cycle YYYYMMDDHH', required=True)
+    parser.add_argument('-i', '--ozinfo', type=str,
+                        help='path to GSI ozinfo file', required=True)
+    parser.add_argument('-y', '--yaml', type=str,
+                        help='path to output YAML file', required=True)
+    parser.add_argument('-l', '--loop', type=str,
+                        help='guess or analysis?',
+                        choices=['ges', 'anl'], default='ges',
+                        required=False)
+    parser.add_argument('-v', '--variable', type=str,
+                        help='read departures, obs, or H(x)',
+                        choices=['omf', 'obs', 'hofx'],
+                        default='omf', required=False)
+    parser.add_argument('-m', '--monitor', action='store_true',
+                        help='include monitored obs?', required=False)
+    args = parser.parse_args()
 
-config = vars(args)
+    config = vars(args)
 
-main(config)
+    main(config)
