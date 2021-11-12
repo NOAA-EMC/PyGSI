@@ -4,8 +4,6 @@ from multiprocessing import Pool
 from functools import partial
 import itertools
 import argparse
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI/')
 from LAMDA.map_qc_flags import map_qc_flags
 
 
@@ -28,50 +26,39 @@ def create_mp_work_list(diag_inputs, plotting_config):
     return work
 
 
-def plotting_func(config, diag_dir='./', data_type='omf',
+def plotting_func(config, diag_file, data_type='omf',
                   diag_type=None, plot_dir='./'):
     """
     Takes information required to create plots using
     multiprocessing.
     """
-    
-    config['diag dir'] = diag_dir
+
+    config['diag file'] = diag_file
     config['data type'] = data_type
     config['diag type'] = diag_type
     config['plot dir'] = plot_dir
 
-    if diag_type == 'conventional':
+    plot_dict = {
+        'qcflags': map_qc_flags,
+    }
 
-        plot_dict = {
-            'qcflags': map_qc_flags,
-        }
-
-        plot_dict[config['plot type']](config)
-
-    elif diag_type == 'radiance':
-        channel = config['channel']
-        qc_flag = config['qc flag']
-        analysis_use = config['analysis use']
-        bias_correction = config['bias correction']
-
-#         plot_dict = {
-#             'qc flags': rad_map_qc_flags(
-#                 diag_dir, channel, analysis_use,
-#                 domain, projection, plot_dir)
-#         }
-
-#         plot_dict[plot_type]
-
-    else:
-        layer = config['layer']
-        bias_correction = config['bias correction']
-
-#         plot_dict = {}
-
-#         plot_dict[plot_type]
+    plot_dict[config['plot type']](config)
 
 
-def workflow(data_config, plotting_config, nprocs=1, plot_dir='./'):
+def workflow(data_config, plotting_config, nprocs, outdir='./'):
+    """
+    Main workflow function for LAMDA diagnostic files.
+
+    Args:
+        data_config : (yaml) yaml file containing info about diag
+                      files
+        plotting_config : (yaml) yaml file containing info about
+                          plotting information i.e. plot type,
+                          domain, projection etc.
+        nprocs : (int) number of processors to use for
+                 multiprocessing
+        outdir : (str) path to output diagnostics
+    """
 
     # Open config yaml files
     with open(data_config, 'r') as file:
@@ -80,7 +67,7 @@ def workflow(data_config, plotting_config, nprocs=1, plot_dir='./'):
     with open(plotting_config, 'r') as file:
         plotting_yaml = yaml.load(file, Loader=yaml.FullLoader)
 
-    diag_dir = config_yaml['diagnostic']['path']
+    diag_file = config_yaml['diagnostic']['path']
     data_type = config_yaml['diagnostic']['data type']
 
     for dtype in ['conventional', 'radiance', 'ozone']:
@@ -89,23 +76,20 @@ def workflow(data_config, plotting_config, nprocs=1, plot_dir='./'):
 
     work = create_mp_work_list(config_yaml['diagnostic'][diag_type],
                                plotting_yaml['plotting'])
-    
-#     print(diag_dir)
-#     plotting_func(work, diag_dir, data_type, diag_type, plot_dir)
-    
-    
+
     # Create multiprocessing Pool
     p = Pool(processes=nprocs)
-    p.map(partial(plotting_func, diag_dir=diag_dir,
+    p.map(partial(plotting_func, diag_file=diag_file,
                   data_type=data_type, diag_type=diag_type,
-                  plot_dir=plot_dir), work)
+                  outdir=outdir), work)
 
 
 if __name__ == '__main__':
     # Parse command line
     ap = argparse.ArgumentParser()
     ap.add_argument("-n", "--nprocs",
-                    help="Number of tasks/processors for multiprocessing")
+                    help="Number of tasks/processors for multiprocessing",
+                    type=int, default=1)
     ap.add_argument("-d", "--data_yaml",
                     help="Path to yaml file with diag data")
     ap.add_argument("-p", "--plotting_yaml",
@@ -115,8 +99,7 @@ if __name__ == '__main__':
 
     myargs = ap.parse_args()
 
-    nprocs = int(myargs.nprocs) if myargs.nprocs else 1
-
+    nprocs = myargs.nprocs
     data_yaml = myargs.data_yaml
     plotting_yaml = myargs.plotting_yaml
     outdir = myargs.outdir
