@@ -3,11 +3,8 @@ import yaml
 import os
 from pathlib import Path
 import matplotlib.pyplot as plt
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI/LAMDA')
 import plot_features as features
 from no_data_plots import no_data_map
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/emcpy/src/')
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap
 from emcpy.plots.map_tools import Domain, MapProjection
@@ -90,11 +87,11 @@ def map_qc_flags(config):
     """
 
     # Get filename to determing what the file type is
-    filename = os.path.splitext(Path(config['diag dir']).stem)[0]
+    filename = os.path.splitext(Path(config['diag file']).stem)[0]
     filetype = filename.split('_')[1]
 
     if filetype == 'conv':
-        diag = Conventional(config['diag dir'])
+        diag = Conventional(config['diag file'])
 
         df = diag.get_data(obsid=[config['observation id']],
                            subtype=[config['observation subtype']],
@@ -104,7 +101,7 @@ def map_qc_flags(config):
             [config['observation id']])
 
     else:
-        diag = Radiance(config['diag dir'])
+        diag = Radiance(config['diag file'])
 
         df = diag.get_data(channel=channel, qcflag=qcflag,
                            analysis_use=analysis_use)
@@ -121,7 +118,7 @@ def map_qc_flags(config):
     if anl_use:
         for anl_type in df.keys():
             metadata['Anl Use Type'] = anl_type
-            
+
             if filetype == 'conv':
                 # Need to grab qc_unique here for conv based on
                 # analysis type (assimilated, rejected, monitored)
@@ -130,17 +127,17 @@ def map_qc_flags(config):
 
             _create_map_qc(df[anl_type], qc_unique,
                            config['domain'], config['projection'],
-                           metadata, config['plot dir'] )
+                           metadata, config['plot dir'])
 
     else:
         metadata['Anl Use Type'] = None
-        
+
         if filetype == 'conv':
             # Need to grab qc_unique here for conv based on
             # analysis type (assimilated, rejected, monitored)
             qc_unique = sorted(np.unique(
                 np.abs(df['prep_qc_mark'])))
-        
-        _create_map_qc(df, qc_unique, config['domain'], 
-                       config['projection'], metadata, 
+
+        _create_map_qc(df, qc_unique, config['domain'],
+                       config['projection'], metadata,
                        config['plot dir'])
