@@ -122,9 +122,15 @@ def create_minimization_plots(data_dict, outdir):
         # Concatenate all files into one dataframe
         fits2_df = concatenate_dfs(fits2_data, 'cost', cycles,
                                    data_type='cost')
+        
+        # Get plotting information
+        plotting_config = {}
+        plotting_config['tm'] = tm
+        current_file = fits2_data[-1].split('/')[-1]
+        plotting_config['experiment'] = current_file.split('.')[0]
 
         # Create plot by calling plotting script
-        minimization_plots(fits2_df, outdir)
+        minimization_plots(fits2_df, plotting_config outdir)
 
 
 def stats_workflow(config_yaml, nprocs, outdir):

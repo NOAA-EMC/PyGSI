@@ -8,7 +8,7 @@ from emcpy.plots import CreatePlot
 __all__ = ['plot_minimization']
 
 
-def _plot_cost_function(df, outdir):
+def _plot_cost_function(df, config, outdir):
     """
     Use data from dataframe to plot the cost function.
     """
@@ -48,18 +48,22 @@ def _plot_cost_function(df, outdir):
     myplot.add_ylabel('log (J)')
     myplot.add_legend(loc='upper right',
                       fontsize='large')
-    myplot.add_title('FV3LAM Cost', loc='left')
+
+    title = f"{config['experiment']} Cost - {config['tm']}"
+    myplot.add_title(title, loc='left')
     myplot.add_title(cyclestr, loc='right',
                      fontweight='semibold')
 
     fig = myplot.return_figure()
 
-    plt.savefig(outdir + f"{cyclestr}_cost_function.png",
-                bbox_inches='tight', pad_inches=0.1)
+    savefile = (f"{cyclestr}_{config['experiment']}_" +
+                f"tm0{config['tm']}_cost_function.png")
+    plt.savefig(outdir + savefile, bbox_inches='tight',
+                pad_inches=0.1)
     plt.close('all')
 
 
-def _plot_gnorm(df, outdir):
+def _plot_gnorm(df, config, outdir):
     """
     Use date from dataframe to plot gnorm.
     """
@@ -97,23 +101,27 @@ def _plot_gnorm(df, outdir):
     myplot.draw_data([gnorm, avg_gnorm])
     # myplot.set_yscale('log')
     myplot.add_grid()
-    myplot.set_xlim(0, len(j)-1)
+    myplot.set_xlim(0, len(gJ)-1)
     myplot.add_xlabel('Iterations')
     myplot.add_ylabel('log (gnorm)')
     myplot.add_legend(loc='upper right',
                       fontsize='large')
-    myplot.add_title('FV3LAM gnorm', loc='left')
+
+    title = f"{config['experiment']} gnorm - {config['tm']}"
+    myplot.add_title(title, loc='left')
     myplot.add_title(cyclestr, loc='right',
                      fontweight='semibold')
 
     fig = myplot.return_figure()
 
-    plt.savefig(outdir + f"{cyclestr}_gnorm.png",
-                bbox_inches='tight', pad_inches=0.1)
+    savefile = (f"{cyclestr}_{config['experiment']}_" +
+                f"tm0{config['tm']}_gnorm.png")
+    plt.savefig(outdir + savefile, bbox_inches='tight',
+                pad_inches=0.1)
     plt.close('all')
 
 
-def plot_minimization(df, outdir):
+def plot_minimization(df, plotting_config, outdir):
     """
     Plot minimization plots including gnorm and cost function
     and save them to outdir.
@@ -121,8 +129,10 @@ def plot_minimization(df, outdir):
     Args:
         df : (pandas dataframe) dataframe with appropriate information
              from GSI Stat file
+        plotting_config : (dict) dictionary with information about
+                          minimization period
         outdir : (str) path to output diagnostics
     """
 
-    _plot_gnorm(df, outdir)
-    _plot_cost_function(df, outdir)
+    _plot_gnorm(df, plotting_config, outdir)
+    _plot_cost_function(df, plotting_config, outdir)
