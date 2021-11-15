@@ -122,7 +122,7 @@ def create_minimization_plots(data_dict, outdir):
         # Concatenate all files into one dataframe
         fits2_df = concatenate_dfs(fits2_data, 'cost', cycles,
                                    data_type='cost')
-        
+
         # Get plotting information
         plotting_config = {}
         plotting_config['tm'] = tm
