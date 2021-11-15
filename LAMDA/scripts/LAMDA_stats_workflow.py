@@ -106,7 +106,7 @@ def create_minimization_plots(data_dict, experiment_name, outdir):
 
     Args:
         data_dir : (dict) dictionary that includes fits2 data
-        experiment_type : (str) the type of experiment i.e.
+        experiment_name : (str) the type of experiment i.e.
                           FV3LAMDA, LAMDAX, etc.
         outdir : (str) path to where figures should be outputted
     """
@@ -128,7 +128,7 @@ def create_minimization_plots(data_dict, experiment_name, outdir):
         # Get plotting information
         plotting_config = {
             'tm': tm,
-            'experiment': experiment_type
+            'experiment': experiment_name
         }
 
         # Create plot by calling plotting script
@@ -155,7 +155,7 @@ def stats_workflow(config_yaml, nprocs, outdir):
 
     statdir = config_yaml['stat']['stat dir']
     data_type = config_yaml['stat']['data type']
-    experiment_type = config_yaml['stat']['experiment name']
+    experiment_name = config_yaml['stat']['experiment name']
     ob_type = config_yaml['stat']['ob type']
     plot_types = config_yaml['stat']['plot types']
 
