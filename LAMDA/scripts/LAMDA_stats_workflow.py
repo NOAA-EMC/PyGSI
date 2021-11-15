@@ -99,13 +99,15 @@ def plotting(config, data_dict, outdir, data_type, ob_type):
         plot_dict[plot_type](fits_df, plotting_config, outdir)
 
 
-def create_minimization_plots(data_dict, outdir):
+def create_minimization_plots(data_dict, experiment_type, outdir):
     """
     Since it is stand alone from other plotting scripts, this
     functions purpose is to generate the minimization plots.
 
     Args:
         data_dir : (dict) dictionary that includes fits2 data
+        experiment_type : (str) the type of experiment i.e.
+                          FV3LAMDA, LAMDAX, etc.
         outdir : (str) path to where figures should be outputted
     """
 
@@ -124,10 +126,10 @@ def create_minimization_plots(data_dict, outdir):
                                    data_type='cost')
 
         # Get plotting information
-        plotting_config = {}
-        plotting_config['tm'] = tm
-        current_file = fits2_data[-1].split('/')[-1]
-        plotting_config['experiment'] = current_file.split('.')[0]
+        plotting_config = {
+            'tm': tm,
+            'experiment': experiment_type
+        }
 
         # Create plot by calling plotting script
         minimization_plots(fits2_df, plotting_config outdir)
@@ -153,8 +155,9 @@ def stats_workflow(config_yaml, nprocs, outdir):
 
     statdir = config_yaml['stat']['stat dir']
     data_type = config_yaml['stat']['data type']
+    experiment_type = config_yaml['stat']['experiment type']
     ob_type = config_yaml['stat']['ob type']
-    plot_types = config_yaml['plot types']
+    plot_types = config_yaml['stat']['plot types']
 
     # Grabs all subdirectories of stats files (in date subdirectory)
     subdirs = sorted([f.path for f in os.scandir(statdir) if f.is_dir()])
@@ -175,7 +178,7 @@ def stats_workflow(config_yaml, nprocs, outdir):
     # remove from plot list and then call function to plot
     if 'minimization' in plot_types:
         plot_types.remove('minimization')
-        create_minimization_plots(data_dict, outdir)
+        create_minimization_plots(data_dict, experiment_type, outdir)
 
     # Create multiprocessing lists
     if data_type == 'conventional':
