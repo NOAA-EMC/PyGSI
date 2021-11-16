@@ -3,8 +3,8 @@ import yaml
 import os
 from pathlib import Path
 import matplotlib.pyplot as plt
-import plot_features as features
-from no_data_plots import no_data_map
+import LAMDA.plot_features as features
+from LAMDA.no_data_plots import no_data_map
 from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap
 from emcpy.plots.map_tools import Domain, MapProjection
