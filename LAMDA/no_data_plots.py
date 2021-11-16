@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import plot_features as features
+import LAMDA.plot_features as features
 
 
 def no_data_map(plotmap, domain, metadata):
