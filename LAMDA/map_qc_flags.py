@@ -12,7 +12,7 @@ from pyGSI.diags import Conventional, Radiance, Ozone
 
 
 def _create_map_qc(df, qc_unique, domain, projection,
-                   metadata, plotdir):
+                   metadata, outdir):
     """
     Create the map figure and plot data.
     """
@@ -69,7 +69,7 @@ def _create_map_qc(df, qc_unique, domain, projection,
         fig = mymap.return_figure()
 
         str_domain = domain.replace(" ", "_")
-        plt.savefig(plotdir + f"{labels['save file']}_{str_domain}.png",
+        plt.savefig(outdir + f"{labels['save file']}_{str_domain}.png",
                     bbox_inches='tight', pad_inches=0.1)
         plt.close('all')
 
@@ -127,7 +127,7 @@ def map_qc_flags(config):
 
             _create_map_qc(df[anl_type], qc_unique,
                            config['domain'], config['projection'],
-                           metadata, config['plot dir'])
+                           metadata, config['outdir'])
 
     else:
         metadata['Anl Use Type'] = None
@@ -140,4 +140,4 @@ def map_qc_flags(config):
 
         _create_map_qc(df, qc_unique, config['domain'],
                        config['projection'], metadata,
-                       config['plot dir'])
+                       config['outdir'])

@@ -27,7 +27,7 @@ def create_mp_work_list(diag_inputs, plotting_config):
 
 
 def plotting_func(config, diag_file, data_type='omf',
-                  diag_type=None, plot_dir='./'):
+                  diag_type=None, outdir='./'):
     """
     Takes information required to create plots using
     multiprocessing.
@@ -36,7 +36,7 @@ def plotting_func(config, diag_file, data_type='omf',
     config['diag file'] = diag_file
     config['data type'] = data_type
     config['diag type'] = diag_type
-    config['plot dir'] = plot_dir
+    config['plot dir'] = outdir
 
     plot_dict = {
         'qcflags': map_qc_flags,
