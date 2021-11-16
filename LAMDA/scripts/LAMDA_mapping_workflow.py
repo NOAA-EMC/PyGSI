@@ -36,7 +36,7 @@ def plotting_func(config, diag_file, data_type='omf',
     config['diag file'] = diag_file
     config['data type'] = data_type
     config['diag type'] = diag_type
-    config['plot dir'] = outdir
+    config['outdir'] = outdir
 
     plot_dict = {
         'qcflags': map_qc_flags,
