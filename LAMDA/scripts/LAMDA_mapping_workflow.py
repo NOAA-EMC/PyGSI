@@ -90,11 +90,11 @@ if __name__ == '__main__':
     ap.add_argument("-n", "--nprocs",
                     help="Number of tasks/processors for multiprocessing",
                     type=int, default=1)
-    ap.add_argument("-d", "--data_yaml",
+    ap.add_argument("-d", "--data_yaml", required=True,
                     help="Path to yaml file with diag data")
-    ap.add_argument("-p", "--plotting_yaml",
+    ap.add_argument("-p", "--plotting_yaml", required=True,
                     help="Path to yaml file with plotting info")
-    ap.add_argument("-o", "--outdir",
+    ap.add_argument("-o", "--outdir", default='./',
                     help="Out directory where files will be saved")
 
     myargs = ap.parse_args()
