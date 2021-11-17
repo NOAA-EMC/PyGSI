@@ -42,13 +42,13 @@ def _plot_bias_rmse_timeseries(df, config, outdir):
     zero_line = HorizontalLine(y=0)
 
     # Create plot and draw data
-    myplt = CreatePlot(figsize=(10,6))
+    myplt = CreatePlot(figsize=(10, 6))
     plt_list = [bc_line, wobc_line, rmse_line, zero_line]
     myplt.draw_data(plt_list)
 
     # Add features
     myplt.set_ylim(-5, 5)
-    myplt.add_grid(linewidth = 0.5,color='grey', linestyle='--')
+    myplt.add_grid(linewidth=0.5, color='grey', linestyle='--')
     myplt.add_legend(loc='lower right', fontsize='large')
 
     title = (f"{config['bias type']} RMSE and Bias Time Series\n{config['sensor']} "
