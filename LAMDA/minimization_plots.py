@@ -121,9 +121,9 @@ def _plot_gnorm(df, config, outdir):
     plt.close('all')
 
 
-def plot_minimization(df, plotting_config, outdir):
+def minimization_plots(df, plotting_config, outdir):
     """
-    Plot minimization plots including gnorm and cost function
+    Plot minimization diagnostics including gnorm and cost function
     and save them to outdir.
 
     Args:

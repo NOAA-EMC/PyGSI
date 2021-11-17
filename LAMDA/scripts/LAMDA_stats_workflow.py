@@ -11,7 +11,7 @@ from pyGSI.gsi_stat import GSIstat
 
 # import the plotting scripts i.e:
 # from LAMDA.obs_count import plot_obscount
-# from LAMDA.minimization import plot_minimization
+from LAMDA.minimization_plots import minimization_plots
 
 
 def concatenate_dfs(files, variable, cycles, data_type):
@@ -132,7 +132,7 @@ def create_minimization_plots(data_dict, experiment_name, outdir):
         }
 
         # Create plot by calling plotting script
-        minimization_plots(fits2_df, plotting_config outdir)
+        minimization_plots(fits2_df, plotting_config, outdir)
 
 
 def stats_workflow(config_yaml, nprocs, outdir):
