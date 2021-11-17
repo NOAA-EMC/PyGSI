@@ -149,18 +149,18 @@ class GSIstat(object):
                 tmp.append(tst)
 
         columns = ['it', 'channel', 'instrument', 'satellite',
-                   'nassim', 'nrej', 'oberr', 'OmF_bc', 'OmF_wobc',
-                   'col1', 'col2', 'col3']
+                   'nassim', 'nrej', 'oberr', 'OmF_wobc', 'OmF_bc',
+                   'pen', 'rms', 'std']
         df = pd.DataFrame(data=tmp, columns=columns)
-        df.drop(['col1', 'col2', 'col3'], inplace=True, axis=1)
+#         df.drop(['col1', 'col2', 'col3'], inplace=True, axis=1)
         df[['channel', 'nassim', 'nrej']] = df[[
             'channel', 'nassim', 'nrej']].astype(np.int)
-        df[['oberr', 'OmF_bc', 'OmF_wobc']] = df[[
-            'oberr', 'OmF_bc', 'OmF_wobc']].astype(np.float)
+        df[['oberr', 'OmF_wobc', 'OmF_bc', 'pen', 'rms', 'std']] = df[[
+            'oberr', 'OmF_wobc', 'OmF_bc', 'pen', 'rms', 'std']].astype(np.float)
 
         # Since iteration number is not readily available, make one
         lendf = len(df)
-        nouter = np.int(lendf / len(df['it'].unique()))
+        nouter = np.int(np.round(lendf / len(df['it'].unique())))
         douter = np.int(lendf / nouter)
         it = np.zeros(lendf, dtype=int)
         for i in range(nouter):
@@ -170,7 +170,8 @@ class GSIstat(object):
         df['it'] = it
 
         df = df[['it', 'instrument', 'satellite', 'channel',
-                 'nassim', 'nrej', 'oberr', 'OmF_bc', 'OmF_wobc']]
+                 'nassim', 'nrej', 'oberr', 'OmF_wobc', 'OmF_bc',
+                 'pen', 'rms', 'std']]
         df.set_index(['it', 'instrument', 'satellite',
                       'channel'], inplace=True)
 
