@@ -89,7 +89,7 @@ def map_departures(config):
                            analysis_use=config['analysis use'])
         metadata = diag.metadata
 
-    metadata['Diag Type'] = 'Departures'
+    metadata['Diag Type'] = config['data type']
     metadata['Anl Use Type'] = None
 
     # pass dataframe to plot function
