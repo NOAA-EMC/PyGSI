@@ -37,7 +37,7 @@ def _create_map_departures(df, domain, projection,
         omfscatter = MapScatter(latitude=lats,
                                 longitude=lons,
                                 data=omf)
-        omfscatter.markersize = 1
+        omfscatter.markersize = 2
         omfscatter.cmap = 'coolwarm'
         # determine min/max of values
         maxval = np.nanmax(omf)
@@ -62,8 +62,8 @@ def _create_map_departures(df, domain, projection,
         # add stats to figure
         stats_dict = {
             'nobs': len(lats),
-            'min': minval,
-            'max': maxval,
+            'min': np.round(minval, 4),
+            'max': np.round(maxval, 4),
         }
         mymap.add_stats_dict(stats_dict=stats_dict)
         # save figure
