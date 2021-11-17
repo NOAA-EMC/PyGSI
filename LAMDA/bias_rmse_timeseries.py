@@ -23,6 +23,7 @@ def _plot_bias_rmse_timeseries(df, config, outdir):
     bc_line.label = 'Bias w/ BC'
     bc_line.marker = 'o'
     bc_line.markersize = 3
+    bc_line.linestyle = '-.'
 
     # Create object without bias correction
     wobc_line = LinePlot(cycles, omf_wobc)
@@ -30,10 +31,11 @@ def _plot_bias_rmse_timeseries(df, config, outdir):
     wobc_line.label = 'Bias w/o BC'
     wobc_line.marker = 'o'
     wobc_line.markersize = 3
+    wobc_line.linestyle = '--'
 
     # Create rmse
     rmse_line = LinePlot(cycles, rmse)
-    rmse_line.color = 'tab:red'
+    rmse_line.color = 'tab:brown'
     rmse_line.label = 'RMSE'
     rmse_line.marker = 'o'
     rmse_line.markersize = 3
