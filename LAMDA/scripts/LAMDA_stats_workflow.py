@@ -1,3 +1,4 @@
+import argparse
 import yaml
 import glob
 import os
@@ -196,3 +197,23 @@ def stats_workflow(config_yaml, nprocs, outdir):
     p = Pool(processes=nprocs)
     p.map(partial(plotting, data_dict=data_dict, outdir=outdir,
                   ob_type=ob_type, data_type=data_type), work_list)
+
+
+if __name__ == '__main__':
+    # Parse command line
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-n", "--nprocs",
+                    help="Number of tasks/processors for multiprocessing",
+                    type=int, default=1)
+    ap.add_argument("-s", "--stats_yaml", required=True,
+                    help="Path to yaml file with stats data information")
+    ap.add_argument("-o", "--outdir", default='./',
+                    help="Out directory where files will be saved")
+
+    myargs = ap.parse_args()
+
+    nprocs = myargs.nprocs
+    stats_yaml = myargs.stats_yaml
+    outdir = myargs.outdir
+
+    stats_workflow(stats_yaml, nprocs, outdir)
