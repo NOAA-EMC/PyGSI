@@ -1,0 +1,6 @@
+plotting:
+  domain: ["north america"] 
+  projection:
+    - 'plcarr'
+  plot type: ['qcflags','layer_histogram']
+    

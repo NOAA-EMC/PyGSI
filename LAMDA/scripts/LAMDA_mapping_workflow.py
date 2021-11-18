@@ -5,6 +5,7 @@ from functools import partial
 import itertools
 import argparse
 from LAMDA.map_qc_flags import map_qc_flags
+from LAMDA.layer_histogram import layer_histogram
 
 
 def create_mp_work_list(diag_inputs, plotting_config):
@@ -40,6 +41,7 @@ def plotting_func(config, diag_file, data_type='omf',
 
     plot_dict = {
         'qcflags': map_qc_flags,
+        'layer_histogram': layer_histogram
     }
 
     plot_dict[config['plot type']](config)
@@ -62,6 +64,7 @@ def workflow(data_config, plotting_config, nprocs, outdir='./'):
 
     # Open config yaml files
     with open(data_config, 'r') as file:
+        print('file=',file) 
         config_yaml = yaml.load(file, Loader=yaml.FullLoader)
 
     with open(plotting_config, 'r') as file:

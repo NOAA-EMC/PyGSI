@@ -103,8 +103,8 @@ def map_qc_flags(config):
     else:
         diag = Radiance(config['diag file'])
 
-        df = diag.get_data(channel=channel, qcflag=qcflag,
-                           analysis_use=analysis_use)
+        df = diag.get_data(channel=[config['channel']], qcflag=[config['qc flag']],
+                           analysis_use=config['analysis use'])
         metadata = diag.metadata
 
         # Grab qc flags

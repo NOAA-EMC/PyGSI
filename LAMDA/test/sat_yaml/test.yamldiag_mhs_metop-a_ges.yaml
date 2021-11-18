@@ -1,0 +1,4 @@
+diagnostic:
+  data type: omf
+  path: /scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI/LAMDA/data/diags/diag_mhs_metop-a_ges.2021100400.nc4
+  radiance: []
