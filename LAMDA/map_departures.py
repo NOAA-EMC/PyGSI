@@ -62,8 +62,8 @@ def _create_map_departures(df, domain, projection,
         # add stats to figure
         stats_dict = {
             'nobs': len(lats),
-            'min': np.round(minval, 4),
-            'max': np.round(maxval, 4),
+            'min': str(np.round(minval, 4)),
+            'max': str(np.round(maxval, 4)),
         }
         mymap.add_stats_dict(stats_dict=stats_dict)
         # save figure
