@@ -6,12 +6,72 @@ from emcpy.plots.plots import LinePlot, HorizontalLine
 from emcpy.plots import CreatePlot
 
 
-def _plot_bias_rmse_timeseries(df, config, outdir):
+def _get_conventional_data(df, config):
     """
-    Used indexed df to plot rmse and bias.
+    Grabs appropriate data from the dataframe
+    and creates EMCPy plot list, title and
+    save file name for conventional data.
     """
-    df = df.reset_index()
+    
+    indx = df.index.get_level_values('stat') == ''
+    bias_indx = np.ma.logical_or(indx, df.index.get_level_values('stat') == 'bias')
+    rmse_indx = np.ma.logical_or(indx, df.index.get_level_values('stat') == 'rms')
+    bias_df = df.iloc[bias_indx].reset_index()
+    rmse_df = df.iloc[rmse_indx].reset_index()
 
+    data_col = rmse_df.columns[-1]
+    
+
+    # Grab data from dataframe
+    cycles = rmse_df['date'].dt.strftime("%d %b\n%Y %Hz")
+    rmse = rmse_df[data_col]
+    bias = bias_df[data_col]
+
+    # Create bias object
+    bias_line = LinePlot(cycles, bias)
+    bias_line.label = 'Bias'
+    bias_line.marker = 'o'
+    bias_line.markersize = 3
+
+    # Create rmse
+    rmse_line = LinePlot(cycles, rmse)
+    rmse_line.color = 'tab:green'
+    rmse_line.label = 'RMSE'
+    rmse_line.marker = 'o'
+    rmse_line.markersize = 3
+
+    # Create a line at 0
+    zero_line = HorizontalLine(y=0)
+    
+    # Add objects to plot list
+    plot_list = [bias_line, rmse_line, zero_line]
+    
+    # Create title
+    title = (f"{config['experiment name']} {config['bias type']} "
+             f"RMSE and Bias Time Series\nOb Type: {config['ob type']} "
+             f"Type: {config['obsid']} Subtype: {config['subtype']} "
+             f"tm0{config['tm']}")
+    config['title'] = title
+    
+    # Create save file name
+    save_cycles = bias_df['date'].dt.strftime('%Y%m%d%H').to_numpy()
+    savefile = (f"{save_cycles[0]}_{save_cycles[-1]}_{config['experiment name']}_"
+                f"{config['ob type']}_{config['obsid']}_{config['subtype']}_"
+                f"{config['bias type']}_tm0{config['tm']}_rmse_bias_timeseries.png")
+    config['save file'] = savefile
+    
+    return plot_list, config
+    
+
+def _get_radiance_data(df, config):
+    """
+    Grabs appropriate data from the dataframe
+    and creates EMCPy plot list, title and
+    save file name for radiance data.
+    """
+    
+    df = df.reset_index()
+    
     # Grab data from dataframe
     cycles = df['date'].dt.strftime("%d %b\n%Y %Hz")
     omf_bc = df['OmF_bc']
@@ -42,30 +102,52 @@ def _plot_bias_rmse_timeseries(df, config, outdir):
 
     # Create a line at 0
     zero_line = HorizontalLine(y=0)
+    
+    # Add objects to plot list
+    plot_list = [bc_line, wobc_line, rmse_line, zero_line]
+    
+    # Create title
+    title = (f"{config['experiment name']} {config['bias type']} "
+             f"RMSE and Bias Time Series \n{config['sensor']} "
+             f"{config['satellite']} Channel {config['channel']} "
+             f"tm0{config['tm']}")
+    config['title'] = title
+    
+    # Create save file name
+    save_cycles = df['date'].dt.strftime('%Y%m%d%H').to_numpy()
+    
+    savefile = (f"{save_cycles[0]}_{save_cycles[-1]}_{config['experiment name']}_"
+                f"{config['sensor']}_{config['satellite']}_channel_{config['channel']}"
+                f"_{config['bias type']}_tm0{config['tm']}_rmse_bias_timeseries.png")
+    config['save file'] = savefile
+    
+    return plot_list, config
+
+
+def _plot_bias_rmse_timeseries(df, config, outdir):
+    """
+    Used indexed df to plot rmse and bias.
+    """
+
+    if config['data type'] == 'radiance':
+        plot_list, config = _get_radiance_data(df, config)
+
+    elif config['data type'] == 'conventional':
+        plot_list, config = _get_conventional_data(df, config)
 
     # Create plot and draw data
     myplt = CreatePlot(figsize=(10, 6))
-    plt_list = [bc_line, wobc_line, rmse_line, zero_line]
-    myplt.draw_data(plt_list)
+    myplt.draw_data(plot_list)
 
     # Add features
     myplt.set_ylim(-5, 5)
     myplt.add_grid(linewidth=0.5, color='grey', linestyle='--')
     myplt.add_legend(loc='lower right', fontsize='large')
+    myplt.add_title(config['title'], fontsize=14)
 
-    title = (f"{config['bias type']} RMSE and Bias Time Series\n{config['sensor']} "
-             f"{config['satellite']} Channel {config['channel']} tm0{config['tm']}")
-    myplt.add_title(title, fontsize=14)
-
-    # Return matplotlib figure
+    # Return matplotlib figure and save
     fig = myplt.return_figure()
-
-    # Save figure
-    save_cycles = df['date'].dt.strftime('%Y%m%d%H').to_numpy()
-    savefile = (f"{save_cycles[0]}_{save_cycles[-1]}_{config['sensor']}"
-                f"_{config['satellite']}_channel_{config['channel']}"
-                f"_{config['bias type']}_tm0{config['tm']}_rmse_bias_timeseries.png")
-    fig.savefig('./' + savefile, bbox_inches='tight',
+    fig.savefig(outdir + config['save file'], bbox_inches='tight',
                 pad_inches=0.1)
     plt.close('all')
 
@@ -81,14 +163,30 @@ def bias_rmse_timeseries(df, config, outdir):
                  being plotted
         outdir : (str) path to output figures
     """
-    # Select data by satellite and channel
-    for idx_col in ['satellite', 'channel']:
-        indx = df.index.get_level_values(idx_col) == ''
-        indx = np.ma.logical_or(indx, df.index.get_level_values(idx_col) == config[idx_col])
-        df = df.iloc[indx]
+    
+    if config['data type'] == 'radiance':
+    
+        # Select data by satellite and channel
+        for idx_col in ['satellite', 'channel']:
+            indx = df.index.get_level_values(idx_col) == ''
+            indx = np.ma.logical_or(indx, df.index.get_level_values(idx_col) == config[idx_col])
+            df = df.iloc[indx]
+        
+    elif config['data type'] == 'conventional':
+        for idx_col in ['typ', 'use']:
+            d = {
+                'typ': config['obsid'],
+                'styp': config['subtype'],
+                'use': 'asm'
+            }
 
+            config_val = d[idx_col]
+            indx = df.index.get_level_values(idx_col) == ''
+            indx = np.ma.logical_or(indx, df.index.get_level_values(idx_col) == config_val)
+            df = df.iloc[indx]
+            
     # Create omf and oma df
-    indx = df.index.get_level_values(idx_col) == ''
+    indx = df.index.get_level_values('it') == ''
     omf_indx = np.ma.logical_or(indx, df.index.get_level_values('it') == 1)
     omf_df = df.iloc[omf_indx]
 
