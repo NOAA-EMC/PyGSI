@@ -9,9 +9,24 @@ from emcpy.plots.map_plots import MapScatter
 from emcpy.plots import CreateMap
 from emcpy.plots.map_tools import Domain, MapProjection
 from pyGSI.diags import Conventional, Radiance, Ozone
-from emcpy.plots.plots import Histogram
+from emcpy.plots.plots import Histogram, LinePlot
 from emcpy.plots.create_plots import CreatePlot
+import matplotlib.mlab as mlab
+import scipy.stats as stats
 
+def create_bins(data,nbins=50):
+   """
+   Creates an array of the bins to be used.
+   
+   Args:
+       data : (array) data being used in histogram
+       nbins: (int;default=50) number of bins to use
+   """
+   _max = np.max(np.abs(data))
+   bins = np.linspace(-_max,_max, nbins)
+
+   return bins
+   
 
 def _create_hist_layer(df_ges,df_anl, domain,
                    metadata, outdir):
@@ -24,6 +39,13 @@ def _create_hist_layer(df_ges,df_anl, domain,
     lons = df_anl['longitude'].to_numpy()
     omf = df_ges['omf_adjusted'].to_numpy()
     oma = df_anl['omf_adjusted'].to_numpy()
+
+    omf_density = stats.gaussian_kde(omf)
+    oma_density = stats.gaussian_kde(oma)
+
+    omf_bins = create_bins(omf,50)
+    oma_bins = create_bins(oma,50)
+
 
     # Create histogram objects
     hst_ges = Histogram(omf)
@@ -42,9 +64,18 @@ def _create_hist_layer(df_ges,df_anl, domain,
     hst_anl.density = True
     hst_anl.histtype = 'step'
 
+    # Creat Line object using histogram bins and the density
+    omf_line = LinePlot(omf_bins, omf_density(omf_bins))
+    omf_line.color='tab:green'
+    omf_line.label='O-B'
+    oma_line = LinePlot(oma_bins, oma_density(oma_bins))
+    oma_line.color='tab:purple'
+    oma_line.label='O-A'
+
     # Create histogram plot and draw data
     myplt = CreatePlot()
-    plt_list = [hst_ges, hst_anl]
+    #plt_list = [hst_ges, hst_anl]
+    plt_list = [omf_line, oma_line]
     myplt.draw_data(plt_list)
 
     # Add features

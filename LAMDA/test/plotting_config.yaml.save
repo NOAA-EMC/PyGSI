@@ -1,6 +1,0 @@
-plotting:
-  domain: ["north america", "conus"] 
-  projection:
-    - 'plcarr'
-  plot type: ['qcflags']
-    
