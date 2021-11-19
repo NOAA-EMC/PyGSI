@@ -142,6 +142,7 @@ def _plot_bias_rmse_timeseries(df, config, outdir):
     myplt.set_ylim(-5, 5)
     myplt.add_grid(linewidth=0.5, color='grey', linestyle='--')
     myplt.add_legend(loc='lower right', fontsize='large')
+
     myplt.add_title(config['title'], fontsize=14)
 
     # Return matplotlib figure and save
