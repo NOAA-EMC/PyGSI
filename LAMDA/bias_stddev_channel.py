@@ -27,34 +27,37 @@ def _plot_bias_stddev_channel(df, config, outdir):
 
     # Create bias correction object
     bc_line = LinePlot(channels, omf_bc)
+    bc_line.color = 'tab:green'
     bc_line.label = 'OmF'
     bc_line.marker = 'o'
-    bc_line.markersize = 3
-    bc_line.linewidth = 2
+    bc_line.markersize = 4
+    bc_line.linewidth = 3
 
     # Create standard deviation object
     std_dev = LinePlot(channels, omf_std)
     std_dev.color = 'tab:orange'
     std_dev.label = 'Std Dev'
     std_dev.marker = 'o'
-    std_dev.markersize = 3
-    std_dev.linewidth = 2
+    std_dev.markersize = 4
+    std_dev.linewidth = 3
 
     # Create average bias correction object
     avg_bc_line = LinePlot(channels, avg_bc)
     avg_bc_line.color = 'tab:green'
     avg_bc_line.label = f'{n_days} Day OmF Average'
     avg_bc_line.marker = 'o'
-    avg_bc_line.markersize = 3
-    avg_bc_line.linewidth = 2
+    avg_bc_line.markersize = 4
+    avg_bc_line.linewidth = 3
+    avg_bc_line.linestyle = '--'
 
     # Create average standard deviation object
     avg_std_dev = LinePlot(channels, avg_std)
-    avg_std_dev.color = 'tab:purple'
+    avg_std_dev.color = 'tab:orange'
     avg_std_dev.label = f'{n_days} Day Std Average'
     avg_std_dev.marker = 'o'
-    avg_std_dev.markersize = 3
-    avg_std_dev.linewidth = 2
+    avg_std_dev.markersize = 4
+    avg_std_dev.linewidth = 3
+    avg_std_dev.linestyle = '--'
 
     # Create a line at 0
     zero_line = HorizontalLine(y=0)
@@ -68,7 +71,7 @@ def _plot_bias_stddev_channel(df, config, outdir):
     # Add features
     myplt.set_ylim(-3, 3)
     myplt.set_xticks(channels)
-    myplt.add_grid(linewidth 0.5, color='grey', linestyle='--')
+    myplt.add_grid(linewidth=0.5, color='grey', linestyle='--')
     myplt.add_legend(loc='lower right', fontsize='large')
     myplt.add_xlabel('Channels')
 
