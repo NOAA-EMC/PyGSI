@@ -41,7 +41,8 @@ def plotting_func(config, diag_file, data_type='omf',
 
     plot_dict = {
         'qcflags': map_qc_flags,
-        'layer_histogram': layer_histogram
+        'layer_histogram': layer_histogram,
+        'map departures': map_departures,
     }
 
     plot_dict[config['plot type']](config)
@@ -93,11 +94,11 @@ if __name__ == '__main__':
     ap.add_argument("-n", "--nprocs",
                     help="Number of tasks/processors for multiprocessing",
                     type=int, default=1)
-    ap.add_argument("-d", "--data_yaml",
+    ap.add_argument("-d", "--data_yaml", required=True,
                     help="Path to yaml file with diag data")
-    ap.add_argument("-p", "--plotting_yaml",
+    ap.add_argument("-p", "--plotting_yaml", required=True,
                     help="Path to yaml file with plotting info")
-    ap.add_argument("-o", "--outdir",
+    ap.add_argument("-o", "--outdir", default='./',
                     help="Out directory where files will be saved")
 
     myargs = ap.parse_args()

@@ -1,3 +1,4 @@
+import argparse
 import yaml
 import glob
 import os
@@ -9,9 +10,10 @@ from functools import partial
 from datetime import datetime
 from pyGSI.gsi_stat import GSIstat
 
-# import the plotting scripts i.e:
-# from LAMDA.obs_count import plot_obscount
-# from LAMDA.minimization import plot_minimization
+# import the plotting scripts:
+from LAMDA.minimization_plots import minimization_plots
+from LAMDA.bias_rmse_timeseries import bias_rmse_timeseries
+from LAMDA.bias_stddev_channel import bias_stddev_channel
 
 
 def concatenate_dfs(files, variable, cycles, data_type):
@@ -44,7 +46,8 @@ def concatenate_dfs(files, variable, cycles, data_type):
     return concatenated_df
 
 
-def plotting(config, data_dict, outdir, data_type, ob_type):
+def plotting(config, data_dict, outdir, data_type, ob_type,
+             experiment_name,):
     """
     Main plotting function that gets all inputs for plotting scripts
     in order which includes fits_df, plotting_config, and outdir.
@@ -59,13 +62,18 @@ def plotting(config, data_dict, outdir, data_type, ob_type):
         data_type : (str) determines if data is conventional or
                     radiance
         ob_type : (str) the observation type
+        experiment_name : (str) the type of experiment i.e.
+                          FV3LAMDA, LAMDAX, etc.
     """
 
     data_inputs = config[0]
     plot_type = config[-1]
 
-    plotting_config = {}
-    plotting_config['ob_type'] = ob_type
+    plotting_config = {
+        'ob type': ob_type,
+        'data type': data_type,
+        'experiment name': experiment_name
+    }
 
     if data_type == 'conventional':
         plotting_config['obsid'] = data_inputs[0]
@@ -73,15 +81,19 @@ def plotting(config, data_dict, outdir, data_type, ob_type):
         plotting_config['obuse'] = data_inputs[-1]
 
     elif data_type == 'radiance':
+        plotting_config['sensor'] = ob_type.split('_')[0]
+        plotting_config['satellite'] = ob_type.split('_')[-1]
+        plotting_config['channel'] = data_inputs[0]
+        plotting_config['obuse'] = data_inputs[-1]
+
         # change ob_type to just the sensor to utilize
         # GSIstat extract_sensor()
         ob_type = ob_type.split('_')[0]
-        plotting_config['channel'] = data_inputs[0]
-        plotting_config['obuse'] = data_inputs[-1]
 
     # Loop through t-minus hours to grab proper data and
     # generate plots
     for tm in np.arange(7):
+        plotting_config['tm'] = tm
         fits_data = []
         cycles = []
 
@@ -93,7 +105,8 @@ def plotting(config, data_dict, outdir, data_type, ob_type):
         fits_df = concatenate_dfs(fits_data, ob_type, cycles, data_type)
 
         plot_dict = {
-            'obs count': plot_obscount,
+            'bias rmse timeseries': bias_rmse_timeseries,
+            'bias stddev channel': bias_stddev_channel
         }
 
         plot_dict[plot_type](fits_df, plotting_config, outdir)
@@ -132,7 +145,7 @@ def create_minimization_plots(data_dict, experiment_name, outdir):
         }
 
         # Create plot by calling plotting script
-        minimization_plots(fits2_df, plotting_config outdir)
+        minimization_plots(fits2_df, plotting_config, outdir)
 
 
 def stats_workflow(config_yaml, nprocs, outdir):
@@ -195,4 +208,25 @@ def stats_workflow(config_yaml, nprocs, outdir):
     # Create multiprocessing Pool
     p = Pool(processes=nprocs)
     p.map(partial(plotting, data_dict=data_dict, outdir=outdir,
-                  ob_type=ob_type, data_type=data_type), work_list)
+                  ob_type=ob_type, data_type=data_type,
+                  experiment_name=experiment_name), work_list)
+
+
+if __name__ == '__main__':
+    # Parse command line
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-n", "--nprocs",
+                    help="Number of tasks/processors for multiprocessing",
+                    type=int, default=1)
+    ap.add_argument("-s", "--stats_yaml", required=True,
+                    help="Path to yaml file with stats data information")
+    ap.add_argument("-o", "--outdir", default='./',
+                    help="Out directory where files will be saved")
+
+    myargs = ap.parse_args()
+
+    nprocs = myargs.nprocs
+    stats_yaml = myargs.stats_yaml
+    outdir = myargs.outdir
+
+    stats_workflow(stats_yaml, nprocs, outdir)
