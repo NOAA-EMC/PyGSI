@@ -14,22 +14,23 @@ from emcpy.plots.create_plots import CreatePlot
 import matplotlib.mlab as mlab
 import scipy.stats as stats
 
-def create_bins(data,nbins=50):
-   """
-   Creates an array of the bins to be used.
-   
-   Args:
-       data : (array) data being used in histogram
-       nbins: (int;default=50) number of bins to use
-   """
-   _max = np.max(np.abs(data))
-   bins = np.linspace(-_max,_max, nbins)
 
-   return bins
+def create_bins(data, nbins=50):
+    """
+    Creates an array of the bins to be used.
+   
+    Args:
+        data : (array) data being used in histogram
+        nbins: (int;default=50) number of bins to use
+    """
+    _max = np.max(np.abs(data))
+    bins = np.linspace(-_max, _max, nbins)
+
+    return bins
    
 
-def _create_hist_layer(df_ges,df_anl, domain,
-                   metadata, outdir):
+def _create_hist_layer(df_ges, df_anl, domain,
+                       metadata, outdir):
     """
     Create the ilayered histogram figure and plot data omf vs oma.
     """
@@ -43,9 +44,8 @@ def _create_hist_layer(df_ges,df_anl, domain,
     omf_density = stats.gaussian_kde(omf)
     oma_density = stats.gaussian_kde(oma)
 
-    omf_bins = create_bins(omf,50)
-    oma_bins = create_bins(oma,50)
-
+    omf_bins = create_bins(omf, 50)
+    oma_bins = create_bins(oma, 50)
 
     # Create histogram objects
     hst_ges = Histogram(omf)
@@ -66,15 +66,15 @@ def _create_hist_layer(df_ges,df_anl, domain,
 
     # Creat Line object using histogram bins and the density
     omf_line = LinePlot(omf_bins, omf_density(omf_bins))
-    omf_line.color='tab:green'
-    omf_line.label='O-B'
+    omf_line.color = 'tab:green'
+    omf_line.label = 'O-B'
     oma_line = LinePlot(oma_bins, oma_density(oma_bins))
-    oma_line.color='tab:purple'
-    oma_line.label='O-A'
+    oma_line.color = 'tab:purple'
+    oma_line.label = 'O-A'
 
     # Create histogram plot and draw data
     myplt = CreatePlot()
-    #plt_list = [hst_ges, hst_anl]
+    # plt_list = [hst_ges, hst_anl]
     plt_list = [omf_line, oma_line]
     myplt.draw_data(plt_list)
 
@@ -88,7 +88,7 @@ def _create_hist_layer(df_ges,df_anl, domain,
     myplt.add_xlabel(xlabel='FG Departure (K)')
     myplt.add_ylabel(ylabel='Normalized Count')
     myplt.add_legend()
-   
+
     # Return matplotlib figure
     fig = myplt.return_figure()
     str_domain = domain.replace(" ", "_")
@@ -99,6 +99,7 @@ def _create_hist_layer(df_ges,df_anl, domain,
 
 def layer_histogram(config):
     """
+
     Create layered histogram plots with omf and oma.
 
     Args:
@@ -112,30 +113,30 @@ def layer_histogram(config):
     filetype = filename.split('_')[1]
 
     anl_filename = config['diag file'].replace('ges', 'anl') #get the anl diag file
-    print('anl_filename=',anl_filename)
+    print('anl_filename=', anl_filename)
 
     if filetype == 'conv':
         diag = Conventional(config['diag file'])
 
-        df = diag.get_data(obsid=[config['observation id']],
-                           subtype=[config['observation subtype']],
-                           analysis_use=config['analysis use'])
+        df = diag.get_data(obsid = [config['observation id']],
+                           subtype = [config['observation subtype']],
+                           analysis_use = config['analysis use'])
         metadata = diag.metadata
         metadata['ObsID Name'] = features.get_obs_type(
             [config['observation id']])
 
     else:
         diag_ges = Radiance(config['diag file'])
-        print('diag_ges=',diag_ges)
+        print('diag_ges=', diag_ges)
         diag_anl = Radiance(anl_filename)
-        print('diag_anl=',diag_anl)
+        print('diag_anl=', diag_anl)
 
         df_ges = diag_ges.get_data(channel=[config['channel']], qcflag=[config['qc flag']],
                            analysis_use=config['analysis use']) 
         df_anl = diag_anl.get_data(channel=[config['channel']], qcflag=[config['qc flag']],
                            analysis_use=config['analysis use']) 
-        print('df_anl=',df_anl)
-        print('df_ges=',df_ges)
+        print('df_anl=', df_anl)
+        print('df_ges=', df_ges)
         metadata = diag_ges.metadata
 
         # Grab qc flags
@@ -156,8 +157,8 @@ def layer_histogram(config):
                 qc_unique = sorted(np.unique(
                     np.abs(df[anl_type]['prep_qc_mark'])))
 
-            _create_hist_layer(df_ges['assimilated'],df_anl['assimilated'],config['domain'],
-                               metadata,config['outdir'])
+            _create_hist_layer(df_ges['assimilated'], df_anl['assimilated'], config['domain'],
+                               metadata, config['outdir'])
 
     else:
         metadata['Anl Use Type'] = None
@@ -168,5 +169,5 @@ def layer_histogram(config):
             qc_unique = sorted(np.unique(
                 np.abs(df['prep_qc_mark'])))
 
-            _create_hist_layer(df_ges['assimilated'],df_anl['assimilated'],config['domain'],
-                               metadata,config['outdir'])
+            _create_hist_layer(df_ges['assimilated'], df_anl['assimilated'], config['domain'],
+                               metadata, config['outdir'])
