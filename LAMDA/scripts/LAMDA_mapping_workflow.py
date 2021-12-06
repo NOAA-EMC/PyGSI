@@ -5,6 +5,7 @@ from functools import partial
 import itertools
 import argparse
 from LAMDA.map_qc_flags import map_qc_flags
+from LAMDA.map_departures import map_departures
 from LAMDA.layer_histogram import layer_histogram
 
 
@@ -65,7 +66,6 @@ def workflow(data_config, plotting_config, nprocs, outdir='./'):
 
     # Open config yaml files
     with open(data_config, 'r') as file:
-        print('file=', file)
         config_yaml = yaml.load(file, Loader=yaml.FullLoader)
 
     with open(plotting_config, 'r') as file:
