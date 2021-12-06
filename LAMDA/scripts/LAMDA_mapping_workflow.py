@@ -65,7 +65,7 @@ def workflow(data_config, plotting_config, nprocs, outdir='./'):
 
     # Open config yaml files
     with open(data_config, 'r') as file:
-        print('file=',file) 
+        print('file=', file)
         config_yaml = yaml.load(file, Loader=yaml.FullLoader)
 
     with open(plotting_config, 'r') as file:
