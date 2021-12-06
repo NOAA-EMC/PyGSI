@@ -67,7 +67,7 @@ def _create_hist_layer(df_ges, df_anl, domain,
     myplt.add_title(labels['title'], loc='left', fontsize=12)
     myplt.add_title(labels['date title'], loc='right', fontsize=12,
                     fontweight='semibold')
-    myplt.add_xlabel(xlabel='FG Departure (K)')
+    myplt.add_xlabel(xlabel='FG Departure')
     myplt.add_ylabel(ylabel='Normalized Count')
     myplt.add_legend()
 
