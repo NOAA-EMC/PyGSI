@@ -350,19 +350,31 @@ class Conventional(GSIdiag):
 
 class Radiance(GSIdiag):
 
-    def __init__(self, path):
+    def __init__(self, path, var_names=None, read_jac=False):
         """
         Initialize a Radiance GSI diagnostic object
 
         Args:
-            path : (str) path to radiance GSI diagnostic object
+            path      : (str) path to radiance GSI diagnostic object
+            var_names : (string array, optional) Names of state
+                        variables in Jacobians.
+            read_jac  : (bool, optional) Option to read in Jacobians.
+                        Default = False.
         Returns:
             self : GSI diag radiance object containing the path
                    to extract data
         """
         super().__init__(path)
 
+        # The next two commands are for when the Jacobian is read in.
+        # This is optional and defaults to false.  It also requires the
+        # state variables to be defined as they are not present in the
+        # diagnostic file.
+        self.var_names = var_names or \
+            ['sst', 'u', 'v', 'tv', 'q', 'oz', 'ql', 'qi']
+        self.read_jac = read_jac
         self._read_obs()
+
         self.metadata['Diag File Type'] = 'radiance'
 
     def __str__(self):
@@ -375,6 +387,10 @@ class Radiance(GSIdiag):
         """
         df_dict = {}
         chan_info = {}
+        jacobians_present = False
+        jacstart = {}
+        jacend = {}
+        jac = {}
 
         with Dataset(self.path, mode='r') as f:
 
@@ -389,6 +405,15 @@ class Radiance(GSIdiag):
                         chan_info[var] = f.variables[var][:]
                     elif len(f.variables[var][:]) == len(nobs):
                         df_dict[var] = f.variables[var][:]
+                elif len(f.variables[var].shape) == 2:
+                    if self.read_jac:
+                        if (var == 'Observation_Operator_Jacobian_stind'):
+                            jacstart = f.variables[var][:, :]
+                        if (var == 'Observation_Operator_Jacobian_endind'):
+                            jacend = f.variables[var][:, :]
+                        if (var == 'Observation_Operator_Jacobian_val'):
+                            jac = f.variables[var][:, :]
+                            jacobians_present = True
 
         self.chan_info = chan_info
 
@@ -427,6 +452,38 @@ class Radiance(GSIdiag):
             'Channel').unique().to_numpy()
         self.qc_flags = df.index.get_level_values(
             'QC_Flag').unique().to_numpy()
+
+        # Process Jacobians if present
+        if jacobians_present:
+
+            # The jacstart and jacend arrays from the netCDF file
+            # actually refer to internal GSI indicies.  We can use them
+            # to infer the length of each variable's section of the
+            # Jacobian and set up indicies within the Jac array.
+
+            # Find the length of each variable's Jacobian assuming all
+            # channels/locs are the same (they are)
+            len_jacs = np.array(jacend[0, :] - jacstart[0, :] + 1)
+            # Make jac_indices dataframe with positions of each Jacoboian
+            end_index = np.cumsum(len_jacs)-1
+            start_index = np.roll(end_index, 1)+1
+            start_index[0] = 0
+            jac_indices = pd.DataFrame([start_index, end_index],
+                                       columns=self.var_names)
+            jacobians = {}
+            for var in self.var_names:
+                jac_range = jac_indices[var][1]-jac_indices[var][0]+1
+                jacobians[var] = \
+                    pd.DataFrame(jac[:, jac_indices[var][0]:
+                                     jac_indices[var][1]+1],
+                                 columns=np.arange(jac_range))
+                jacobians[var].index = df_dict['Channel_Index']
+                jacobians[var].insert(0, 'Latitude', df_dict['Latitude'])
+                jacobians[var].insert(1, 'Longitude', df_dict['Longitude'])
+
+            del jac
+
+            self.jacobians = jacobians
 
         self.data_df = df
 
