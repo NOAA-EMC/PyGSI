@@ -10,10 +10,10 @@ from functools import partial
 from datetime import datetime
 from pyGSI.gsi_stat import GSIstat
 
-# import the plotting scripts i.e:
-# from LAMDA.obs_count import plot_obscount
+# import the plotting scripts:
 from LAMDA.minimization_plots import minimization_plots
 from LAMDA.bias_rmse_timeseries import bias_rmse_timeseries
+from LAMDA.bias_stddev_channel import bias_stddev_channel
 
 
 def concatenate_dfs(files, variable, cycles, data_type):
@@ -105,7 +105,8 @@ def plotting(config, data_dict, outdir, data_type, ob_type,
         fits_df = concatenate_dfs(fits_data, ob_type, cycles, data_type)
 
         plot_dict = {
-            'bias rmse timeseries': bias_rmse_timeseries
+            'bias rmse timeseries': bias_rmse_timeseries,
+            'bias stddev channel': bias_stddev_channel
         }
 
         plot_dict[plot_type](fits_df, plotting_config, outdir)
