@@ -10,6 +10,7 @@ def land_fraction(self, df):
 
     return df
 
+
 def water_fraction(self, df):
     """
     Returns dataframe for only water data.
@@ -17,6 +18,7 @@ def water_fraction(self, df):
     df = df[df['water_fraction'] > 0]
 
     return df
+
 
 def cloud_fraction(self, df):
     """
@@ -26,6 +28,7 @@ def cloud_fraction(self, df):
 
     return df
 
+
 def vegetation_fraction(self, df):
     """
     Returns dataframe for only vegetation data.
@@ -34,6 +37,7 @@ def vegetation_fraction(self, df):
 
     return df
 
+
 def ice_fraction(self, df):
     """
     Returns dataframe for only ice data.
@@ -41,6 +45,7 @@ def ice_fraction(self, df):
     df = df[df['ice_fraction'] > 0]
 
     return df
+
 
 def snow_fraction(self, df):
     """
