@@ -6,6 +6,7 @@ import itertools
 import argparse
 from LAMDA.map_qc_flags import map_qc_flags
 from LAMDA.map_departures import map_departures
+from LAMDA.layer_histogram import layer_histogram
 
 
 def create_mp_work_list(diag_inputs, plotting_config):
@@ -41,6 +42,7 @@ def plotting_func(config, diag_file, data_type='omf',
 
     plot_dict = {
         'qcflags': map_qc_flags,
+        'layer_histogram': layer_histogram,
         'map departures': map_departures,
     }
 
