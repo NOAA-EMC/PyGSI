@@ -1,0 +1,19 @@
+experiment:
+  expdir: /scratch1/NCEPDEV/da/Cory.R.Martin/tmp/lamda_sample
+  cdump: fv3lamdax
+  name: Test1
+reference:
+  expdir: /scratch1/NCEPDEV/da/Cory.R.Martin/tmp/lamda_sample
+  cdump: fv3lamdax
+  name: Ctrl
+output:
+  outdir: /scratch1/NCEPDEV/da/Cory.R.Martin/tmp/lamda_sample/work
+diagnostics:
+  - type: minimization
+    compare: True
+    tm: [00]
+  - type: map_departures
+    ob type: amsua_n19
+    loop: ges
+    tm: [00]
+    channels: [1]
