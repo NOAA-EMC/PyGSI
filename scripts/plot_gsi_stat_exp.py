@@ -192,7 +192,7 @@ if __name__ == '__main__':
                 counts_var[i, :] = counts[exp][cycle][var].values[0]
             # Compute mean rms, bias
             rmses[exp]['mean'][var] = rmse_var.mean(axis=0)
-            biases[exp]['mean'][var] = bias_var.mean(axis=0) 
+            biases[exp]['mean'][var] = bias_var.mean(axis=0)
             # Compute aggregate rms, bias
             ar = np.asarray([])
             ab = np.asarray([])
