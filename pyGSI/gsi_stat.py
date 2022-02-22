@@ -263,7 +263,7 @@ class GSIstat(object):
             if re.search(pattern, line):
                 header = line.strip()
                 header = re.sub('pbot', 'stat', header)
-                header = re.sub('2000.0', 'column', header)
+                header = re.sub('0.200E' + r'\+04', 'column', header)
                 pbots = np.array(header.split()[7:-1], dtype=np.float)
                 break
         if pbots is []:
@@ -272,7 +272,6 @@ class GSIstat(object):
         if header is None:
             print('No matching header for PS')
             sys.exit(1)
-
         tmp = []
         pattern = r' o-g\s+(\d\d)\s+%s\s' % name
         for line in self._lines:

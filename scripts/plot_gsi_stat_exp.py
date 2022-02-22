@@ -10,12 +10,13 @@ import numpy as np
 from pyGSI.gsi_stat import GSIstat
 
 it = 'it == 1'
+plottype = 'mean'
 obtypes = [120, 220]
 obvars = ['t', 'uv', 'q']
 levels = [1000, 900, 800, 600, 400, 300, 250, 200, 150, 100, 50, 0]
 
 
-def gen_figure(datadict, datatypestr, labels, sdate, edate, save, plotdir):
+def gen_figure(datadict, datatypestr, stattype, labels, sdate, edate, save, plotdir):
     # Line/marker colors for experiments ('k' is the first)
     mc = ['k', 'r', 'g', 'b', 'm', 'c', 'y']
 
@@ -28,7 +29,6 @@ def gen_figure(datadict, datatypestr, labels, sdate, edate, save, plotdir):
     fig1 = plt.figure(figsize=(10, 8))
     plt.subplots_adjust(hspace=0.3)
     gs = gspec.GridSpec(1, 3)
-    stattype = 'mean' if datatypestr.lower() in ['bias', 'rmse'] else 'sum'
 
     for v, var in enumerate(obvars):
         xmin = 999
@@ -178,7 +178,9 @@ if __name__ == '__main__':
     # now aggregate stats
     for exp in labels:
         rmses[exp]['mean'] = {}
+        rmses[exp]['aggr'] = {}
         biases[exp]['mean'] = {}
+        biases[exp]['aggr'] = {}
         counts[exp]['sum'] = {}
         for var in obvars:
             rmse_var = np.empty([len(cycles), len(levels)])
@@ -188,12 +190,29 @@ if __name__ == '__main__':
                 rmse_var[i, :] = rmses[exp][cycle][var].values[0]
                 bias_var[i, :] = biases[exp][cycle][var].values[0]
                 counts_var[i, :] = counts[exp][cycle][var].values[0]
+            # Compute mean rms, bias
             rmses[exp]['mean'][var] = rmse_var.mean(axis=0)
             biases[exp]['mean'][var] = bias_var.mean(axis=0)
+            # Compute aggregate rms, bias
+            ar = np.asarray([])
+            ab = np.asarray([])
+            for j in range(np.ma.size(rmse_var, axis=1)):
+                r = rmse_var[:, j].squeeze()
+                b = bias_var[:, j].squeeze()
+                c = counts_var[:, j].squeeze()
+                if (np.sum(c) > 0):
+                    ar = np.append(ar, np.sqrt(np.sum(np.multiply(c, r**2.))/np.sum(c)))
+                    ab = np.append(ab, np.sum(np.multiply(c, b))/np.sum(c))
+                else:
+                    ar = np.append(ar, np.nan)
+                    ab = np.append(ab, np.nan)
+            rmses[exp]['aggr'][var] = ar
+            biases[exp]['aggr'][var] = ab
+            # Compute summed counts
             counts[exp]['sum'][var] = counts_var.sum(axis=0)
 
     # make figures
-    gen_figure(rmses, 'RMSE', labels, sdate, edate, save_figure, args.plotdir)
-    gen_figure(biases, 'Bias', labels, sdate, edate, save_figure, args.plotdir)
-    gen_figure(counts, 'Count', labels, sdate, edate,
+    gen_figure(rmses, 'RMSE', plottype, labels, sdate, edate, save_figure, args.plotdir)
+    gen_figure(biases, 'Bias', plottype, labels, sdate, edate, save_figure, args.plotdir)
+    gen_figure(counts, 'Count', 'sum', labels, sdate, edate,
                save_figure, args.plotdir)
