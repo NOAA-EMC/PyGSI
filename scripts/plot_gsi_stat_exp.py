@@ -29,7 +29,6 @@ def gen_figure(datadict, datatypestr, stattype, labels, sdate, edate, save, plot
     fig1 = plt.figure(figsize=(10, 8))
     plt.subplots_adjust(hspace=0.3)
     gs = gspec.GridSpec(1, 3)
-    #stattype = 'aggr' if datatypestr.lower() in ['bias', 'rmse'] else 'sum'
 
     for v, var in enumerate(obvars):
         xmin = 999
@@ -193,20 +192,20 @@ if __name__ == '__main__':
                 counts_var[i, :] = counts[exp][cycle][var].values[0]
             # Compute mean rms, bias
             rmses[exp]['mean'][var] = rmse_var.mean(axis=0)
-            biases[exp]['mean'][var] = bias_var.mean(axis=0)        
+            biases[exp]['mean'][var] = bias_var.mean(axis=0) 
             # Compute aggregate rms, bias
-            ar=np.asarray([])
-            ab=np.asarray([])
-            for j in range(np.ma.size(rmse_var,axis=1)):
-                r = rmse_var[:,j].squeeze()
-                b = bias_var[:,j].squeeze()
-                c = counts_var[:,j].squeeze()
-                if (np.sum(c)>0):
-                  ar = np.append(ar,np.sqrt(np.sum(np.multiply(c,r**2.))/np.sum(c)))
-                  ab = np.append(ab,np.sum(np.multiply(c,b))/np.sum(c))
+            ar = np.asarray([])
+            ab = np.asarray([])
+            for j in range(np.ma.size(rmse_var, axis=1)):
+                r = rmse_var[:, j].squeeze()
+                b = bias_var[:, j].squeeze()
+                c = counts_var[:, j].squeeze()
+                if (np.sum(c) > 0):
+                    ar = np.append(ar, np.sqrt(np.sum(np.multiply(c, r**2.))/np.sum(c)))
+                    ab = np.append(ab, np.sum(np.multiply(c, b))/np.sum(c))
                 else:
-                  ar = np.append(ar,np.nan)
-                  ab = np.append(ab,np.nan)
+                    ar = np.append(ar, np.nan)
+                    ab = np.append(ab, np.nan)
             rmses[exp]['aggr'][var] = ar
             biases[exp]['aggr'][var] = ab
             # Compute summed counts
