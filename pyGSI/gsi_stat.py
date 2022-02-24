@@ -247,11 +247,13 @@ class GSIstat(object):
         # Get pressure levels
         ptops = []
         pattern = r'o-g\s+ptop\s'
-        for line in self._lines:
+        for i in range(len(self._lines)):
+            line = self._lines[i]
             if re.search(pattern, line):
-                header = line.strip()
-                ptops = np.array(header.split()[2:-1], dtype=np.float)
-                break
+                if re.search(' '+name+' ', self._lines[i+2]):
+                    header = line.strip()
+                    ptops = np.array(header.split()[2:-1], dtype=np.float)
+                    break
         if ptops is []:
             print(f'No matching ptop for {name}')
             sys.exit(1)
@@ -259,13 +261,15 @@ class GSIstat(object):
         header = None
         pbots = []
         pattern = r'o-g\s+it\s+obs\s+use\s+typ\s+styp\s+pbot\s'
-        for line in self._lines:
+        for i in range(len(self._lines)):
+            line = self._lines[i]
             if re.search(pattern, line):
-                header = line.strip()
-                header = re.sub('pbot', 'stat', header)
-                header = re.sub('0.200E' + r'\+04', 'column', header)
-                pbots = np.array(header.split()[7:-1], dtype=np.float)
-                break
+                if re.search(' '+name+' ', self._lines[i+2]):
+                    header = line.strip()
+                    header = re.sub('pbot', 'stat', header)
+                    header = re.sub('0.200E' + r'\+04', 'column', header)
+                    pbots = np.array(header.split()[7:-1], dtype=np.float)
+                    break
         if pbots is []:
             print(f'No matching pbot for {name}')
             sys.exit(1)
