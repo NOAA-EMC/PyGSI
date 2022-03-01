@@ -19,29 +19,50 @@ def get_datelist(startdate, enddate):
 #
 # USER DEFINED SETTINGS
 #
+# Each member of the plot is provided as a separate dictionary to setdict with the following keys:
+#    name: Name of member, used in the legend of the plot to distinguish lines or bars belonging to this set
+#    var: Variable being extracted ('uv', 't', or 'q')
+#    it: Iteration(s) (1, 2, or 3), can be an individual value or a list of values (e.g. [1,3]), or None to collect all values
+#    use: Use-type ('asm', 'mon', or 'rej'), can be an individual value or a list of values (e.g. ['asm','rej']), or None to collect all values
+#    typ: Observation type number, can be an individual value or a list of values, or None to collect all values
+#    styp: Observation subtype string, can be an individual value or a list of values, or None to collect all values
+#    statdir: String identifying full-path to directory containing gsistat files (ends in '/')
+#
+# You can define the list of cycles to extract data from, which will be aggregated for profiles and plotted individually for traces by:
+#    1) Specifying a list of cycles as '%Y%m%d%H' formatted strings, e.g.:
+#        cycle=['2020080100','2020080106','2020080112']
+#    2) Use get_datelist() to automatically generate a list of cycles at 6-hourly steps between a beginning and ending date, e.g.:
+#        cycle=get_datelist('2020080100','2020080112')
+#
+# Figures are saved to profs_filename and trace_filename, respectively
+#
+# tskip defines the number of time-periods in the trace that are skipped when adding tick-labels. Tick-labels are dates of the
+# form (e.g.) 'Aug01-00z', so for long timeseries traces the labels will be written over each other unless some of them are
+# skipped. I usually use some multiple of 4, so that the tick-labels always correspond to the same analysis-period.
+#
 ########################
 #
 setdict=[]
-setdict.append({ 'name' : 'ctl-WVdl271-ges',
+setdict.append({ 'name' : 'ctl',
                  'var' : 'uv',
                  'it' : 1,
                  'use' : 'asm',
-                 'typ' : 247,
-                 'styp' : '0271',
+                 'typ' : 245,
+                 'styp' : ['0270','0271'],
                  'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
                })
-setdict.append({ 'name' : 'exp-WVdl271-ges',
+setdict.append({ 'name' : 'exp',
                  'var' : 'uv',
                  'it' : 1,
                  'use' : 'asm',
-                 'typ' : 247,
-                 'styp' : '0271',
+                 'typ' : 245,
+                 'styp' : ['0270','0271'],
                  'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_g17/'
                })
 cycles=get_datelist('2020090100','2020090812')
-profs_filename = 'WVdl271-ges_profs.png'
-trace_filename = 'WVdl271-ges_trace.png'
-tskip = 4
+profs_filename = 'LWIR-ges_profs.png'
+trace_filename = 'LWIR-ges_trace.png'
+tskip = 8
 #
 ########################
 
@@ -64,29 +85,47 @@ for sd in setdict:
             gdas = GSIstat(inputfile, cycle)
         except FileNotFoundError:
             raise FileNotFoundError(f'Unable to find {inputfile} for cycle {cycle}')
-        # now loop through variables
+        # statistics are drawn for a single variable
         var=sd['var']
+        # all other filters (it,use,typ,styp) could contain multiple entries in a list
+        # if they are not a list, assert them as a list
         it=sd['it']
+        if type(it) != list:
+            it = [it]
         use=sd['use']
+        if type(use) != list:
+            use = [use]
         typ=sd['typ']
+        if type(typ) != list:
+            typ = [typ]
         styp=sd['styp']
+        if type(styp) != list:
+            styp = [styp]
+        # extract variable from gdas
         stat = gdas.extract(var)  # t, uv, q, etc.
         #                date         it         obs   use    typ  styp    stat
+        # pull entire dataframe
         s = stat.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),:]
         # Filters:     date         it           obs         use          typ          styp         stat
         # Add try/except to filters: If any filter breaks, return 0-values for rmse, bias, and count
         try:
             if (it != None):
-                s = s.loc[(slice(None), it, slice(None), slice(None), slice(None), slice(None), slice(None)),:]
-            if (var != None):
-                s = s.loc[(slice(None), slice(None), var, slice(None), slice(None), slice(None), slice(None)),:]
+                s = s[s.index.isin(it, level='it')]
             if (use != None):
-                s = s.loc[(slice(None), slice(None), slice(None), use, slice(None), slice(None), slice(None)),:]
+                s = s[s.index.isin(use, level='use')]
             if (typ != None):
-                s = s.loc[(slice(None), slice(None), slice(None), slice(None), typ, slice(None), slice(None)),:]
+                s = s[s.index.isin(typ, level='typ')]
             if (styp != None):
-                s = s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), styp, slice(None)),:]
+                s = s[s.index.isin(styp, level='styp')]
         except:
+            # Pull entire variable frame again
+            s = stat.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),:]   
+            # Filter to just the first observation type in the frame (index=[0:3] is count, rms, and bias of first entry)
+            s = s.iloc[0:3,:]
+            # Zero-out all elements
+            s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),s.columns]=0.
+        # If successfully passed filters but has zero rows, return 0-values for rmse, bias, and count
+        if s.shape[0] == 0:
             # Pull entire variable frame again
             s = stat.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),:]   
             # Filter to just the first observation type in the frame (index=[0:3] is count, rms, and bias of first entry)
@@ -309,7 +348,7 @@ def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap
     plt.legend(legend_list,frameon=False,fontsize=10)
     # Set y-label
     plt.ylabel('RMS or Bias')
-    # RIGHT PANEL: ob-counts
+    # BOTTOM PANEL: ob-counts
     plt.subplot(212)
     # For this plot, bars need to be offset from each other so that they all cluster around the pressure
     # level. This is accomplished with an offset value added to each bar
@@ -330,6 +369,10 @@ def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap
     # Return
     return plt.gcf()
 
+#
+# Generate plotting data by aggregating rmse, bias, and count data across times (for profiles), or
+# aggregate full-column data (for traces)
+#
 rmse_profs=[]
 rmse_trace=[]
 bias_profs=[]
@@ -355,23 +398,38 @@ for setname in rmses.keys():
     n_trace=np.zeros((ndate,))
     for i in range(ndate):
         date=dates[i]
-        r_trace[i]=rmses[setname][date]['col'].values[0]
-        b_trace[i]=biases[setname][date]['col'].values[0]
-        n_trace[i]=counts[setname][date]['col'].values[0]
-        r=rmses[setname][date]['lev'].values[0]
-        b=biases[setname][date]['lev'].values[0]
-        c=counts[setname][date]['lev'].values[0]
-        for k in range(nlev):
-            c2 = nobs[k] + c[k]
-            if c2 > 0:
-                r2 = np.sqrt((nobs[k] * rmse[k] ** 2. + c[k] * r[k] ** 2.) / c2)
-                b2 = (nobs[k] * bias[k] + c[k] * b[k]) / c2
+        n_ele = np.size(rmses[setname][date]['col'].values)
+        for j in range(n_ele):
+            # Aggregate rms, bias, and count for full-column values at each time to define traces
+            rcol=rmses[setname][date]['col'].values[j]
+            bcol=biases[setname][date]['col'].values[j]
+            ncol=counts[setname][date]['col'].values[j]
+            ncol2 = n_trace[i] + ncol
+            if ncol2 > 0:
+                rcol2 = np.sqrt((n_trace[i] * r_trace[i] ** 2. + ncol * rcol ** 2.) / ncol2)
+                bcol2 = (n_trace[i] * b_trace[i] + ncol * bcol) / ncol2
             else:
-                r2 = 0.
-                b2 = 0.
-            rmse[k] = r2
-            bias[k] = b2
-            nobs[k] = c2
+                rcol2 = 0.
+                bcol2 = 0.
+            r_trace[i] = rcol2
+            b_trace[i] = bcol2
+            n_trace[i] = ncol2
+            # Aggregate rms, bias, and count at each level across all times to define profiles
+            r=rmses[setname][date]['lev'].values[j]
+            b=biases[setname][date]['lev'].values[j]
+            c=counts[setname][date]['lev'].values[j]
+            for k in range(nlev):
+                c2 = nobs[k] + c[k]
+                if c2 > 0:
+                    r2 = np.sqrt((nobs[k] * rmse[k] ** 2. + c[k] * r[k] ** 2.) / c2)
+                    b2 = (nobs[k] * bias[k] + c[k] * b[k]) / c2
+                else:
+                    r2 = 0.
+                    b2 = 0.
+                rmse[k] = r2
+                bias[k] = b2
+                nobs[k] = c2
+    # Any score with 0 obs should be changed to NaN before entering into record
     rmse[nobs == 0] = np.nan
     bias[nobs == 0] = np.nan
     r_trace[n_trace == 0] = np.nan
@@ -382,12 +440,15 @@ for setname in rmses.keys():
     rmse_profs.append(rmse)
     bias_profs.append(bias)
     nobs_profs.append(nobs)
-
-
+#
+# Generate profile plot
+#
 fig_prof=plot_stat_profiles(rmse_profs,bias_profs,nobs_profs,name_list,levl_profs)
 plt.ioff()
 fig_prof.savefig(profs_filename,bbox_inches='tight',facecolor='w')
-
+#
+# Generate trace plot
+#
 fig_trace=plot_stat_traces(rmse_trace,bias_trace,nobs_trace,name_list,date_trace,tskip=tskip)
 plt.ioff()
 fig_trace.savefig(trace_filename,bbox_inches='tight',facecolor='w')

@@ -82,7 +82,8 @@ profile_default/
 ipython_config.py
 
 # Figure files
-.png
+*.png
+
 # pyenv
 .python-version
 
