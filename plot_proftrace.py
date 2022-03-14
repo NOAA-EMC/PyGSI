@@ -43,25 +43,25 @@ def get_datelist(startdate, enddate):
 ########################
 #
 setdict=[]
-setdict.append({ 'name' : 'ctl',
+setdict.append({ 'name' : 'ctl-RAOB',
                  'var' : 'uv',
                  'it' : 1,
                  'use' : 'asm',
-                 'typ' : 245,
-                 'styp' : ['0270','0271'],
+                 'typ' : 220,
+                 'styp' : None, #['0270','0271'],
                  'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
                })
-setdict.append({ 'name' : 'exp',
+setdict.append({ 'name' : 'exp-RAOB',
                  'var' : 'uv',
                  'it' : 1,
                  'use' : 'asm',
-                 'typ' : 245,
-                 'styp' : ['0270','0271'],
+                 'typ' : 220,
+                 'styp' : None, #['0270','0271'],
                  'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_g17/'
                })
-cycles=get_datelist('2020090100','2020090812')
-profs_filename = 'LWIR-ges_profs.png'
-trace_filename = 'LWIR-ges_trace.png'
+cycles=get_datelist('2020090800','2020093118')
+profs_filename = 'RAOB-ges_profs.png'
+trace_filename = 'RAOB-ges_trace.png'
 tskip = 8
 #
 ########################
