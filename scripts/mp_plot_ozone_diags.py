@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import yaml
 from multiprocessing import Pool
+from functools import partial
 import sys
 from pyGSI.diags import Ozone
 from pyGSI.plot_diags import plot_map, plot_histogram
@@ -10,23 +11,21 @@ from datetime import datetime
 start_time = datetime.now()
 
 
-def plotting(ozone_config):
+def plotting(sat_config, diag_file, data_type, plot_type, outdir):
 
-    diagfile = ozone_config['ozone input']['path'][0]
-    diag_type = ozone_config['ozone input']['data type'][0].lower()
-    analysis_use = ozone_config['ozone input']['analysis use'][0]
-    layer = ozone_config['ozone input']['layer'][0]
-    plot_type = ozone_config['ozone input']['plot type']
-    outdir = ozone_config['outdir']
+    analysis_use = ozone_config['analysis use'][0]
+    layer = ozone_config['layer'][0]
+    bias_correction = ozone_config['bias correction'][0]
 
-    diag = Ozone(diagfile)
+    diag = Ozone(diag_file)
 
     df = diag.get_data(analysis_use=analysis_use)
     metadata = diag.metadata
-    metadata['Diag Type'] = diag_type
+    metadata['Diag Type'] = data_type
 
-    column = f'{diag_type}' if diag_type in ['observation'] \
-        else f'{diag_type}_adjusted'
+    bias = 'adjusted' if bias_correction else 'unadjusted'
+    column = f'{data_type}' if data_type in ['observation'] \
+        else f'{data_type}_{bias}'
 
     if layer == 0:
         dict_key = 'column total'
@@ -61,38 +60,39 @@ def plotting(ozone_config):
         plot_map(lats, lons, data, metadata, outdir)
 
 
-###############################################
+if __name__ == '__main__':
 
-# Parse command line
-ap = argparse.ArgumentParser()
-ap.add_argument("-n", "--nprocs",
-                help="Number of tasks/processors for multiprocessing")
-ap.add_argument("-y", "--yaml",
-                help="Path to yaml file with diag data")
-ap.add_argument("-o", "--outdir",
-                help="Out directory where files will be saved")
+    # Parse command line
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-n", "--nprocs",
+                    help="Number of tasks/processors for multiprocessing")
+    ap.add_argument("-y", "--yaml",
+                    help="Path to yaml file with diag data")
+    ap.add_argument("-o", "--outdir",
+                    help="Out directory where files will be saved")
 
-myargs = ap.parse_args()
+    myargs = ap.parse_args()
 
-if myargs.nprocs:
-    nprocs = int(myargs.nprocs)
-else:
-    nprocs = 1
+    if myargs.nprocs:
+        nprocs = int(myargs.nprocs)
+    else:
+        nprocs = 1
 
-input_yaml = myargs.yaml
-outdir = myargs.outdir
+    input_yaml = myargs.yaml
+    outdir = myargs.outdir
 
-with open(input_yaml, 'r') as file:
-    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+    with open(input_yaml, 'r') as file:
+        parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
+    work = parsed_yaml_file['diagnostic']['radiance']
+    data_type = parsed_yaml_file['diagnostic']['data type']
+    data_path = parsed_yaml_file['diagnostic']['path']
+    try:
+        plot_type = parsed_yaml_file['diagnostic']['plot types']
+    except KeyError:
+        raise Exception("'plot types' key not included in input yaml. "
+                        "Please add key 'plot types' to yaml and list "
+                        "of the plot types you would like to create. "
+                        "i.e. ['histogram', 'spatial']")
 
-work = (parsed_yaml_file['diagnostic'])
-
-# Add outdir to yaml dict
-for w in work:
-    w['outdir'] = outdir
-
-p = Pool(processes=nprocs)
-p.map(plotting, work)
-
-print(datetime.now() - start_time)
+    print(datetime.now() - start_time)

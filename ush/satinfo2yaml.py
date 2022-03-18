@@ -72,9 +72,10 @@ def main(config):
                 continue  # only process assimilated obs for now
 
             dictloop = {
-                'channel': int(ichan),
-                'qc flag': 0,
-                'analysis use': True
+                'channel': [int(ichan)],
+                'qc flag': [0],
+                'analysis use': [True],
+                'bias correction': [True]
             }
 
             yamlout['diagnostic']['radiance'].append(dictloop)
