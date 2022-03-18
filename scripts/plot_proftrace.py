@@ -43,25 +43,25 @@ def get_datelist(startdate, enddate):
 ########################
 #
 setdict=[]
-setdict.append({ 'name' : 'ctl-RAOB',
+setdict.append({ 'name' : 'RAOB-ges',
                  'var' : 'uv',
                  'it' : 1,
                  'use' : 'asm',
                  'typ' : 220,
-                 'styp' : None, #['0270','0271'],
+                 'styp' : None,
                  'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
                })
-setdict.append({ 'name' : 'exp-RAOB',
+setdict.append({ 'name' : 'RAOB-anl',
                  'var' : 'uv',
-                 'it' : 1,
+                 'it' : 3,
                  'use' : 'asm',
                  'typ' : 220,
-                 'styp' : None, #['0270','0271'],
-                 'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_g17/'
+                 'styp' : None,
+                 'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
                })
-cycles=get_datelist('2020090800','2020093118')
-profs_filename = 'RAOB-ges_profs.png'
-trace_filename = 'RAOB-ges_trace.png'
+cycles=get_datelist('2020090800', '2020093018')
+profs_filename = 'gsistat_profs_RAOBS.png'
+trace_filename = 'gsistat_trace_RAOBS.png'
 tskip = 8
 #
 ########################
@@ -109,19 +109,19 @@ for sd in setdict:
         # Filters:     date         it           obs         use          typ          styp         stat
         # Add try/except to filters: If any filter breaks, return 0-values for rmse, bias, and count
         try:
-            if (it != None):
+            if (it[0] != None):
                 s = s[s.index.isin(it, level='it')]
-            if (use != None):
+            if (use[0] != None):
                 s = s[s.index.isin(use, level='use')]
-            if (typ != None):
+            if (typ[0] != None):
                 s = s[s.index.isin(typ, level='typ')]
-            if (styp != None):
+            if (styp[0] != None):
                 s = s[s.index.isin(styp, level='styp')]
         except:
             # Pull entire variable frame again
             s = stat.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),:]   
             # Filter to just the first observation type in the frame (index=[0:3] is count, rms, and bias of first entry)
-            s = s.iloc[0:3,:]
+            s = s.iloc[0:3, :]
             # Zero-out all elements
             s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),s.columns]=0.
         # If successfully passed filters but has zero rows, return 0-values for rmse, bias, and count
@@ -129,7 +129,7 @@ for sd in setdict:
             # Pull entire variable frame again
             s = stat.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),:]   
             # Filter to just the first observation type in the frame (index=[0:3] is count, rms, and bias of first entry)
-            s = s.iloc[0:3,:]
+            s = s.iloc[0:3, :]
             # Zero-out all elements
             s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), slice(None)),s.columns]=0.
         # Levels are contained in all but the final value, which is a statistic for the full column
@@ -145,7 +145,7 @@ for sd in setdict:
         counts[setname][cycle]['col'] = s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), 'count'),s.columns[-1]]
         biases[setname][cycle]['col'] = s.loc[(slice(None), slice(None), slice(None), slice(None), slice(None), slice(None), 'bias'),s.columns[-1]]
 
-def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab10',10]):
+def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab10', 10]):
     ######################################################################################################
     # Generates 2-panel plot:
     #    Left: Profiles of rms and bias for each set
@@ -194,7 +194,7 @@ def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab
     scalarMapList=scalarMap.to_rgba(range(colMap[1]))
     #
     # Generate figure
-    plt.figure(figsize=(18,18))
+    plt.figure(figsize=(18, 18))
     # Define offset values (needed to define y-axis limits on both plots, for consistency)
     y_offset=8.0*(np.arange(n_profiles)-np.floor(n_profiles/2))
     # LEFT PANEL: rms and bias scores
@@ -212,23 +212,23 @@ def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab
         # rms profile
         legend_list.append(nameList[i]+' rms')
         prof_color=list(scalarMapList[i][0:3])
-        plt.plot(rms,levs,color=prof_color,linewidth=3)
-        plt.plot(rms,levs,'o',color=prof_color,markersize=8,label='_nolegend_')
+        plt.plot(rms, levs, color=prof_color, linewidth=3)
+        plt.plot(rms, levs, 'o',color=prof_color, markersize=8, label='_nolegend_')
         # bias profile
         legend_list.append(nameList[i]+' bias')
         prof_color=list(scalarMapList[i][0:3])
-        plt.plot(bias,levs,color=prof_color,linewidth=3,linestyle='dashdot')
-        plt.plot(bias,levs,'o',color=prof_color,markersize=8,label='_nolegend_')
+        plt.plot(bias, levs, color=prof_color, linewidth=3, linestyle='dashdot')
+        plt.plot(bias, levs, 'o', color=prof_color, markersize=8, label='_nolegend_')
     # Zero-line
-    plt.plot(np.zeros((n_levs,)),levs,color='k',linewidth=1,linestyle='dashed',label='_nolegend_')
+    plt.plot(np.zeros((n_levs, )), levs, color='k', linewidth=1, linestyle='dashed', label='_nolegend_')
     # Set y-limits to entire range
-    plt.ylim((y_min,y_max))
+    plt.ylim((y_min, y_max))
     plt.yticks(levs)
     # Reverse y-axis, if levs is in descending-order (often the case with pressure coordinate data)
     if (levs[1]<levs[0]):
         plt.gca().invert_yaxis()
     # Set legend
-    plt.legend(legend_list,frameon=False,fontsize=10)
+    plt.legend(legend_list, frameon=False, fontsize=10)
     # Set x-label
     plt.xlabel('RMS or Bias')
     # RIGHT PANEL: ob-counts
@@ -239,15 +239,15 @@ def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab
     for i in range(n_profiles):
         count=0.001*countList[i]
         bar_color=list(scalarMapList[i][0:3])
-        plt.barh(levs+y_offset[i],count,height=8.0,color=bar_color)
+        plt.barh(levs+y_offset[i], count, height=8.0, color=bar_color)
     # Set y-limits to entire range
-    plt.ylim((y_min,y_max))
+    plt.ylim((y_min, y_max))
     plt.yticks(levs)
     # Reverse y-axis, if levs is in descending-order (often the case with pressure coordinate data)
     if (levs[1]<levs[0]):
         plt.gca().invert_yaxis()
     # Set legend
-    plt.legend(nameList,frameon=False,fontsize=10)
+    plt.legend(nameList, frameon=False, fontsize=10)
     # Set x-label
     plt.xlabel('Ob Count (Thousands)')
     # Turn off interactive-mode to suppress plotting figure
@@ -255,7 +255,7 @@ def plot_stat_profiles(rmsList,biasList,countList,nameList,plevList,colMap=['tab
     # Return
     return plt.gcf()
 
-def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap=['tab10',10]):
+def plot_stat_traces(rmsList, biasList, countList, nameList, dateList, tskip=4, colMap=['tab10', 10]):
     ######################################################################################################
     # Generates 2-panel plot:
     #    Top: Trace of rms and bias for each set
@@ -307,7 +307,7 @@ def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap
     scalarMapList=scalarMap.to_rgba(range(colMap[1]))
     #
     # Generate figure
-    plt.figure(figsize=(18,18))
+    plt.figure(figsize=(18, 18))
     # Define offset values (needed to define x-axis limits on both plots, for consistency)
     offs=0.8/n_trace
     x_offset=offs*(np.arange(n_trace)-np.floor(n_trace/2))
@@ -322,30 +322,30 @@ def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap
         # Convert dates from %Y%m%d%H format to %b%d:%HZ format for tick labels
         dstr=[]
         for d in dates:
-            dt=datetime.strptime(d,'%Y%m%d%H')
-            dstr.append(datetime.strftime(dt,'%b%d:%HZ'))
+            dt=datetime.strptime(d, '%Y%m%d%H')
+            dstr.append(datetime.strftime(dt, '%b%d:%HZ'))
         n_dates=np.size(dates)
         # Define x-axis limits
         x_min = min(x_offset)-offs
         x_max = n_dates+max(x_offset)+offs
-        x_rng = np.arange(1,n_dates+1.0E-05)
+        x_rng = np.arange(1, n_dates+1.0E-05)
         # rms trace
         legend_list.append(nameList[i]+' rms')
         prof_color=list(scalarMapList[i][0:3])
-        plt.plot(x_rng,rms,color=prof_color,linewidth=3)
-        plt.plot(x_rng,rms,'o',color=prof_color,markersize=8,label='_nolegend_')
+        plt.plot(x_rng, rms, color=prof_color, linewidth=3)
+        plt.plot(x_rng, rms, 'o', color=prof_color, markersize=8, label='_nolegend_')
         # bias profile
         legend_list.append(nameList[i]+' bias')
         prof_color=list(scalarMapList[i][0:3])
-        plt.plot(x_rng,bias,color=prof_color,linewidth=3,linestyle='dashdot')
-        plt.plot(x_rng,bias,'o',color=prof_color,markersize=8,label='_nolegend_')
+        plt.plot(x_rng, bias, color=prof_color, linewidth=3, linestyle='dashdot')
+        plt.plot(x_rng, bias, 'o', color=prof_color, markersize=8, label='_nolegend_')
     # Zero-line
-    plt.plot(x_rng,np.zeros((n_dates,)),color='k',linewidth=1,linestyle='dashed',label='_nolegend_')
+    plt.plot(x_rng, np.zeros((n_dates, )), color='k', linewidth=1, linestyle='dashed', label='_nolegend_')
     # Set x-limits to entire range
-    plt.xlim((x_min,x_max))
-    plt.xticks(ticks=x_rng[::tskip],labels=dstr[::tskip],fontsize=10)
+    plt.xlim((x_min, x_max))
+    plt.xticks(ticks=x_rng[::tskip], labels=dstr[::tskip], fontsize=10)
     # Set legend
-    plt.legend(legend_list,frameon=False,fontsize=10)
+    plt.legend(legend_list, frameon=False, fontsize=10)
     # Set y-label
     plt.ylabel('RMS or Bias')
     # BOTTOM PANEL: ob-counts
@@ -356,12 +356,12 @@ def plot_stat_traces(rmsList,biasList,countList,nameList,dateList,tskip=4,colMap
     for i in range(n_trace):
         count=0.001*countList[i]
         bar_color=list(scalarMapList[i][0:3])
-        plt.bar(x_rng+x_offset[i],count,width=offs,color=bar_color)
+        plt.bar(x_rng+x_offset[i], count, width=offs, color=bar_color)
     # Set x-limits to entire range
-    plt.xlim((x_min,x_max))
-    plt.xticks(ticks=x_rng[::tskip],labels=dstr[::tskip],fontsize=10)
+    plt.xlim((x_min, x_max))
+    plt.xticks(ticks=x_rng[::tskip], labels=dstr[::tskip], fontsize=10)
     # Set legend
-    plt.legend(nameList,frameon=False,fontsize=10)
+    plt.legend(nameList, frameon=False, fontsize=10)
     # Set y-label
     plt.ylabel('Ob Count (Thousands)')
     # Turn off interactive-mode to suppress plotting figure
@@ -387,15 +387,15 @@ for setname in rmses.keys():
     plevs=levels[setname]
     levl_profs.append(np.asarray(plevs).squeeze())
     nlev=np.size(plevs)
-    rmse=np.zeros((nlev,))
-    bias=np.zeros((nlev,))
-    nobs=np.zeros((nlev,))
+    rmse=np.zeros((nlev, ))
+    bias=np.zeros((nlev, ))
+    nobs=np.zeros((nlev, ))
     dates=list(rmses[setname].keys())
     date_trace.append(dates)
     ndate=len(dates)
-    r_trace=np.zeros((ndate,))
-    b_trace=np.zeros((ndate,))
-    n_trace=np.zeros((ndate,))
+    r_trace=np.zeros((ndate, ))
+    b_trace=np.zeros((ndate, ))
+    n_trace=np.zeros((ndate, ))
     for i in range(ndate):
         date=dates[i]
         n_ele = np.size(rmses[setname][date]['col'].values)
@@ -443,14 +443,14 @@ for setname in rmses.keys():
 #
 # Generate profile plot
 #
-fig_prof=plot_stat_profiles(rmse_profs,bias_profs,nobs_profs,name_list,levl_profs)
+fig_prof=plot_stat_profiles(rmse_profs, bias_profs, nobs_profs, name_list, levl_profs)
 plt.ioff()
-fig_prof.savefig(profs_filename,bbox_inches='tight',facecolor='w')
+fig_prof.savefig(profs_filename, bbox_inches='tight', facecolor='w')
 #
 # Generate trace plot
 #
-fig_trace=plot_stat_traces(rmse_trace,bias_trace,nobs_trace,name_list,date_trace,tskip=tskip)
+fig_trace=plot_stat_traces(rmse_trace, bias_trace, nobs_trace, name_list, date_trace, tskip=tskip)
 plt.ioff()
-fig_trace.savefig(trace_filename,bbox_inches='tight',facecolor='w')
+fig_trace.savefig(trace_filename, bbox_inches='tight', facecolor='w')
 
 
