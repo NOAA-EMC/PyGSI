@@ -6,8 +6,6 @@ import yaml
 from multiprocessing import Pool
 from functools import partial
 from datetime import datetime
-import sys
-sys.path.append('/scratch1/NCEPDEV/da/Kevin.Dougherty/PyGSI/')
 from pyGSI.diags import Radiance
 from pyGSI.plot_diags import plot_map, plot_histogram
 
@@ -101,7 +99,7 @@ if __name__ == '__main__':
                         "Please add key 'plot types' to yaml and list "
                         "of the plot types you would like to create. "
                         "i.e. ['histogram', 'spatial']")
-    
+
     p = Pool(processes=nprocs)
     p.map(partial(plotting, diag_file=data_path,
                   data_type=data_type,
