@@ -74,7 +74,8 @@ def main(config):
             dictloop = {
                 'channel': [int(ichan)],
                 'qc flag': [0],
-                'analysis use': True
+                'analysis use': [True],
+                'bias correction': [True]
             }
 
             yamlout['diagnostic']['radiance'].append(dictloop)
