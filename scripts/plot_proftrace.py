@@ -43,21 +43,21 @@ def get_datelist(startdate, enddate):
 ########################
 #
 setdict=[]
-setdict.append({ 'name' : 'RAOB-ges',
-                 'var' : 'uv',
-                 'it' : 1,
-                 'use' : 'asm',
-                 'typ' : 220,
+setdict.append({ 'name' : 'RAOB-ges', 
+                 'var' : 'uv', 
+                 'it' : 1, 
+                 'use' : 'asm', 
+                 'typ' : 220, 
                  'styp' : None,
-                 'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
+                 'statdir' : '<full-path-to-gsistat-files>/'
                })
-setdict.append({ 'name' : 'RAOB-anl',
-                 'var' : 'uv',
-                 'it' : 3,
-                 'use' : 'asm',
-                 'typ' : 220,
-                 'styp' : None,
-                 'statdir' : '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-gsistat-plotting/stat_tank/v16x_sept_ctl/'
+setdict.append({ 'name' : 'RAOB-anl', 
+                 'var' : 'uv', 
+                 'it' : 3, 
+                 'use' : 'asm', 
+                 'typ' : 220, 
+                 'styp' : None, 
+                 'statdir' : '<full-path-to-gsistat-files>/'
                })
 cycles=get_datelist('2020090800', '2020093018')
 profs_filename = 'gsistat_profs_RAOBS.png'
