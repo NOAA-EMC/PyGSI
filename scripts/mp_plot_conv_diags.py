@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import yaml
 from multiprocessing import Pool
+from functools import partial
 from datetime import datetime
 from pyGSI.diags import Conventional
 from pyGSI.plot_diags import plot_map, plot_histogram
@@ -9,14 +10,15 @@ from pyGSI.plot_diags import plot_map, plot_histogram
 start_time = datetime.now()
 
 
-def _uv_plotting(df, lats, lons, diag_type, analysis_use,
+def _uv_plotting(df, lats, lons, data_type, analysis_use, bias_correction,
                  metadata, plot_type, outdir):
 
+    bias = 'adjusted' if bias_correction else 'unadjusted'
     # Creates column name fo u and v data
-    u = f'u_{diag_type}' if diag_type in ['observation'] \
-        else f'u_{diag_type}_adjusted'
-    v = f'v_{diag_type}' if diag_type in ['observation'] \
-        else f'v_{diag_type}_adjusted'
+    u = f'u_{data_type}' if data_type in ['observation'] \
+        else f'u_{data_type}_{bias}'
+    v = f'v_{data_type}' if data_type in ['observation'] \
+        else f'v_{data_type}_{bias}'
 
     if analysis_use:
         data = {
@@ -45,23 +47,23 @@ def _uv_plotting(df, lats, lons, diag_type, analysis_use,
             plot_map(lats, lons, data[key], metadata, outdir)
 
 
-def plotting(conv_config):
+def plotting(conv_config, diag_file, data_type, plot_type, outdir):
 
-    diagfile = conv_config['conventional input']['path'][0]
-    diag_type = conv_config['conventional input']['data type'][0].lower()
-    obsid = conv_config['conventional input']['observation id']
-    analysis_use = conv_config['conventional input']['analysis use'][0]
-    plot_type = conv_config['conventional input']['plot type']
-    outdir = conv_config['outdir']
+    obsid = conv_config['observation id']
+    obsubtype = conv_config['observation subtype']
+    analysis_use = conv_config['analysis use'][0]
+    bias_correction = conv_config['bias correction'][0]
 
-    diag = Conventional(diagfile)
+    diag = Conventional(diag_file)
 
-    df = diag.get_data(obsid=obsid, analysis_use=analysis_use)
+    df = diag.get_data(obsid=obsid, subtype=obsubtype,
+                       analysis_use=analysis_use)
     metadata = diag.metadata
-    metadata['Diag Type'] = diag_type
+    metadata['Diag Type'] = data_type
 
-    column = f'{diag_type}' if diag_type in ['observation'] \
-        else f'{diag_type}_adjusted'
+    bias = 'adjusted' if bias_correction else 'unadjusted'
+    column = f'{data_type}' if data_type in ['observation'] \
+        else f'{data_type}_{bias}'
 
     if analysis_use:
         lats = {
@@ -76,7 +78,7 @@ def plotting(conv_config):
         }
 
         if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
-            _uv_plotting(df, lats, lons, diag_type, analysis_use,
+            _uv_plotting(df, lats, lons, data_type, analysis_use,
                          metadata, plot_type, outdir)
 
         else:
@@ -96,8 +98,8 @@ def plotting(conv_config):
         lons = df['longitude'].to_numpy()
 
         if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
-            _uv_plotting(df, lats, lons, diag_type, analysis_use,
-                         metadata, plot_type, outdir)
+            _uv_plotting(df, lats, lons, data_type, analysis_use,
+                         bias_correction, metadata, plot_type, outdir)
 
         else:
             data = df[column].to_numpy()
@@ -107,39 +109,46 @@ def plotting(conv_config):
             if np.isin('spatial', plot_type):
                 plot_map(lats, lons, data, metadata, outdir)
 
-###############################################
 
+if __name__ == '__main__':
 
-# Parse command line
-ap = argparse.ArgumentParser()
-ap.add_argument("-n", "--nprocs",
-                help="Number of tasks/processors for multiprocessing")
-ap.add_argument("-y", "--yaml",
-                help="Path to yaml file with diag data")
-ap.add_argument("-o", "--outdir",
-                help="Out directory where files will be saved")
+    # Parse command line
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-n", "--nprocs",
+                    help="Number of tasks/processors for multiprocessing")
+    ap.add_argument("-y", "--yaml",
+                    help="Path to yaml file with diag data")
+    ap.add_argument("-o", "--outdir",
+                    help="Out directory where files will be saved")
 
-myargs = ap.parse_args()
+    myargs = ap.parse_args()
 
-if myargs.nprocs:
-    nprocs = int(myargs.nprocs)
-else:
-    nprocs = 1
+    if myargs.nprocs:
+        nprocs = int(myargs.nprocs)
+    else:
+        nprocs = 1
 
-input_yaml = myargs.yaml
-outdir = myargs.outdir
+    input_yaml = myargs.yaml
+    outdir = myargs.outdir
 
-with open(input_yaml, 'r') as file:
-    parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
+    with open(input_yaml, 'r') as file:
+        parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
+    work = parsed_yaml_file['diagnostic']['conventional']
+    data_type = parsed_yaml_file['diagnostic']['data type']
+    data_path = parsed_yaml_file['diagnostic']['path']
+    try:
+        plot_type = parsed_yaml_file['diagnostic']['plot types']
+    except KeyError:
+        raise Exception("'plot types' key not included in input yaml. "
+                        "Please add key 'plot types' to yaml and list "
+                        "of the plot types you would like to create. "
+                        "i.e. ['histogram', 'spatial']")
 
-work = (parsed_yaml_file['diagnostic'])
+    p = Pool(processes=nprocs)
+    p.map(partial(plotting, diag_file=data_path,
+                  data_type=data_type,
+                  plot_type=plot_type,
+                  outdir=outdir), work)
 
-# Add outdir to yaml dict
-for w in work:
-    w['outdir'] = outdir
-
-p = Pool(processes=nprocs)
-p.map(plotting, work)
-
-print(datetime.now() - start_time)
+    print(datetime.now() - start_time)
