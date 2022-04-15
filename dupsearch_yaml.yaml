@@ -1,0 +1,8 @@
+diag:
+     filedir: '/Users/bhoover/Desktop/IMSG/PROJECTS/gdas-diag-plotting/diag_tank/v16x_sept_g17/'
+     obvar:   'uv'
+     type:    'ges'
+     date:    '2020091218'
+target:
+     typ:     233
+     styp:    None
