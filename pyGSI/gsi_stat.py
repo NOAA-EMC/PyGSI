@@ -54,11 +54,11 @@ class GSIstat(object):
         if name in self._cache:
             df = self._cache[name]
             return df
-        if name in ['ps','pw']:
+        if name in ['ps', 'pw']:
             df = self._get_ps_tpw(name)
         elif name in ['oz']:
             df = self._get_ozone()
-        elif name in ['uv', 't', 'q','gps','rw']:
+        elif name in ['uv', 't', 'q', 'gps', 'rw']:
             df = self._get_conv(name)
         elif name in ['rad']:
             df = self._get_radiance()
@@ -202,9 +202,9 @@ class GSIstat(object):
         return df
 
     # Surface pressurei or total precip water Fit
-    def _get_ps_tpw(self,name):
+    def _get_ps_tpw(self, name):
         """
-        Search for single level obs - so sfc p and tpw 
+        Search for single level obs - so sfc p and tpw
         """
 
         header = None
@@ -240,7 +240,7 @@ class GSIstat(object):
     # Conventional Observation Fits
     def _get_conv(self, name):
         """
-        Search for uv, t, q, or rw 
+        Search for uv, t, q, or rw
         """
 
         # Get pressure levels
