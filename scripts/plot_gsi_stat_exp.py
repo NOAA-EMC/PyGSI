@@ -18,7 +18,7 @@ levels = [1000, 900, 800, 600, 400, 300, 250, 200, 150, 100, 50, 0]
 
 def gen_figure(datadict, datatypestr, stattype, labels, sdate, edate, save, plotdir):
     # Line/marker colors for experiments ('k' is the first)
-    mc = ['k', 'r', 'g', 'b', 'm', 'c', 'y']
+    mc = ['black', 'red', 'blue', 'green', 'orange', 'magenta', 'yellow']
 
     # set figure params one time only.
     rcParams['figure.subplot.left'] = 0.1
