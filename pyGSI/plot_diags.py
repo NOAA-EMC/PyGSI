@@ -238,13 +238,13 @@ def _no_data_histogram(data, metadata, outdir):
     'Single Observation' depending on length of data.
     """
     myplot = CreatePlot()
-    
+
     # Titles
     labels = _get_labels(metadata)
     title = labels['title']
     date_title = labels['date title']
     myplot.add_title(label=f"{title}\n{date_title}",
-                    loc='center', fontsize=12)
+                     loc='center', fontsize=12)
 
     if len(data) == 0:
         text = 'No Data'
@@ -272,7 +272,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     """
     Function to create histogram plot.
     """
-    
+
     # Grab variable specs
     spec_variable = _varspecs_name(metadata['Variable'])
 
@@ -287,37 +287,37 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     if len(data) <= 1:
         _no_data_histogram(data, metadata, outdir)
         return
-    
+
     # Get Stats
     stats_dict = _calculate_stats(data)
 
     # Get bins
     bins = _get_bins(eval_type, stats_dict)
-    
+
     # Create histogram plot object
     histobj = Histogram(data)
     histobj.bins = bins
     histobj.color = color
-    
+
     plot_layers = [histobj]
-    
+
     if eval_type == 'diff' and plot_zero:
         zeroline = VerticalLine(0)
         zeroline.color = 'k'
         zeroline.linestyle = 'dashed'
         zeroline.linewidth = 1.5
-        
+
         plot_layers.append(zeroline)
-        
+
     if plot_mean:
         meanline = VerticalLine(0)
         meanline.color = 'red'
         meanline.linestyle = 'solid'
         meanline.linewidth = 1
         meanline.label = 'Mean'
-        
+
         plot_layers.append(meanline)
-        
+
     myplot = CreatePlot()
     myplot.plot_layers = plot_layers
 
@@ -326,15 +326,15 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     if grid:
         myplot.add_grid()
-    
+
     # Titles
     labels = _get_labels(metadata)
 
     title = labels['title'] if title is None else title
     date_title = labels['date title'] if date_title is None else date_title
     myplot.add_title(label=f"{title}\n{date_title}",
-                    loc='center', fontsize=12)
-    
+                     loc='center', fontsize=12)
+
     # X and Y labels
     xlabel = f"{varspecs.name.capitalize()} ({varspecs.units})" \
         if xlabel is None else xlabel
@@ -342,7 +342,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     myplot.add_xlabel(xlabel, fontsize=12)
     myplot.add_ylabel(ylabel, fontsize=12)
-    
+
     if annotate_stats:
         # Make stats dict values str because when annotating,
         # they refuse to round??
@@ -351,7 +351,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
             stats_dict[key] = val
 
         myplot.add_stats_dict(stats_dict, yloc=-0.15, fontsize=12)
-        
+
     fig = CreateFigure()
     fig.plot_list = [myplot]
     fig.create_figure()
@@ -372,7 +372,7 @@ def _no_data_map(domain, projection, metadata, outdir):
     mymap.projection = projection
     mymap.domain = domain
     mymap.add_map_features(['coastline'])
-    
+
     # Titles
     labels = _get_labels(metadata)
     title = labels['title']
@@ -380,9 +380,9 @@ def _no_data_map(domain, projection, metadata, outdir):
 
     mymap.add_title(label=f"{title}\n{date_title}",
                     loc='center', fontsize=12)
-    
+
     domain = Domain(domain)
-    
+
     # Get center of map location
     lon1 = domain.extent[0]+180
     lon2 = domain.extent[1]+180
@@ -498,7 +498,7 @@ def _create_map_plot(lats, lons, data, metadata,
     fig.save_figure(outdir + f"{labels['save file']}_map.png",
                     bbox_inches='tight', pad_inches=0.1)
     fig.close_figure()
-    
+
     return
 
 
