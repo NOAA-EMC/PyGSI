@@ -6,7 +6,7 @@ from textwrap import TextWrapper
 import matplotlib.pyplot as plt
 from emcpy.plots.plots import Scatter, Histogram, VerticalLine
 from emcpy.plots.map_plots import MapScatter
-from emcpy.plots import CreateMap, CreatePlot, VariableSpecs
+from emcpy.plots import CreateFigure, CreatePlot, VariableSpecs
 from emcpy.plots.map_tools import Domain, MapProjection
 import matplotlib
 matplotlib.use('agg')
@@ -232,32 +232,35 @@ def _varspecs_name(variable):
     return spec_variable
 
 
-def _no_data_histogram(data, plotobj, metadata, outdir):
+def _no_data_histogram(data, metadata, outdir):
     """
     Creates histogram with either 'No Data' or
     'Single Observation' depending on length of data.
     """
+    myplot = CreatePlot()
+    
     # Titles
     labels = _get_labels(metadata)
-    plotobj.add_title(labels['title'], loc='left', fontsize=12)
-
-    plotobj.add_title(label=labels['date title'],
-                      loc='right', fontsize=12,
-                      fontweight='semibold')
+    title = labels['title']
+    date_title = labels['date title']
+    myplot.add_title(label=f"{title}\n{date_title}",
+                    loc='center', fontsize=12)
 
     if len(data) == 0:
         text = 'No Data'
     else:
         text = 'Single\nObservation'
 
-    plotobj.add_text(0.5, 0.5, text, fontsize=32,
-                     alpha=0.6, horizontalalignment='center')
+    myplot.add_text(0.5, 0.5, text, fontsize=32,
+                    alpha=0.6, horizontalalignment='center')
 
     # Return figure
-    fig = plotobj.return_figure()
-    plt.savefig(outdir + f"{labels['save file']}_hist.png",
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close('all')
+    fig = CreateFigure()
+    fig.plot_list = [myplot]
+    fig.create_figure()
+    fig.save_figure(outdir + f"{labels['save file']}_hist.png",
+                    bbox_inches='tight', pad_inches=0.1)
+    fig.close_figure()
 
     return
 
@@ -269,9 +272,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     """
     Function to create histogram plot.
     """
-    # Create plot object
-    myplot = CreatePlot()
-
+    
     # Grab variable specs
     spec_variable = _varspecs_name(metadata['Variable'])
 
@@ -284,57 +285,56 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     # Plot special histogram for if len of data is 0 or 1
     if len(data) <= 1:
-        _no_data_histogram(data, myplot, metadata, outdir)
-
+        _no_data_histogram(data, metadata, outdir)
         return
-
+    
     # Get Stats
     stats_dict = _calculate_stats(data)
 
     # Get bins
     bins = _get_bins(eval_type, stats_dict)
-
+    
     # Create histogram plot object
     histobj = Histogram(data)
     histobj.bins = bins
     histobj.color = color
-
-    myplot.draw_data([histobj])
-
+    
+    plot_layers = [histobj]
+    
     if eval_type == 'diff' and plot_zero:
         zeroline = VerticalLine(0)
         zeroline.color = 'k'
         zeroline.linestyle = 'dashed'
         zeroline.linewidth = 1.5
-
-        myplot.draw_data([zeroline])
-
+        
+        plot_layers.append(zeroline)
+        
     if plot_mean:
         meanline = VerticalLine(0)
         meanline.color = 'red'
         meanline.linestyle = 'solid'
         meanline.linewidth = 1
         meanline.label = 'Mean'
-
-        myplot.draw_data([meanline])
+        
+        plot_layers.append(meanline)
+        
+    myplot = CreatePlot()
+    myplot.plot_layers = plot_layers
 
     if legend:
         myplot.add_legend()
 
     if grid:
         myplot.add_grid()
-
+    
     # Titles
     labels = _get_labels(metadata)
 
     title = labels['title'] if title is None else title
-    myplot.add_title(title, loc='left', fontsize=12)
-
     date_title = labels['date title'] if date_title is None else date_title
-    myplot.add_title(label=date_title,
-                     loc='right', fontsize=12,
-                     fontweight='semibold')
-
+    myplot.add_title(label=f"{title}\n{date_title}",
+                    loc='center', fontsize=12)
+    
     # X and Y labels
     xlabel = f"{varspecs.name.capitalize()} ({varspecs.units})" \
         if xlabel is None else xlabel
@@ -342,7 +342,7 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
 
     myplot.add_xlabel(xlabel, fontsize=12)
     myplot.add_ylabel(ylabel, fontsize=12)
-
+    
     if annotate_stats:
         # Make stats dict values str because when annotating,
         # they refuse to round??
@@ -351,29 +351,38 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
             stats_dict[key] = val
 
         myplot.add_stats_dict(stats_dict, yloc=-0.15, fontsize=12)
-
-    # Return figure
-    fig = myplot.return_figure()
-    plt.savefig(outdir + f"{labels['save file']}_hist.png",
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close('all')
+        
+    fig = CreateFigure()
+    fig.plot_list = [myplot]
+    fig.create_figure()
+    fig.save_figure(outdir + f"{labels['save file']}_hist.png",
+                    bbox_inches='tight', pad_inches=0.1)
+    fig.close_figure()
 
     return
 
 
-def _no_data_map(plotmap, domain, metadata, outdir):
+def _no_data_map(domain, projection, metadata, outdir):
     """
     Creates a plot with 'No Data' across the map if
     there is no data.
     """
+
+    mymap = CreatePlot()
+    mymap.projection = projection
+    mymap.domain = domain
+    mymap.add_map_features(['coastline'])
+    
     # Titles
     labels = _get_labels(metadata)
-    plotmap.add_title(labels['title'], loc='left', fontsize=12)
+    title = labels['title']
+    date_title = labels['date title']
 
-    plotmap.add_title(label=labels['date title'],
-                      loc='right', fontsize=12,
-                      fontweight='semibold')
-
+    mymap.add_title(label=f"{title}\n{date_title}",
+                    loc='center', fontsize=12)
+    
+    domain = Domain(domain)
+    
     # Get center of map location
     lon1 = domain.extent[0]+180
     lon2 = domain.extent[1]+180
@@ -384,14 +393,15 @@ def _no_data_map(plotmap, domain, metadata, outdir):
     yloc = (lat2 - (lat2-lat1)/2) - 90
 
     # Plot text
-    plotmap.add_text(xloc, yloc, 'No Data', fontsize=32,
-                     alpha=0.6, horizontalalignment='center')
+    mymap.add_text(xloc, yloc, 'No Data', fontsize=32,
+                   alpha=0.6, horizontalalignment='center')
 
-    # Return figure
-    fig = plotmap.return_figure()
-    plt.savefig(outdir + f"{labels['save file']}_map.png",
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close('all')
+    fig = CreateFigure()
+    fig.plot_list = [mymap]
+    fig.create_figure()
+    fig.save_figure(outdir + f"{labels['save file']}_map.png",
+                    bbox_inches='tight', pad_inches=0.1)
+    fig.close_figure()
 
     return
 
@@ -401,16 +411,6 @@ def _create_map_plot(lats, lons, data, metadata,
                      title, date_title, xlabel,
                      ylabel, annotate_stats,
                      colorbar, cbar_label, grid):
-    """
-    Function to create map plot.
-    """
-
-    # Create map object
-    mymap = CreateMap(figsize=(12, 8),
-                      domain=Domain(domain),
-                      proj_obj=MapProjection(projection))
-    # Add coastlines
-    mymap.add_features(['coastlines'])
 
     # Set evaluation type to either diff or magnitude
     eval_type = 'diff' if metadata['Diag Type'] in ['omf', 'oma'] \
@@ -423,8 +423,9 @@ def _create_map_plot(lats, lons, data, metadata,
                              eval_type=eval_type)
     metadata['Variable'] = varspecs.name
 
+    # If no data, plot empty map
     if len(data) == 0:
-        _no_data_map(mymap, Domain(domain), metadata, outdir)
+        _no_data_map(domain, projection, metadata, outdir)
         return
 
     # Generate plot object
@@ -436,7 +437,11 @@ def _create_map_plot(lats, lons, data, metadata,
     plotobj.vmin = varspecs.vmin
     plotobj.vmax = varspecs.vmax
 
-    mymap.draw_data([plotobj])
+    mymap = CreatePlot()
+    mymap.plot_layers = [plotobj]
+    mymap.projection = projection
+    mymap.domain = domain
+    mymap.add_map_features(['coastline'])
 
     # Add features to the plot
     # Colorbar
@@ -445,18 +450,15 @@ def _create_map_plot(lats, lons, data, metadata,
         cbar_label = label if cbar_label is None else cbar_label
 
         mymap.add_colorbar(label=cbar_label,
-                           label_fontsize=12,
+                           fontsize=12,
                            extend='both')
     # Titles
     labels = _get_labels(metadata)
 
     title = labels['title'] if title is None else title
-    mymap.add_title(title, loc='left', fontsize=12)
-
     date_title = labels['date title'] if date_title is None else date_title
-    mymap.add_title(label=date_title,
-                    loc='right', fontsize=12,
-                    fontweight='semibold')
+    mymap.add_title(label=f"{title}\n{date_title}",
+                    loc='center', fontsize=12)
 
     # X and Y labels
     xlabel = "Longitude" if xlabel is None else xlabel
@@ -477,7 +479,7 @@ def _create_map_plot(lats, lons, data, metadata,
         # Each domain changes so need to set
         # values for each domain
         yloc_dict = {
-            'global': -0.12,
+            'global': -0.2,
             'north america': -0.10,
             'conus': -0.11,
             'europe': -0.095
@@ -490,12 +492,13 @@ def _create_map_plot(lats, lons, data, metadata,
     if grid:
         mymap.add_grid()
 
-    # Return figure
-    fig = mymap.return_figure()
-    plt.savefig(outdir + f"{labels['save file']}_map.png",
-                bbox_inches='tight', pad_inches=0.1)
-    plt.close('all')
-
+    fig = CreateFigure()
+    fig.plot_list = [mymap]
+    fig.create_figure()
+    fig.save_figure(outdir + f"{labels['save file']}_map.png",
+                    bbox_inches='tight', pad_inches=0.1)
+    fig.close_figure()
+    
     return
 
 
