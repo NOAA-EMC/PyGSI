@@ -79,7 +79,7 @@ def plotting(conv_config, diag_file, data_type, plot_type, outdir):
 
         if metadata['Obs Type'] == 'conv' and metadata['Variable'] == 'uv':
             _uv_plotting(df, lats, lons, data_type, analysis_use,
-                         metadata, plot_type, outdir)
+                         bias_correction, metadata, plot_type, outdir)
 
         else:
             data = {
