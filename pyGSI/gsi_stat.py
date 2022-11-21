@@ -54,12 +54,11 @@ class GSIstat(object):
         if name in self._cache:
             df = self._cache[name]
             return df
-
-        if name in ['ps']:
-            df = self._get_ps()
+        if name in ['ps', 'pw']:
+            df = self._get_ps_tpw(name)
         elif name in ['oz']:
             df = self._get_ozone()
-        elif name in ['uv', 't', 'q', 'gps']:
+        elif name in ['uv', 't', 'q', 'gps', 'rw']:
             df = self._get_conv(name)
         elif name in ['rad']:
             df = self._get_radiance()
@@ -202,10 +201,10 @@ class GSIstat(object):
 
         return df
 
-    # Surface pressure Fit
-    def _get_ps(self):
+    # Surface pressurei or total precip water Fit
+    def _get_ps_tpw(self, name):
         """
-        Search for surface pressure
+        Search for single level obs - so sfc p and tpw
         """
 
         header = None
@@ -217,11 +216,11 @@ class GSIstat(object):
                 break
 
         if header is None:
-            print('No matching header for PS')
+            print(f'No matching header for {name}')
             return None
 
         tmp = []
-        pattern = r' o-g\s+\d{2}\s+ps\s'
+        pattern = r' o-g\s+(\d\d)\s+%s\s' % name
         for line in self._lines:
             if re.match(pattern, line):
                 # don't add monitored or rejected data
@@ -241,7 +240,7 @@ class GSIstat(object):
     # Conventional Observation Fits
     def _get_conv(self, name):
         """
-        Search for uv, t, q, or gps
+        Search for uv, t, q, or rw
         """
 
         # Get pressure levels
@@ -274,7 +273,7 @@ class GSIstat(object):
             print(f'No matching pbot for {name}')
             sys.exit(1)
         if header is None:
-            print('No matching header for PS')
+            print(f'No matching header for {name}')
             sys.exit(1)
         tmp = []
         pattern = r' o-g\s+(\d\d)\s+%s\s' % name
