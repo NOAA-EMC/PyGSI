@@ -182,12 +182,20 @@ def collect_statistics(setdict):
             counts[setname][cycle] = {}
             biases[setname][cycle] = {}
             inputfile = os.path.join(statdir, 'gsistat.gdas.'+cycle)
-            try:
+            # Test if inputfile exists, if not, set all values 
+            # for rmses/counts/biases to None for this setname
+            # and cycle for both 'lev' and 'col' values
+            if os.path.exists(inputfile):
                 gdas = GSIstat(inputfile, cycle)
-            except FileNotFoundError:
-                cycles.remove(cycle)
-                raise FileNotFoundError(f'Unable to find {inputfile}\
-                                        for {cycle}')
+            else:
+                rmses[setname][cycle]['lev'] = None
+                counts[setname][cycle]['lev'] = None
+                biases[setname][cycle]['lev'] = None
+                rmses[setname][cycle]['col'] = None
+                counts[setname][cycle]['col'] = None
+                biases[setname][cycle]['col'] = None
+                # Skip rest of this for-loop entry
+                continue
             # statistics are drawn for a single variable
             var = sd['var']
             # all other filters (it,use,typ,styp) could contain multiple
@@ -341,7 +349,12 @@ def aggregate_figure_data(rmses, biases, counts, levs):
         n_trace = np.zeros((ndate, ))
         for i in range(ndate):
             date = dates[i]
-            n_ele = np.size(rmses[setname][date]['col'].values)
+            # If rmses[setname][date]['col] is NoneType, set n_ele=0
+            if type(rmses[setname][date]['col'])==type(None):
+                n_ele=0
+            # If not NoneType, define n_ele by values in dataframe
+            else:
+                n_ele = np.size(rmses[setname][date]['col'].values)
             for j in range(n_ele):
                 # Aggregate rms, bias, and count for full-column values at each
                 # time to define traces
