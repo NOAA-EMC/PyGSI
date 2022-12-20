@@ -1,24 +1,58 @@
-set1:
-     name:    'MDCRS-OMB-t'
-     var:     't'
-     it:      1
-     use:     'asm'
-     typ:     133
-     styp:    None
-     statdir: /full/path/to/gsistat/files/
-set2:
-     name:    'MDCRS-OMA-t'
-     var:     't'
-     it:      3
-     use:     'asm'
-     typ:     133
-     styp:    None
-     statdir: /full/path/to/gsistat/files/
-figures:
-     pname:  'gsistat_profs.png'
-     tname:  'gsistat_trace.png'
-     tskip:  8
-dates:
-     dt_beg: '2020090800'
-     dt_end: '2020093018'
-     hrs: 6
+fig_no_fill:
+     set1:
+          name:    'CTL-G17'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0271'
+          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
+     set2:
+          name:    'EXP-G18'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0272'
+          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
+     figopts:
+          pname:  'gsistat_profs_no_fill.png'
+          tname:  None
+          tskip:  16
+     dates:
+          dt_beg: '2022092406'
+          dt_end: '2022111418'
+          hrs: 6
+fig_w_fill:
+     set1:
+          name:    'CTL-G17'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0271'
+          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
+     set2:
+          name:    'EXP-G18'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0272'
+          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
+     set3:
+          name:    'EXP-G17 (fill-in)'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0271'
+          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
+     figopts:
+          pname:  None
+          tname:  'gsistat_trace_w_fill.png'
+          tskip:  16
+     dates:
+          dt_beg: '2022092406'
+          dt_end: '2022111418'
+          hrs: 6

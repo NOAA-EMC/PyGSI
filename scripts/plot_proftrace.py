@@ -2,24 +2,60 @@
 #
 # YAML FILE CONTENTS
 #
-# yaml file contents come in three types, based on the key name:
+# yaml file contents come in several types, based on the key name:
 #
-# figures: Defines settings for profile and trace figures
-#    pname: Name of profile figure-file
-#    tname: Name of trace figure-file
+# fig_card_1:
+#      setdict1:
+#           <options>
+#      setdict2:
+#           <options>
+#      ...
+#      figopts:
+#           <options>
+#      dates:
+#           <options>
+# fig_card_2:
+#      setdict1:
+#           <options>
+#      setdict2:
+#           <options>
+#      ...
+#      figopts:
+#           <options>
+#      dates:
+#           <options>
+#
+# ...
+#
+# The top-level of keys are FIGURE CARDS, each of which will contain all
+# settings necessary to product a single profile and trace figure set. The
+# script will iterate through each figure card to produce a total set of
+# figures. You can set figure cards to produce profile and trace figures
+# for, for example, each ob-type you are interested in. This keeps the user
+# from having to edit a YAML multiple times to produce figures across multiple
+# settings options.
+#
+# Within each FIGURE CARD, you will find three kinds of keys:
+#
+# figopts: Defines setting options for profile and trace figures for figure card
+#    <options>:
+#    pname: Name of profile figure-file (None, if not plotting figure)
+#    tname: Name of trace figure-file (None, if not plotting figure)
 #    tskip: Number of ticks that are skipped when plotting tick-labels on
 #           trace-figure (should be large enough to keep labels from
 #           stepping on each other)
 #
 # dates: Defines settings for time-period over which statistics are
-#        collected and plotted
+#        collected and plotted for figure card
+#    <options>
 #    dt_beg: Beginning date of time-series (%Y%m%d%H format)
 #    dt_end: Ending date of time-series (%Y%m%d%H format)
 #    hrs: Number of hours between each time-period between dt_beg and
 #         dt_end (usually 6 for collecting every cycle)
 #
 # <any other key name>: Each member of the plot is provided as a separate
-# dictionary with the following keys:
+# SET DICTIONARY with the following keys:
+#    <options>:
 #    name: Name of member, used in the legend of the plot to distinguish
 #          lines or bars belonging to this set
 #    var: Variable being extracted ('uv', 't', or 'q')
@@ -67,18 +103,35 @@ def get_datelist(startdate, enddate, hrs):
         mydate = datetime.datetime.strftime(nextdate, '%Y%m%d%H')
     return datelist
 
-
-def parse_yaml(yaml_file):
+def parse_cards(yaml_file):
     import yaml
-    # YAML entries come in three types:
+    # Parses top-level keys of YAML file (figure cards), returns list of keys
+    with open(yaml_file, 'r') as stream:
+        try:
+            parsed_yaml = yaml.safe_load(stream)
+        except yaml.YAMLError as YAMLError:
+            parsed_yaml = None
+            print(f'YAMLError: {YAMLError}')
+        if parsed_yaml is not None:
+            # Extract figure cards
+            try:
+                figureCards = list(parsed_yaml.keys())
+            except KeyError as MissingCardsError:
+                figureCards = None
+                print(f'MissingCardsError: {MissingCardsError}')
+            return figureCards
+
+def parse_yaml(yaml_file,card):
+    import yaml
+    # YAML entries come in three types per FIGURE CARD provided:
     # key='dates' : provides beginning (dt_beg)/ending (dt_end) dates
     #               for get_datelist in %Y%m%d%H format, and
     #               timedelta (hrs)
-    # key='figures' : provides figure filenames for profile figure
+    # key='figopts' : provides figure filenames for profile figure
     #                 (pname) and trace figure (tname), and number of
     #                 times to skip on tick-labels (tskip)
-    # any other key: provides filtering dictionaries for a dataset to
-    #                be plotted
+    # any other key: provides SET DICTIONARY for a dataset to
+    #                be plotted (data filters, data name, filedir)
     with open(yaml_file, 'r') as stream:
         try:
             parsed_yaml = yaml.safe_load(stream)
@@ -88,29 +141,31 @@ def parse_yaml(yaml_file):
         if parsed_yaml is not None:
             # Extract 'dates' data
             try:
-                dt_beg = parsed_yaml['dates']['dt_beg']
-                dt_end = parsed_yaml['dates']['dt_end']
-                hrs = parsed_yaml['dates']['hrs']
+                dt_beg = parsed_yaml[card]['dates']['dt_beg']
+                dt_end = parsed_yaml[card]['dates']['dt_end']
+                hrs = parsed_yaml[card]['dates']['hrs']
             except KeyError as MissingDatesError:
                 dt_beg = None
                 dt_end = None
                 hrs = None
                 print(f'MissingDatesError: {MissingDatesError}')
-            # Extract 'figures' data
+            # Extract 'figopts' data
             try:
-                pname = parsed_yaml['figures']['pname']
-                tname = parsed_yaml['figures']['tname']
-                tskip = parsed_yaml['figures']['tskip']
+                pname = None if parsed_yaml[card]['figopts']['pname']\
+                 == 'None' else parsed_yaml[card]['figopts']['pname']
+                tname = None if parsed_yaml[card]['figopts']['tname']\
+                 == 'None' else parsed_yaml[card]['figopts']['tname']
+                tskip = parsed_yaml[card]['figopts']['tskip']
             except KeyError as MissingFiguresError:
                 pname = None
                 tname = None
                 tskip = None
-                print(f'MissingFiguresError: {MissingFiguresError}')
+                print(f'MissingFigoptsError: {MissingFigoptsError}')
             # Extract all other keys as filtering dictionaries, store
             # in setdict list
             setdict = []
-            fdicts = {x: parsed_yaml[x] for x in parsed_yaml
-                      if x not in {'dates', 'figures'}}
+            fdicts = {x: parsed_yaml[card][x] for x in parsed_yaml[card]
+                      if x not in {'dates', 'figopts'}}
             fkeys = ['it', 'use', 'typ', 'styp']
             # Check filter keys for 'None' and change to None as
             # appropriate before storing
@@ -667,51 +722,61 @@ if __name__ == "__main__":
     ######################################################################
     import matplotlib.pyplot as plt
     #
-    # Parse yaml file and define settings for plotting
+    # Parse figure cards from yaml file
     #
-    (dt_beg, dt_end, hrs, pname, tname, tskip,
-     setdict) = parse_yaml('proftrace_yaml.yaml')
-    cycles = get_datelist(dt_beg, dt_end, hrs)
-    profs_filename = pname
-    trace_filename = tname
-    #
-    ######################################################################
-    #
-    # Collect rmse, bias, and ob-count statistics for each data (sub)set
-    # in setdict
-    #
-    # If a gsistat file is missing for a given cycle, it raises a
-    # FileNotFoundError and the cycle is skipped, not appearing at all in
-    # the time-series
-    #
-    # If a gsistat file exists for a given cycle but no data for a data
-    # (sub)set is present, the rmse, bias, and ob-count are set to zero
-    # but the cycle is not skipped. Statistics with zero ob-count are
-    # reassigned to NaN later.
-    #
-    rmses, biases, counts, levels = collect_statistics(setdict)
-    ######################################################################
-    #
-    # Generate plotting data by aggregating rmse, bias, and count data
-    # across times (for profiles), or aggregate full-column data (for
-    # traces)
-    #
-    (rmse_profs, rmse_trace, bias_profs, bias_trace,
-     nobs_profs, nobs_trace, levl_profs, date_trace,
-     name_list) = aggregate_figure_data(rmses, biases, counts, levels)
-    ######################################################################
-    #
-    # Generate profile plot
-    #
-    fig_prof = plot_stat_profiles(rmse_profs, bias_profs, nobs_profs,
-                                  name_list, levl_profs)
-    plt.ioff()
-    fig_prof.savefig(profs_filename, bbox_inches='tight', facecolor='w')
-    #
-    # Generate trace plot
-    #
-    fig_trace = plot_stat_traces(rmse_trace, bias_trace, nobs_trace,
-                                 name_list, date_trace, tskip=tskip)
-    plt.ioff()
-    fig_trace.savefig(trace_filename, bbox_inches='tight', facecolor='w')
-    ######################################################################
+    yamlFile = 'proftrace_yaml.yaml'
+    figCards = parse_cards(yamlFile)
+    if figCards is not None:
+        for card in figCards:
+            print('Processing Figure Card: ',card)
+            # Parse yaml file for card and define settings for plotting
+            (dt_beg, dt_end, hrs, pname, tname, tskip,
+             setdict) = parse_yaml(yamlFile,card)
+            cycles = get_datelist(dt_beg, dt_end, hrs)
+            profs_filename = pname
+            trace_filename = tname
+            #
+            ##############################################################
+            #
+            # Collect rmse, bias, and ob-count statistics for each data 
+            # (sub)set in setdict
+            #
+            # If a gsistat file is missing for a given cycle, it raises a
+            # FileNotFoundError and the cycle is skipped, not appearing at
+            # all in the time-series
+            #
+            # If a gsistat file exists for a given cycle but no data for a
+            # data (sub)set is present, the rmse, bias, and ob-count are
+            # set to zero but the cycle is not skipped. Statistics with
+            # zero ob-count are reassigned to NaN later.
+            #
+            rmses, biases, counts, levels = collect_statistics(setdict)
+            ##############################################################
+            #
+            # Generate plotting data by aggregating rmse, bias, and count
+            # data across times (for profiles), or aggregate full-column
+            # data (for traces)
+            #
+            (rmse_profs, rmse_trace, bias_profs, bias_trace,
+             nobs_profs, nobs_trace, levl_profs, date_trace,
+             name_list) = aggregate_figure_data(rmses, biases, counts, levels)
+            ##############################################################
+            #
+            # Generate profile plot
+            #
+            if profs_filename is not None:
+                fig_prof = plot_stat_profiles(rmse_profs, bias_profs, nobs_profs,
+                                              name_list, levl_profs)
+                plt.ioff()
+                fig_prof.savefig(profs_filename, bbox_inches='tight', facecolor='w')
+            #
+            # Generate trace plot
+            #
+            if trace_filename is not None:
+                fig_trace = plot_stat_traces(rmse_trace, bias_trace, nobs_trace,
+                                             name_list, date_trace, tskip=tskip)
+                plt.ioff()
+                fig_trace.savefig(trace_filename, bbox_inches='tight', facecolor='w')
+            ##############################################################
+    else:
+        print('No Figure Cards Found, Exiting...')
