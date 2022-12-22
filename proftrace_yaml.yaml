@@ -1,6 +1,6 @@
-fig_no_fill:
+LWIR_figs:
      set1:
-          name:    'CTL-G17'
+          name:    'LWIR-G17'
           var:     'uv'
           it:      1
           use:     'asm'
@@ -8,7 +8,7 @@ fig_no_fill:
           styp:    '0271'
           statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
      set2:
-          name:    'EXP-G18'
+          name:    'LWIR-G18'
           var:     'uv'
           it:      1
           use:     'asm'
@@ -16,43 +16,40 @@ fig_no_fill:
           styp:    '0272'
           statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
      figopts:
-          pname:  'gsistat_profs_no_fill.png'
-          tname:  None
+          errProName:  gsistat_errprofs.png
+          errTraName:  gsistat_errtrace.png
+          penProName:  gsistat_penprofs.png
+          penTraName:  gsistat_pentrace.png
           tskip:  16
      dates:
-          dt_beg: '2022092406'
-          dt_end: '2022111418'
+          dt_beg: '2022100100'
+          dt_end: '2022112018'
           hrs: 6
-fig_w_fill:
+WVct_figs:
      set1:
-          name:    'CTL-G17'
+          name:    'WVct-G17'
           var:     'uv'
           it:      1
           use:     'asm'
-          typ:     245
+          typ:     246
           styp:    '0271'
           statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
      set2:
-          name:    'EXP-G18'
+          name:    'WVct-G18'
           var:     'uv'
           it:      1
           use:     'asm'
-          typ:     245
+          typ:     246
           styp:    '0272'
           statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
-     set3:
-          name:    'EXP-G17 (fill-in)'
-          var:     'uv'
-          it:      1
-          use:     'asm'
-          typ:     245
-          styp:    '0271'
-          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
      figopts:
-          pname:  None
-          tname:  'gsistat_trace_w_fill.png'
+          errProName:  gsistat_errprofs_wvct.png
+          errTraName:  gsistat_errtrace_wvct.png
+          penProName:  None
+          penTraName:  None
           tskip:  16
      dates:
-          dt_beg: '2022092406'
-          dt_end: '2022111418'
+          dt_beg: '2022100100'
+          dt_end: '2022112018'
           hrs: 6
+

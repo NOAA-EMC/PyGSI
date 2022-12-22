@@ -285,8 +285,8 @@ class GSIstat(object):
                 # don't add cpen or qcpen either
                 # careful here, cpen here also removes qcpen
                 # hence the extra space before qcpen and cpen
-                if any(x in line for x in [' qcpen', ' cpen']):
-                    continue
+                #if any(x in line for x in [' qcpen', ' cpen']):
+                #    continue
                 tmp.append(line.strip().split())
 
         columns = header.split()

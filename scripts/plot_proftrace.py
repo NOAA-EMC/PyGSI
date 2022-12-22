@@ -37,13 +37,20 @@
 #
 # Within each FIGURE CARD, you will find three kinds of keys:
 #
-# figopts: Defines setting options for profile and trace figures for figure card
+# figopts: Defines setting options for profile and trace figures for figure
+# card
 #    <options>:
-#    pname: Name of profile figure-file (None, if not plotting figure)
-#    tname: Name of trace figure-file (None, if not plotting figure)
+#    errProName: Name of error (rms/bias) profile figure-file (None, if not
+#                plotting figure, defaults to None)
+#    errTraNname: Name of error (rms/bias) trace figure-file (None, if not
+#                plotting figure, defaults to None)
+#    penProName: Name of DA penalty (mean) profile figure-file (None, if not
+#                plotting figure, defaults to None)
+#    penTraNname: Name of DA penalty (mean) trace figure-file (None, if not
+#                plotting figure, defaults to None)
 #    tskip: Number of ticks that are skipped when plotting tick-labels on
 #           trace-figure (should be large enough to keep labels from
-#           stepping on each other)
+#           stepping on each other, defaults to 1, i.e. no skipping)
 #
 # dates: Defines settings for time-period over which statistics are
 #        collected and plotted for figure card
@@ -103,6 +110,7 @@ def get_datelist(startdate, enddate, hrs):
         mydate = datetime.datetime.strftime(nextdate, '%Y%m%d%H')
     return datelist
 
+
 def parse_cards(yaml_file):
     import yaml
     # Parses top-level keys of YAML file (figure cards), returns list of keys
@@ -121,14 +129,16 @@ def parse_cards(yaml_file):
                 print(f'MissingCardsError: {MissingCardsError}')
             return figureCards
 
-def parse_yaml(yaml_file,card):
+
+def parse_yaml(yaml_file, card):
     import yaml
     # YAML entries come in three types per FIGURE CARD provided:
     # key='dates' : provides beginning (dt_beg)/ending (dt_end) dates
     #               for get_datelist in %Y%m%d%H format, and
     #               timedelta (hrs)
-    # key='figopts' : provides figure filenames for profile figure
-    #                 (pname) and trace figure (tname), and number of
+    # key='figopts' : provides figure filenames for profile figures
+    #                 (errProName, penProName) and trace figures
+    #                 (errTraName, penTraName), and number of
     #                 times to skip on tick-labels (tskip)
     # any other key: provides SET DICTIONARY for a dataset to
     #                be plotted (data filters, data name, filedir)
@@ -151,14 +161,38 @@ def parse_yaml(yaml_file,card):
                 print(f'MissingDatesError: {MissingDatesError}')
             # Extract 'figopts' data
             try:
-                pname = None if parsed_yaml[card]['figopts']['pname']\
-                 == 'None' else parsed_yaml[card]['figopts']['pname']
-                tname = None if parsed_yaml[card]['figopts']['tname']\
-                 == 'None' else parsed_yaml[card]['figopts']['tname']
+                # For figure names, must account for 2 conditions for
+                # a None results:
+                #  1. key is 'None' (convert to None)
+                #  2. key does not exist
+                # Initialize assuming key does not exist, otherwise
+                # read key
+                errProName = None
+                errTraName = None
+                penProName = None
+                penTraName = None
+                if 'errProName' in parsed_yaml[card]['figopts']:
+                    errProName = None if \
+                      parsed_yaml[card]['figopts']['errProName'] == 'None' \
+                      else parsed_yaml[card]['figopts']['errProName']
+                if 'errTraName' in parsed_yaml[card]['figopts']:
+                    errTraName = None if \
+                      parsed_yaml[card]['figopts']['errTraName'] == 'None' \
+                      else parsed_yaml[card]['figopts']['errTraName']
+                if 'penProName' in parsed_yaml[card]['figopts']:
+                    penProName = None if \
+                      parsed_yaml[card]['figopts']['penProName'] == 'None' \
+                      else parsed_yaml[card]['figopts']['penProName']
+                if 'penTraName' in parsed_yaml[card]['figopts']:
+                    penTraName = None if \
+                      parsed_yaml[card]['figopts']['penTraName'] == 'None' \
+                      else parsed_yaml[card]['figopts']['penTraName']
                 tskip = parsed_yaml[card]['figopts']['tskip']
             except KeyError as MissingFiguresError:
-                pname = None
-                tname = None
+                errProName = None
+                errTraName = None
+                penProName = None
+                penTraName = None
                 tskip = None
                 print(f'MissingFigoptsError: {MissingFigoptsError}')
             # Extract all other keys as filtering dictionaries, store
@@ -178,24 +212,24 @@ def parse_yaml(yaml_file,card):
                     except KeyError as FilterKeyError:
                         print(f'FilterKeyError: {FilterKeyError}')
                 setdict.append(fdict)
-    return dt_beg, dt_end, hrs, pname, tname, tskip, setdict
+    return (dt_beg, dt_end, hrs, errProName, errTraName, penProName,
+            penTraName, tskip, setdict)
 
 
 def collect_statistics(setdict):
     ######################################################################
     #
-    # Collect rmse, bias, and ob-count statistics for each data (sub)set
-    # in setdict. Statistics are provided for each individual pressure-bin
-    # as well as a full-column value.
+    # Collect rmse, bias, penalty, and ob-count statistics for each data
+    # (sub)set in setdict. Statistics are provided for each individual
+    # pressure-bin as well as a full-column value.
     #
-    # If a gsistat file is missing for a given cycle, it raises a
-    # FileNotFoundError and the cycle is skipped, not appearing at all in
-    # the time-series
+    # If a gsistat file is missing for a given cycle, the cycle is
+    # skipped, not appearing at all in the time-series.
     #
     # If a gsistat file exists for a given cycle but no data for a data
-    # (sub)set is present, the rmse, bias, and ob-count are set to zero but
-    # the cycle is not skipped. Statistics with zero ob-count are
-    # reassigned to NaN later.
+    # (sub)set is present, the rmse, bias, penalty, and ob-count are set
+    # to zero but the cycle is not skipped. Statistics with zero ob-count
+    # are reassigned to NaN later.
     #
     # INPUTS:
     #    setdict: List of dictionaries for each subset, including name,
@@ -209,6 +243,7 @@ def collect_statistics(setdict):
     #           where a gsistat file exists
     #    biases: average difference between subset of obs and model
     #            for each cycle where a gsistat file exists
+    #    cpens: DA penalty per-observation among subset obs
     #    counts: number of subset obs  for each cycle where a gsistat
     #            file exists
     #    levels: pressure levels for each subset of obs
@@ -225,6 +260,7 @@ def collect_statistics(setdict):
     rmses = {}
     counts = {}
     biases = {}
+    cpens = {}
     levels = {}
     for sd in setdict:
         setname = sd['name']
@@ -232,13 +268,15 @@ def collect_statistics(setdict):
         rmses[setname] = {}
         counts[setname] = {}
         biases[setname] = {}
+        cpens[setname] = {}
         for cycle in cycles:
             rmses[setname][cycle] = {}
             counts[setname][cycle] = {}
             biases[setname][cycle] = {}
+            cpens[setname][cycle] = {}
             inputfile = os.path.join(statdir, 'gsistat.gdas.'+cycle)
-            # Test if inputfile exists, if not, set all values 
-            # for rmses/counts/biases to None for this setname
+            # Test if inputfile exists, if not, set all values
+            # for rmses/counts/cpens/biases to None for this setname
             # and cycle for both 'lev' and 'col' values
             if os.path.exists(inputfile):
                 gdas = GSIstat(inputfile, cycle)
@@ -246,9 +284,11 @@ def collect_statistics(setdict):
                 rmses[setname][cycle]['lev'] = None
                 counts[setname][cycle]['lev'] = None
                 biases[setname][cycle]['lev'] = None
+                cpens[setname][cycle]['lev'] = None
                 rmses[setname][cycle]['col'] = None
                 counts[setname][cycle]['col'] = None
                 biases[setname][cycle]['col'] = None
+                cpens[setname][cycle]['col'] = None
                 # Skip rest of this for-loop entry
                 continue
             # statistics are drawn for a single variable
@@ -291,8 +331,8 @@ def collect_statistics(setdict):
                               slice(None), slice(None), slice(None),
                               slice(None)), :]
                 # Filter to just the first observation type in the frame
-                # (index=[0:3] is count, rms, and bias of first entry)
-                s = s.iloc[0:3, :]
+                # (index=[0:4] is count, rms, cpen, and bias of first entry)
+                s = s.iloc[0:4, :]
                 # Zero-out all elements
                 s.loc[(slice(None), slice(None), slice(None),
                        slice(None), slice(None), slice(None),
@@ -305,8 +345,8 @@ def collect_statistics(setdict):
                               slice(None), slice(None), slice(None),
                               slice(None)), :]
                 # Filter to just the first observation type in the frame
-                # (index=[0:3] is count, rms, and bias of first entry)
-                s = s.iloc[0:3, :]
+                # (index=[0:4] is count, rms, cpen, and bias of first entry)
+                s = s.iloc[0:4, :]
                 # Zero-out all elements
                 s.loc[(slice(None), slice(None), slice(None),
                        slice(None), slice(None), slice(None),
@@ -330,6 +370,10 @@ def collect_statistics(setdict):
                                                    slice(None), slice(None),
                                                    slice(None), slice(None),
                                                    'bias'), s.columns[:-1]]
+            cpens[setname][cycle]['lev'] = s.loc[(slice(None), slice(None),
+                                                  slice(None), slice(None),
+                                                  slice(None), slice(None),
+                                                  'cpen'), s.columns[:-1]]
             rmses[setname][cycle]['col'] = s.loc[(slice(None), slice(None),
                                                   slice(None), slice(None),
                                                   slice(None), slice(None),
@@ -342,21 +386,26 @@ def collect_statistics(setdict):
                                                    slice(None), slice(None),
                                                    slice(None), slice(None),
                                                    'bias'), s.columns[-1]]
+            cpens[setname][cycle]['col'] = s.loc[(slice(None), slice(None),
+                                                  slice(None), slice(None),
+                                                  slice(None), slice(None),
+                                                  'cpen'), s.columns[-1]]
     # Return output dictionaries
-    return rmses, biases, counts, levels
+    return rmses, biases, cpens, counts, levels
 
 
-def aggregate_figure_data(rmses, biases, counts, levs):
+def aggregate_figure_data(rmses, biases, cpens, counts, levs):
     ######################################################################
     #
-    # Generate plotting data by aggregating rmse, bias, and count data
-    # across times (for profiles), or aggregate full-column data (for
+    # Generate plotting data by aggregating rmse, bias, penalty, and count
+    # data across times (for profiles), or aggregate full-column data (for
     # traces). Returned lists of profile and trace data serve as inputs to
     # plotting functions.
     #
     # INPUTS:
     #    rmses: Dictionary of rmse data for each subset
     #    biases: Dictionary of bias data for each subset
+    #    cpens: Dictionary of per-ob penalty data for each subset
     #    counts: Dictionary of ob-count data for each subset
     #    levs: Dictionary of pressure-bin level data for each subset
     #
@@ -365,6 +414,8 @@ def aggregate_figure_data(rmses, biases, counts, levs):
     #    rmse_trace: List of rmse time-series traces to plot
     #    bias_profs: List of bias profiles to plot
     #    bias_trace: List of bias time-series traces to plot
+    #    cpen_profs: List of cpen profiles to plot
+    #    cpen_trace: List of cpen time-series traces to plot
     #    nobs_profs: List of ob-count profiles to plot
     #    nobs_trace: List of ob-count time-series traces to plot
     #    levl_profs: List of pressure-bin levels for profiles
@@ -382,6 +433,8 @@ def aggregate_figure_data(rmses, biases, counts, levs):
     rmse_trace = []
     bias_profs = []
     bias_trace = []
+    cpen_profs = []
+    cpen_trace = []
     nobs_profs = []
     nobs_trace = []
     levl_profs = []
@@ -395,42 +448,49 @@ def aggregate_figure_data(rmses, biases, counts, levs):
         nlev = np.size(plevs)
         rmse = np.zeros((nlev, ))
         bias = np.zeros((nlev, ))
+        cpen = np.zeros((nlev, ))
         nobs = np.zeros((nlev, ))
         dates = list(rmses[setname].keys())
         date_trace.append(dates)
         ndate = len(dates)
-        r_trace = np.zeros((ndate, ))
-        b_trace = np.zeros((ndate, ))
+        r_trace = np.zeros((ndate, ))  # rms
+        b_trace = np.zeros((ndate, ))  # bias
+        p_trace = np.zeros((ndate, ))  # cpen
         n_trace = np.zeros((ndate, ))
         for i in range(ndate):
             date = dates[i]
             # If rmses[setname][date]['col] is NoneType, set n_ele=0
-            if type(rmses[setname][date]['col'])==type(None):
-                n_ele=0
+            if rmses[setname][date]['col'] is None:
+                n_ele = 0
             # If not NoneType, define n_ele by values in dataframe
             else:
                 n_ele = np.size(rmses[setname][date]['col'].values)
             for j in range(n_ele):
-                # Aggregate rms, bias, and count for full-column values at each
-                # time to define traces
+                # Aggregate rms, bias, cpen, and count for full-column
+                # values at each time to define traces
                 rcol = rmses[setname][date]['col'].values[j]
                 bcol = biases[setname][date]['col'].values[j]
+                pcol = cpens[setname][date]['col'].values[j]
                 ncol = counts[setname][date]['col'].values[j]
                 ncol2 = n_trace[i] + ncol
                 if ncol2 > 0:
                     rcol2 = np.sqrt((n_trace[i] * r_trace[i] ** 2. + ncol *
                                      rcol ** 2.) / ncol2)
                     bcol2 = (n_trace[i] * b_trace[i] + ncol * bcol) / ncol2
+                    pcol2 = (n_trace[i] * p_trace[i] + ncol * pcol) / ncol2
                 else:
                     rcol2 = 0.
                     bcol2 = 0.
+                    pcol2 = 0.
                 r_trace[i] = rcol2
                 b_trace[i] = bcol2
+                p_trace[i] = pcol2
                 n_trace[i] = ncol2
-                # Aggregate rms, bias, and count at each level across all times
-                # to define profiles
-                r = rmses[setname][date]['lev'].values[j]
-                b = biases[setname][date]['lev'].values[j]
+                # Aggregate rms, bias, cpen, and count at each level across
+                # all times to define profiles
+                r = rmses[setname][date]['lev'].values[j]   # rms
+                b = biases[setname][date]['lev'].values[j]  # bias
+                p = cpens[setname][date]['lev'].values[j]   # cpen
                 c = counts[setname][date]['lev'].values[j]
                 for k in range(nlev):
                     c2 = nobs[k] + c[k]
@@ -438,28 +498,36 @@ def aggregate_figure_data(rmses, biases, counts, levs):
                         r2 = np.sqrt((nobs[k] * rmse[k] ** 2. +
                                      c[k] * r[k] ** 2.) / c2)
                         b2 = (nobs[k] * bias[k] + c[k] * b[k]) / c2
+                        p2 = (nobs[k] * cpen[k] + c[k] * p[k]) / c2
                     else:
                         r2 = 0.
                         b2 = 0.
+                        p2 = 0.
                     rmse[k] = r2
                     bias[k] = b2
+                    cpen[k] = p2
                     nobs[k] = c2
         # Any score with 0 obs should be changed to NaN before entering into
         # record
         rmse[nobs == 0] = np.nan
         bias[nobs == 0] = np.nan
+        cpen[nobs == 0] = np.nan
         r_trace[n_trace == 0] = np.nan
         b_trace[n_trace == 0] = np.nan
+        p_trace[n_trace == 0] = np.nan
         # Append profile and trace data to output lists
         rmse_trace.append(r_trace)
         bias_trace.append(b_trace)
+        cpen_trace.append(p_trace)
         nobs_trace.append(n_trace)
         rmse_profs.append(rmse)
         bias_profs.append(bias)
+        cpen_profs.append(cpen)
         nobs_profs.append(nobs)
     # Return output lists
-    return (rmse_profs, rmse_trace, bias_profs, bias_trace, nobs_profs,
-            nobs_trace, levl_profs, date_trace, name_list)
+    return (rmse_profs, rmse_trace, bias_profs, bias_trace, cpen_profs,
+            cpen_trace, nobs_profs, nobs_trace, levl_profs, date_trace,
+            name_list)
 
 
 def plot_stat_profiles(rmsList, biasList, countList, nameList, plevList,
@@ -563,6 +631,123 @@ def plot_stat_profiles(rmsList, biasList, countList, nameList, plevList,
     plt.legend(legend_list, frameon=False, fontsize=10)
     # Set x-label
     plt.xlabel('RMS or Bias')
+    # RIGHT PANEL: ob-counts
+    plt.subplot(122)
+    # For each set, plot ob-counts and generate legend list
+    # Counts are asserted to be in thousands
+    legend_list = []
+    for i in range(n_profiles):
+        count = 0.001*countList[i]
+        bar_color = list(scalarMapList[i][0:3])
+        plt.barh(levs+y_offset[i], count, height=8.0, color=bar_color)
+    # Set y-limits to entire range
+    plt.ylim((y_min, y_max))
+    plt.yticks(levs)
+    # Reverse y-axis, if levs is in descending-order (often the case with
+    # pressure coordinate data)
+    if (levs[1] < levs[0]):
+        plt.gca().invert_yaxis()
+    # Set legend
+    plt.legend(nameList, frameon=False, fontsize=10)
+    # Set x-label
+    plt.xlabel('Ob Count (Thousands)')
+    # Turn off interactive-mode to suppress plotting figure
+    plt.ioff()
+    # Return
+    return plt.gcf()
+
+
+def plot_cpen_profiles(penList, countList, nameList, plevList,
+                       colMap=['tab10', 10]):
+    ######################################################################
+    # Generates 2-panel plot:
+    #    Left: Profiles of penalty for each set
+    #    Right: Horizontal bar-chart of ob-counts for each set
+    #
+    # INPUTS
+    #    penList: list of numpy arrays (nlev,) of cpen by pressure level
+    #             for each set
+    #    countList: list of numpy arrays (nlev,) of ob-count by pressure
+    #               level for each set
+    #    nameList: list of names for each set (for figure legend)
+    #    plevList: list of profile pressure levels (str or float)
+    #    colMap: 2-element list containing colormap and colormap-range for
+    #            panels (default: ['tab10',10]))
+    # OUTPUTS
+    #    plotFig: plot figure, as plt.fig()
+    #
+    # DEPENDENCIES
+    # numpy
+    # matplotlib.rc
+    # matplotlib.pyplot
+    # matplotlib.cm
+    ######################################################################
+    import numpy as np
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+    #
+    # Set font size and type
+    #
+    font = {'family': 'DejaVu Sans',
+            'weight': 'bold',
+            'size': 22}
+
+    matplotlib.rc('font', **font)
+    #
+    # Identify number of profile sets (should be indentical for penList,
+    # countList)
+    #
+    n_profiles = len(penList)
+    #
+    # Define colormap: The default settings are to select a range of 10 on
+    # 'tab10', so that 10 penalty profiles can be produced for
+    # the left panel that correspond to 10 ob-counts on the right panel.
+    # The user can select a different colormap and range with colMapLeft
+    # and colMapRight options.
+    # If you want to sample the entire colorbar, set the range to the
+    # number of datasets plotted.
+    #
+    # scalarMapList is used to select colors for each profile/bar
+    scalarMap = cm.ScalarMappable(cmap=colMap[0])
+    scalarMapList = scalarMap.to_rgba(range(colMap[1]))
+    #
+    # Generate figure
+    plt.figure(figsize=(18, 18))
+    # Define offset values (needed to define y-axis limits on both plots,
+    # for consistency)
+    y_offset = 8.0*(np.arange(n_profiles)-np.floor(n_profiles/2))
+    # LEFT PANEL: penalty scores
+    plt.subplot(121)
+    # For each set, plot penalty: plot lines and circular markers
+    legend_list = []
+    for i in range(n_profiles):
+        pen = penList[i]
+        levs = plevList[i]
+        n_levs = np.size(levs)
+        # Define y-axis limits
+        y_min = min(levs)+min(y_offset)-8.0
+        y_max = max(levs)+max(y_offset)+8.0
+        # pen profile
+        legend_list.append(nameList[i]+' pen')
+        prof_color = list(scalarMapList[i][0:3])
+        plt.plot(pen, levs, color=prof_color, linewidth=3)
+        plt.plot(pen, levs, 'o', color=prof_color, markersize=8,
+                 label='_nolegend_')
+    # Zero-line
+    plt.plot(np.zeros((n_levs, )), levs, color='k', linewidth=1,
+             linestyle='dashed', label='_nolegend_')
+    # Set y-limits to entire range
+    plt.ylim((y_min, y_max))
+    plt.yticks(levs)
+    # Reverse y-axis, if levs is in descending-order (often the case with
+    # pressure coordinate data)
+    if (levs[1] < levs[0]):
+        plt.gca().invert_yaxis()
+    # Set legend
+    plt.legend(legend_list, frameon=False, fontsize=10)
+    # Set x-label
+    plt.xlabel('Penalty')
     # RIGHT PANEL: ob-counts
     plt.subplot(122)
     # For each set, plot ob-counts and generate legend list
@@ -718,6 +903,125 @@ def plot_stat_traces(rmsList, biasList, countList, nameList, dateList,
     return plt.gcf()
 
 
+def plot_cpen_traces(penList, countList, nameList, dateList,
+                     tskip=4, colMap=['tab10', 10]):
+    ######################################################################
+    # Generates 2-panel plot:
+    #    Top: Trace of penalty for each set
+    #    Bottom: Bar-chart of ob-counts for each set
+    #
+    # INPUTS
+    #    penList: list of numpy arrays (nlev,) of cpen by pressure level
+    #             for each set
+    #    countList: list of numpy arrays (nlev,) of ob-count by pressure
+    #               level for each set
+    #    nameList: list of names for each set (for figure legend)
+    #    dateList: list of dates (str in '%Y%m%d%H' format)
+    #    tskip: number of ticks to skip when writing tick-labels (default: 4)
+    #    colMap: 2-element list containing colormap and colormap-range for
+    #            panels (default: ['tab10',10]))
+    # OUTPUTS
+    #    plotFig: plot figure, as plt.fig()
+    #
+    # DEPENDENCIES
+    # numpy
+    # datetime
+    # matplotlib.rc
+    # matplotlib.pyplot
+    # matplotlib.cm
+    ######################################################################
+    import numpy as np
+    from datetime import datetime
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import matplotlib.cm as cm
+    #
+    # Set font size and type
+    #
+    font = {'family': 'DejaVu Sans',
+            'weight': 'bold',
+            'size': 22}
+
+    matplotlib.rc('font', **font)
+    #
+    # Identify number of trace sets (should be indentical for penList,
+    # countList)
+    #
+    n_trace = len(penList)
+    #
+    # Define colormap: The default settings are to select a range of 10 on
+    # 'tab10', so that 10 penalty profiles can be produced for
+    # the left panel that correspond to 10 ob-counts on the right panel.
+    # The user can select a different colormap and range with colMapLeft
+    # and colMapRight options. If you want to sample the entire colorbar,
+    # set the range to the number of datasets plotted.
+    #
+    # scalarMapList is used to select colors for each profile/bar
+    scalarMap = cm.ScalarMappable(cmap=colMap[0])
+    scalarMapList = scalarMap.to_rgba(range(colMap[1]))
+    #
+    # Generate figure
+    plt.figure(figsize=(18, 18))
+    # Define offset values (needed to define x-axis limits on both plots,
+    # for consistency)
+    offs = 0.8/n_trace
+    x_offset = offs*(np.arange(n_trace)-np.floor(n_trace/2))
+    # TOP PANEL: penalty traces
+    plt.subplot(211)
+    # For each set, plot penalty: plot both lines and circular markers
+    legend_list = []
+    for i in range(n_trace):
+        pen = penList[i]
+        dates = dateList[i]
+        # Convert dates from %Y%m%d%H format to %b%d:%HZ tick-label format
+        dstr = []
+        for d in dates:
+            dt = datetime.strptime(d, '%Y%m%d%H')
+            dstr.append(datetime.strftime(dt, '%b%d:%HZ'))
+        n_dates = np.size(dates)
+        # Define x-axis limits
+        x_min = min(x_offset)-offs
+        x_max = n_dates+max(x_offset)+offs
+        x_rng = np.arange(1, n_dates+1.0E-05)
+        # pen trace
+        legend_list.append(nameList[i]+' pen')
+        prof_color = list(scalarMapList[i][0:3])
+        plt.plot(x_rng, pen, color=prof_color, linewidth=3)
+        plt.plot(x_rng, pen, 'o', color=prof_color, markersize=8,
+                 label='_nolegend_')
+    # Zero-line
+    plt.plot(x_rng, np.zeros((n_dates, )), color='k', linewidth=1,
+             linestyle='dashed', label='_nolegend_')
+    # Set x-limits to entire range
+    plt.xlim((x_min, x_max))
+    plt.xticks(ticks=x_rng[::tskip], labels=dstr[::tskip], fontsize=10)
+    # Set legend
+    plt.legend(legend_list, frameon=False, fontsize=10)
+    # Set y-label
+    plt.ylabel('Penalty')
+    # BOTTOM PANEL: ob-counts
+    plt.subplot(212)
+    # For this plot, bars need to be offset from each other so that they
+    # all cluster around the pressure
+    # level. This is accomplished with an offset value added to each bar
+    legend_list = []
+    for i in range(n_trace):
+        count = 0.001*countList[i]
+        bar_color = list(scalarMapList[i][0:3])
+        plt.bar(x_rng+x_offset[i], count, width=offs, color=bar_color)
+    # Set x-limits to entire range
+    plt.xlim((x_min, x_max))
+    plt.xticks(ticks=x_rng[::tskip], labels=dstr[::tskip], fontsize=10)
+    # Set legend
+    plt.legend(nameList, frameon=False, fontsize=10)
+    # Set y-label
+    plt.ylabel('Ob Count (Thousands)')
+    # Turn off interactive-mode to suppress plotting figure
+    plt.ioff()
+    # Return
+    return plt.gcf()
+
+
 if __name__ == "__main__":
     ######################################################################
     import matplotlib.pyplot as plt
@@ -728,55 +1032,71 @@ if __name__ == "__main__":
     figCards = parse_cards(yamlFile)
     if figCards is not None:
         for card in figCards:
-            print('Processing Figure Card: ',card)
+            print('Processing Figure Card: ', card)
             # Parse yaml file for card and define settings for plotting
-            (dt_beg, dt_end, hrs, pname, tname, tskip,
-             setdict) = parse_yaml(yamlFile,card)
+            (dt_beg, dt_end, hrs, errProName, errTraName, penProName,
+             penTraName, tskip, setdict) = parse_yaml(yamlFile, card)
             cycles = get_datelist(dt_beg, dt_end, hrs)
-            profs_filename = pname
-            trace_filename = tname
             #
             ##############################################################
             #
-            # Collect rmse, bias, and ob-count statistics for each data 
-            # (sub)set in setdict
+            # Collect rmse, bias, penalty, and ob-count statistics for
+            # each data (sub)set in setdict
             #
-            # If a gsistat file is missing for a given cycle, it raises a
-            # FileNotFoundError and the cycle is skipped, not appearing at
-            # all in the time-series
+            # If a gsistat file is missing for a given cycle, the cycle is
+            # skipped, not appearing at all in the time-series
             #
             # If a gsistat file exists for a given cycle but no data for a
-            # data (sub)set is present, the rmse, bias, and ob-count are
-            # set to zero but the cycle is not skipped. Statistics with
-            # zero ob-count are reassigned to NaN later.
+            # data (sub)set is present, the rmse, bias, penalty, and
+            # ob-count are set to zero but the cycle is not skipped.
+            # Statistics with zero ob-count are reassigned to NaN later.
             #
-            rmses, biases, counts, levels = collect_statistics(setdict)
+            rmses, biases, cpens, counts, levels = collect_statistics(setdict)
             ##############################################################
             #
-            # Generate plotting data by aggregating rmse, bias, and count
-            # data across times (for profiles), or aggregate full-column
-            # data (for traces)
+            # Generate plotting data by aggregating rmse, bias, penalty,
+            # and count data across times (for profiles), or aggregate
+            # full-column data (for traces)
             #
             (rmse_profs, rmse_trace, bias_profs, bias_trace,
-             nobs_profs, nobs_trace, levl_profs, date_trace,
-             name_list) = aggregate_figure_data(rmses, biases, counts, levels)
+             cpen_profs, cpen_trace, nobs_profs, nobs_trace, levl_profs,
+             date_trace, name_list) = aggregate_figure_data(rmses, biases,
+                                                            cpens, counts,
+                                                            levels)
             ##############################################################
             #
-            # Generate profile plot
+            # Generate profile plots
             #
-            if profs_filename is not None:
-                fig_prof = plot_stat_profiles(rmse_profs, bias_profs, nobs_profs,
+            if errProName is not None:
+                fig_prof = plot_stat_profiles(rmse_profs, bias_profs,
+                                              nobs_profs, name_list,
+                                              levl_profs)
+                plt.ioff()
+                fig_prof.savefig(errProName, bbox_inches='tight',
+                                 facecolor='w')
+            if penProName is not None:
+                fig_prof = plot_cpen_profiles(cpen_profs, nobs_profs,
                                               name_list, levl_profs)
                 plt.ioff()
-                fig_prof.savefig(profs_filename, bbox_inches='tight', facecolor='w')
+                fig_prof.savefig(penProName, bbox_inches='tight',
+                                 facecolor='w')
             #
-            # Generate trace plot
+            # Generate trace plots
             #
-            if trace_filename is not None:
-                fig_trace = plot_stat_traces(rmse_trace, bias_trace, nobs_trace,
-                                             name_list, date_trace, tskip=tskip)
+            if errTraName is not None:
+                fig_trace = plot_stat_traces(rmse_trace, bias_trace,
+                                             nobs_trace, name_list,
+                                             date_trace, tskip=tskip)
                 plt.ioff()
-                fig_trace.savefig(trace_filename, bbox_inches='tight', facecolor='w')
+                fig_trace.savefig(errTraName, bbox_inches='tight',
+                                  facecolor='w')
+            if penTraName is not None:
+                fig_trace = plot_cpen_traces(cpen_trace, nobs_trace,
+                                             name_list, date_trace,
+                                             tskip=tskip)
+                plt.ioff()
+                fig_trace.savefig(penTraName, bbox_inches='tight',
+                                  facecolor='w')
             ##############################################################
     else:
         print('No Figure Cards Found, Exiting...')
