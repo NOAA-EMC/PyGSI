@@ -41,7 +41,7 @@ def spectrum_stats(df):
         # This next line makes sure that all rejected obs are avoided.
         # Using the inverse observation error is more reliable than the QC flag.
         tmp = tmp[(tmp['inverse_observation_error'] > 0.0)]
-        channel_stats["count"].loc[chan] = tmp.size
+        channel_stats["count"].loc[chan] = len(tmp.axes[0])
         for var in ["omf_unadjusted", "omf_adjusted"]:
             channel_stats[var + '_mean'].loc[chan] = tmp[var].to_numpy().mean()
             channel_stats[var + '_stddev'].loc[chan] = tmp[var].to_numpy().std()
