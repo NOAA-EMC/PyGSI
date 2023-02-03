@@ -55,7 +55,7 @@ def ensemble_obspace_diag(
       std_dev       : (array float) standard deviation of (F-O)
       spread        : (array float) ensemble spread (standard deviation)
       ob_error      : (array float) observation error standard deviation
-      total_spread  : (array float) total spread (standard deviation) 
+      total_spread  : (array float) total spread (standard deviation)
       num_obs_total : (array float) total number of observations
       num_obs_assim : (array float) total number of observations assimilated
       cr            : (array float) consistency ratio (total spread/rmsi)**2
@@ -189,10 +189,11 @@ def ensemble_obspace_diag(
                     mem = mem + 1
                     # end while n_mem
 
-                try: # if we broke out of the loop above before, because we were missing a mem.
-                     # this will break out of the loop here too.
+                # if we broke out of the loop above before, because we were missing a mem.
+                # this will break out of the loop here too.
+                try:
                     error_var = error**2
-                except:
+                except ValueError:
                     break
 
                 fcst_ens_mean = fcst_ens_mean / n_mem
@@ -237,8 +238,6 @@ def ensemble_obspace_diag(
                 del lon
                 del pressure
                 del use
-                #del 
-                #del 
 
             # end do n_expt
         # end do n_ob_type
