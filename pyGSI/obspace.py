@@ -53,10 +53,9 @@ def ensemble_obspace_diag(
       bias          : (array float) mean of (forecast - observation)
       rms           : (array float) rms of (F-O)
       std_dev       : (array float) standard deviation of (F-O)
-      rmse          : (array float) total spread (standard deviation)
       spread        : (array float) ensemble spread (standard deviation)
       ob_error      : (array float) observation error standard deviation
-      total_spread  : (array float) rms of (O-Omf) = rmse of ensemble mean fcst
+      total_spread  : (array float) total spread (standard deviation) 
       num_obs_total : (array float) total number of observations
       num_obs_assim : (array float) total number of observations assimilated
       cr            : (array float) consistency ratio (total spread/rmsi)**2
@@ -79,7 +78,6 @@ def ensemble_obspace_diag(
     bias = _np.zeros(shape=(n_ob_type, n_expt, 24))
     rms = _np.zeros(shape=(n_ob_type, n_expt, 24))
     std_dev = _np.zeros(shape=(n_ob_type, n_expt, 24))
-    rmse = _np.zeros(shape=(n_ob_type, n_expt, 24))
     spread = _np.zeros(shape=(n_ob_type, n_expt, 24))
     total_spread = _np.zeros(shape=(n_ob_type, n_expt, 24))
     ob_error = _np.zeros(shape=(n_ob_type, n_expt, 24))
@@ -116,7 +114,7 @@ def ensemble_obspace_diag(
                     if not exists:
                         print("diag file for %s mem%s %s doesn't exist." % (expt_name, str(mem).zfill(4), str(date)))
                         mem = mem + 1
-                        continue
+                        break
 
                     if mem == 1:
                         code = _io.netCDF.read_netCDF_var(obsfile, "Observation_Type", oneD=True)
@@ -191,7 +189,12 @@ def ensemble_obspace_diag(
                     mem = mem + 1
                     # end while n_mem
 
-                error_var = error**2
+                try: # if we broke out of the loop above before, because we were missing a mem.
+                     # this will break out of the loop here too.
+                    error_var = error**2
+                except:
+                    break
+
                 fcst_ens_mean = fcst_ens_mean / n_mem
                 if n_mem > 1:
                     fcst_ens_var = (fcst_ens_var - n_mem * fcst_ens_mean**2) / (n_mem - 1)
@@ -213,7 +216,6 @@ def ensemble_obspace_diag(
                     rms[i_o, i_e, hour] = _np.sqrt(sum_innovsq[i_e, hour] / num_obs_assim[i_o, i_e, hour])
                     mean_ob_err_var = sum_ob_err_var[i_e, hour] / num_obs_assim[i_o, i_e, hour]
                     ob_error[i_o, i_e, hour] = _np.sqrt(mean_ob_err_var)
-                    rmse[i_o, i_e, hour] = _np.sqrt(sum_fcst_ens_var[i_e, hour] / num_obs_assim[i_o, i_e, hour])
 
                 if num_obs_assim[i_o, i_e, hour] > 1:
                     innov_var = (sum_innovsq[i_e, hour] - num_obs_assim[i_o, i_e, hour] * mean_innov**2) / (num_obs_assim[i_o, i_e, hour] - 1.0)
@@ -222,9 +224,23 @@ def ensemble_obspace_diag(
                     spread[i_o, i_e, hour] = _np.sqrt(mean_fcst_var)
                     total_spread[i_o, i_e, hour] = _np.sqrt(mean_ob_err_var + mean_fcst_var)
                     cr[i_o, i_e, hour] = (total_spread[i_o, i_e, hour] / rms[i_o, i_e, hour]) ** 2
-                    ser[i_o, i_e, hour] = spread[i_o, i_e, hour] / rmse[i_o, i_e, hour]
+                    ser[i_o, i_e, hour] = spread[i_o, i_e, hour] / rms[i_o, i_e, hour]
+
+                del errorinv
+                del error
+                del itot
+                del ob
+                del iasm
+                del omf
+                del code
+                del lat
+                del lon
+                del pressure
+                del use
+                #del 
+                #del 
 
             # end do n_expt
         # end do n_ob_type
 
-    return dates, bias, rms, std_dev, rmse, spread, ob_error, total_spread, num_obs_total, num_obs_assim, cr, ser
+    return dates, bias, rms, std_dev, spread, ob_error, total_spread, num_obs_total, num_obs_assim, cr, ser
