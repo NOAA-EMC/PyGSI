@@ -100,19 +100,19 @@ def ensemble_obspace_diag(
         for ob_type in ob_types:
             i_o = ob_types.index(ob_type)
             for expt_name in expt_names:
-                print("%s %s %s" % (date, expt_name, ob_type))
+                print(f"{date} {expt_name} {ob_type}")
                 i_e = expt_names.index(expt_name)
                 mem = 1
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        obsfile = _os.path.join(datapath, "%s/%s/mem%s/diag_conv_uv_ges.%s.nc4" % (expt_name, date, memid, date))
+                        obsfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        obsfile = _os.path.join(datapath, "%s/%s/mem%s/diag_conv_%s_ges.%s.nc4" % (expt_name, date, memid, ob_type, date))
+                        obsfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
 
                     exists = _os.path.exists(obsfile)
                     if not exists:
-                        print("diag file for %s mem%s %s doesn't exist." % (expt_name, str(mem).zfill(4), str(date)))
+                        print(f"diag file for {expt_name} mem{mem:0>4} {date} doesn't exist.")
                         mem = mem + 1
                         break
 
