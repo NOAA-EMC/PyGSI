@@ -3,6 +3,7 @@ import os as _os
 import emcpy.utils.dateutils as _dateutils
 import emcpy.io as _io
 import pyGSI.filter_obs as _filter_obs
+import pdb
 
 
 def ensemble_obspace_diag(
@@ -91,6 +92,8 @@ def ensemble_obspace_diag(
     sum_fcst_ens_var = _np.zeros(shape=(n_expt, 24))
     sum_ob_err_var = _np.zeros(shape=(n_expt, 24))
 
+    bbreak = False
+
     for date in dates:
         times = _dateutils.datetohrs(date)
         pdy = str(date[0:8])
@@ -102,27 +105,56 @@ def ensemble_obspace_diag(
             for expt_name in expt_names:
                 print(f"{date} {expt_name} {ob_type}")
                 i_e = expt_names.index(expt_name)
+
+                # Initial read of all the ensemble diag files to get a common list of used observations.
+                # I don't think there is any way around doing this...
+
+                # Preemptively read analysis use flag of all ensemble diags. All ensembles will not
+                # necessarily use the same observations (gross errors checks etc.). Change all use
+                # values that are less than 1 to 0, then multiply each use numpy array by the previous
+                # result. This will leave you with a list of all observations used by all ensemble members.
                 mem = 1
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        obsfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        obsfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
-
-                    exists = _os.path.exists(obsfile)
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                    # Check for if there are any diag files for a particular cycle date.
+                    exists = _os.path.exists(diagfile)
                     if not exists:
-                        print(f"diag file for {expt_name} mem{mem:0>4} {date} doesn't exist.")
-                        mem = mem + 1
+                        print(f"diag file for {expt_name} mem{mem:0>4} {date} doesn't exist. Skipping {date}.")
+                        bbreak=True  # need to break here and one loop higher.
                         break
 
+                    use = _io.netCDF.read_netCDF_var(diagfile, "Analysis_Use_Flag", oneD=True)
+                    use[use < 1] = 0
+                    if(mem == 1):
+                        analysis_use = use
+                    else:
+                        analysis_use = analysis_use * use
+                    mem = mem + 1
+
+                if(bbreak):
+                    bbreak=False  # reset break
+                    break
+
+                mem = 1
+                while mem <= n_mem:
+                    memid = str(mem).zfill(4)
+                    if ob_type == "u" or ob_type == "v":
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                    else:
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
                     if mem == 1:
-                        code = _io.netCDF.read_netCDF_var(obsfile, "Observation_Type", oneD=True)
-                        lat = _io.netCDF.read_netCDF_var(obsfile, "Latitude", oneD=True)
-                        lon = _io.netCDF.read_netCDF_var(obsfile, "Longitude", oneD=True)
-                        pressure = _io.netCDF.read_netCDF_var(obsfile, "Pressure", oneD=True)
-                        use = _io.netCDF.read_netCDF_var(obsfile, "Analysis_Use_Flag", oneD=True)
-                        errorinv = _io.netCDF.read_netCDF_var(obsfile, "Errinv_Final", oneD=True)
+                        code = _io.netCDF.read_netCDF_var(diagfile, "Observation_Type", oneD=True)
+                        lat = _io.netCDF.read_netCDF_var(diagfile, "Latitude", oneD=True)
+                        lon = _io.netCDF.read_netCDF_var(diagfile, "Longitude", oneD=True)
+                        pressure = _io.netCDF.read_netCDF_var(diagfile, "Pressure", oneD=True)
+                        #use = _io.netCDF.read_netCDF_var(diagfile, "Analysis_Use_Flag", oneD=True)
+                        #use[use < 1] = 0
+                        use = analysis_use # preemptively read the diag files to get used by all members.
+                        errorinv = _io.netCDF.read_netCDF_var(diagfile, "Errinv_Final", oneD=True)
 
                         # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
                         if ob_type == "u" or ob_type == "v":
@@ -131,11 +163,11 @@ def ensemble_obspace_diag(
                             codes = codes_tq
 
                         if ob_type == "u":
-                            ob = _io.netCDF.read_netCDF_var(obsfile, "u_Observation", oneD=True)
+                            ob = _io.netCDF.read_netCDF_var(diagfile, "u_Observation", oneD=True)
                         elif ob_type == "v":
-                            ob = _io.netCDF.read_netCDF_var(obsfile, "v_Observation", oneD=True)
+                            ob = _io.netCDF.read_netCDF_var(diagfile, "v_Observation", oneD=True)
                         else:
-                            ob = _io.netCDF.read_netCDF_var(obsfile, "Observation", oneD=True)
+                            ob = _io.netCDF.read_netCDF_var(diagfile, "Observation", oneD=True)
 
                         if ob_type == "q":
                             ob = 1000.0 * ob  # convert from kg/kg to g/kg
@@ -170,11 +202,11 @@ def ensemble_obspace_diag(
                         # end if mem==1
 
                     if ob_type == "u":
-                        omf = _io.netCDF.read_netCDF_var(obsfile, "u_Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = _io.netCDF.read_netCDF_var(diagfile, "u_Obs_Minus_Forecast_adjusted", oneD=True)
                     elif ob_type == "v":
-                        omf = _io.netCDF.read_netCDF_var(obsfile, "v_Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = _io.netCDF.read_netCDF_var(diagfile, "v_Obs_Minus_Forecast_adjusted", oneD=True)
                     else:
-                        omf = _io.netCDF.read_netCDF_var(obsfile, "Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = _io.netCDF.read_netCDF_var(diagfile, "Obs_Minus_Forecast_adjusted", oneD=True)
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
@@ -193,7 +225,7 @@ def ensemble_obspace_diag(
                 # this will break out of the loop here too.
                 try:
                     error_var = error**2
-                except ValueError:
+                except NameError:
                     break
 
                 fcst_ens_mean = fcst_ens_mean / n_mem
