@@ -5,7 +5,7 @@ import emcpy.io as _io
 import pyGSI.filter_obs as _filter_obs
 
 
-def ensemble_obspace_diag(
+def time_trace(
     datapath,
     date1,
     date2,
