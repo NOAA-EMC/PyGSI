@@ -3,7 +3,6 @@ import os as _os
 import emcpy.utils.dateutils as _dateutils
 import emcpy.io as _io
 import pyGSI.filter_obs as _filter_obs
-import pdb
 
 
 def ensemble_obspace_diag(
@@ -107,8 +106,6 @@ def ensemble_obspace_diag(
                 i_e = expt_names.index(expt_name)
 
                 # Initial read of all the ensemble diag files to get a common list of used observations.
-                # I don't think there is any way around doing this...
-
                 # Preemptively read analysis use flag of all ensemble diags. All ensembles will not
                 # necessarily use the same observations (gross errors checks etc.). Change all use
                 # values that are less than 1 to 0, then multiply each use numpy array by the previous
@@ -121,23 +118,25 @@ def ensemble_obspace_diag(
                     else:
                         diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
                     # Check for if there are any diag files for a particular cycle date.
+                    # If there are none, move to the next cycle date.
                     exists = _os.path.exists(diagfile)
                     if not exists:
                         print(f"diag file for {expt_name} mem{mem:0>4} {date} doesn't exist. Skipping {date}.")
-                        bbreak=True  # need to break here and one loop higher.
+                        bbreak = True  # need to break here and one loop higher.
                         break
 
                     use = _io.netCDF.read_netCDF_var(diagfile, "Analysis_Use_Flag", oneD=True)
                     use[use < 1] = 0
-                    if(mem == 1):
+                    if mem == 1:
                         analysis_use = use
                     else:
                         analysis_use = analysis_use * use
                     mem = mem + 1
+                    # End of initial read of all ensemble diag files.
 
-                if(bbreak):
-                    bbreak=False  # reset break
-                    break
+                if bbreak:
+                    bbreak = False  # reset break
+                    break  # break and move to next cycle time.
 
                 mem = 1
                 while mem <= n_mem:
@@ -151,9 +150,7 @@ def ensemble_obspace_diag(
                         lat = _io.netCDF.read_netCDF_var(diagfile, "Latitude", oneD=True)
                         lon = _io.netCDF.read_netCDF_var(diagfile, "Longitude", oneD=True)
                         pressure = _io.netCDF.read_netCDF_var(diagfile, "Pressure", oneD=True)
-                        #use = _io.netCDF.read_netCDF_var(diagfile, "Analysis_Use_Flag", oneD=True)
-                        #use[use < 1] = 0
-                        use = analysis_use # preemptively read the diag files to get used by all members.
+                        use = analysis_use  # preemptively read the diag files to get used by all members.
                         errorinv = _io.netCDF.read_netCDF_var(diagfile, "Errinv_Final", oneD=True)
 
                         # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
