@@ -256,7 +256,6 @@ def time_trace(
                     cr[i_o, i_e, hour] = (total_spread[i_o, i_e, hour] / rms[i_o, i_e, hour]) ** 2
                     ser[i_o, i_e, hour] = spread[i_o, i_e, hour] / rms[i_o, i_e, hour]
 
-
                 del errorinv
                 del error
                 del itot
