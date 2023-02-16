@@ -86,10 +86,10 @@ def time_trace(
     cr = _np.zeros(shape=(n_ob_type, n_expt, 24))
     ser = _np.zeros(shape=(n_ob_type, n_expt, 24))
 
-    sum_innov = _np.zeros(shape=(n_expt, 24))
-    sum_innovsq = _np.zeros(shape=(n_expt, 24))
-    sum_fcst_ens_var = _np.zeros(shape=(n_expt, 24))
-    sum_ob_err_var = _np.zeros(shape=(n_expt, 24))
+    sum_innov = _np.zeros(shape=(n_ob_type, n_expt, 24))
+    sum_innovsq = _np.zeros(shape=(n_ob_type, n_expt, 24))
+    sum_fcst_ens_var = _np.zeros(shape=(n_ob_type, n_expt, 24))
+    sum_ob_err_var = _np.zeros(shape=(n_ob_type, n_expt, 24))
 
     bbreak = False
 
@@ -233,28 +233,29 @@ def time_trace(
                 innov = ob - fcst_ens_mean
                 num_obs_total[i_o, i_e, hour] = num_obs_total[i_o, i_e, hour] + itot
                 num_obs_assim[i_o, i_e, hour] = num_obs_assim[i_o, i_e, hour] + iasm
-                sum_innov[i_e, hour] = sum_innov[i_e, hour] + _np.sum(innov)
-                sum_innovsq[i_e, hour] = sum_innovsq[i_e, hour] + _np.sum(innov**2)
-                sum_fcst_ens_var[i_e, hour] = sum_fcst_ens_var[i_e, hour] + _np.sum(fcst_ens_var)
-                sum_ob_err_var[i_e, hour] = sum_ob_err_var[i_e, hour] + _np.sum(error_var)
+                sum_innov[i_o, i_e, hour] = sum_innov[i_o, i_e, hour] + _np.sum(innov)
+                sum_innovsq[i_o, i_e, hour] = sum_innovsq[i_o, i_e, hour] + _np.sum(innov**2)
+                sum_fcst_ens_var[i_o, i_e, hour] = sum_fcst_ens_var[i_o, i_e, hour] + _np.sum(fcst_ens_var)
+                sum_ob_err_var[i_o, i_e, hour] = sum_ob_err_var[i_o, i_e, hour] + _np.sum(error_var)
 
                 # end n_times
 
                 if num_obs_assim[i_o, i_e, hour] > 0:
-                    mean_innov = sum_innov[i_e, hour] / num_obs_assim[i_o, i_e, hour]
+                    mean_innov = sum_innov[i_o, i_e, hour] / num_obs_assim[i_o, i_e, hour]
                     bias[i_o, i_e, hour] = -1 * mean_innov
-                    rms[i_o, i_e, hour] = _np.sqrt(sum_innovsq[i_e, hour] / num_obs_assim[i_o, i_e, hour])
-                    mean_ob_err_var = sum_ob_err_var[i_e, hour] / num_obs_assim[i_o, i_e, hour]
+                    rms[i_o, i_e, hour] = _np.sqrt(sum_innovsq[i_o, i_e, hour] / num_obs_assim[i_o, i_e, hour])
+                    mean_ob_err_var = sum_ob_err_var[i_o, i_e, hour] / num_obs_assim[i_o, i_e, hour]
                     ob_error[i_o, i_e, hour] = _np.sqrt(mean_ob_err_var)
 
                 if num_obs_assim[i_o, i_e, hour] > 1:
-                    innov_var = (sum_innovsq[i_e, hour] - num_obs_assim[i_o, i_e, hour] * mean_innov**2) / (num_obs_assim[i_o, i_e, hour] - 1.0)
+                    innov_var = (sum_innovsq[i_o, i_e, hour] - num_obs_assim[i_o, i_e, hour] * mean_innov**2) / (num_obs_assim[i_o, i_e, hour] - 1.0)
                     std_dev[i_o, i_e, hour] = _np.sqrt(innov_var)
-                    mean_fcst_var = sum_fcst_ens_var[i_e, hour] / num_obs_assim[i_o, i_e, hour]
+                    mean_fcst_var = sum_fcst_ens_var[i_o, i_e, hour] / num_obs_assim[i_o, i_e, hour]
                     spread[i_o, i_e, hour] = _np.sqrt(mean_fcst_var)
                     total_spread[i_o, i_e, hour] = _np.sqrt(mean_ob_err_var + mean_fcst_var)
                     cr[i_o, i_e, hour] = (total_spread[i_o, i_e, hour] / rms[i_o, i_e, hour]) ** 2
                     ser[i_o, i_e, hour] = spread[i_o, i_e, hour] / rms[i_o, i_e, hour]
+
 
                 del errorinv
                 del error
