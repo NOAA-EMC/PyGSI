@@ -1,0 +1,52 @@
+diagnostic:
+  conventional:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 120
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 132
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 133
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 180
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 180
+    observation subtype:
+    - 1
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 182
+    observation subtype:
+    - 0
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_q_ges.2020092000.nc4
