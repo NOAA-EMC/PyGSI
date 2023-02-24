@@ -1,24 +1,55 @@
-set1:
-     name:    'MDCRS-OMB-t'
-     var:     't'
-     it:      1
-     use:     'asm'
-     typ:     133
-     styp:    None
-     statdir: /full/path/to/gsistat/files/
-set2:
-     name:    'MDCRS-OMA-t'
-     var:     't'
-     it:      3
-     use:     'asm'
-     typ:     133
-     styp:    None
-     statdir: /full/path/to/gsistat/files/
-figures:
-     pname:  'gsistat_profs.png'
-     tname:  'gsistat_trace.png'
-     tskip:  8
-dates:
-     dt_beg: '2020090800'
-     dt_end: '2020093018'
-     hrs: 6
+LWIR_figs:
+     set1:
+          name:    'LWIR-G17'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0271'
+          statdir: /path/to/set1/gsistat/files
+     set2:
+          name:    'LWIR-G18'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     245
+          styp:    '0272'
+          statdir: /path/to/set2/gsistat/files
+     figopts:
+          errProName:  gsistat_errprofs.png
+          errTraName:  gsistat_errtrace.png
+          penProName:  gsistat_penprofs.png
+          penTraName:  gsistat_pentrace.png
+          tskip:  16
+     dates:
+          dt_beg: '2022100100'
+          dt_end: '2022112018'
+          hrs: 6
+WVct_figs:
+     set1:
+          name:    'WVct-G17'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     246
+          styp:    '0271'
+          statdir: /path/to/set1/gsistat/files
+     set2:
+          name:    'WVct-G18'
+          var:     'uv'
+          it:      1
+          use:     'asm'
+          typ:     246
+          styp:    '0272'
+          statdir: /path/to/set2/gsistat/files
+     figopts:
+          errProName:  gsistat_errprofs_wvct.png
+          errTraName:  gsistat_errtrace_wvct.png
+          penProName:  None
+          penTraName:  None
+          tskip:  16
+     dates:
+          dt_beg: '2022100100'
+          dt_end: '2022112018'
+          hrs: 6
+
