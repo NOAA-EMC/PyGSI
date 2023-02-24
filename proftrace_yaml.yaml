@@ -6,7 +6,7 @@ LWIR_figs:
           use:     'asm'
           typ:     245
           styp:    '0271'
-          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
+          statdir: /path/to/set1/gsistat/files
      set2:
           name:    'LWIR-G18'
           var:     'uv'
@@ -14,7 +14,7 @@ LWIR_figs:
           use:     'asm'
           typ:     245
           styp:    '0272'
-          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
+          statdir: /path/to/set2/gsistat/files
      figopts:
           errProName:  gsistat_errprofs.png
           errTraName:  gsistat_errtrace.png
@@ -33,7 +33,7 @@ WVct_figs:
           use:     'asm'
           typ:     246
           styp:    '0271'
-          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163ctl_sept/
+          statdir: /path/to/set1/gsistat/files
      set2:
           name:    'WVct-G18'
           var:     'uv'
@@ -41,7 +41,7 @@ WVct_figs:
           use:     'asm'
           typ:     246
           styp:    '0272'
-          statdir: /Users/bhoover/Desktop/IMSG/PROJECTS/GOES18/impact_test/stat_tank/v163g18_sept/
+          statdir: /path/to/set2/gsistat/files
      figopts:
           errProName:  gsistat_errprofs_wvct.png
           errTraName:  gsistat_errtrace_wvct.png
