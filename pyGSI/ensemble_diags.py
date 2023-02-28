@@ -11,6 +11,7 @@ def time_trace(
     date2,
     expt_names,
     n_mem,
+    delt,
     skip_enkf_hours=[],
     ob_types=["u"],
     codes_uv=[187],
@@ -33,12 +34,14 @@ def time_trace(
       datapath        : (str) netCDF filename
       date1           : (str "YYYYMMDDHH") start date
       date2           : (str "YYYYMMDDHH") end date
-      skip_enkf_hours : (list of int) hours (UTC) to skip for enkf
       expt_names      : (list of str) experiment names
       n_mem           : (int) number of ensemble members
+      delt            : (int) delta time in hours
+      skip_enkf_hours : (list of int) hours (UTC) to skip for enkf
       ob_types        : (list of str) observation types (u,v,t,q,etc.)
       codes_uv        : (list of int) uv bufr codes used to filter obs
       codes_tq        : (list of int) tq bufr codes used to filter obs
+      hem             : (str) name of hemisphere to plot stats (also None)
       p_max           : (float) maximum pressure (mb) for including observation in calculations
       p_min           : (float) minimum pressure (mb) for including observation in calculations
       lat_max         : (float) maximum latitude (deg N) for including observation in calculations
@@ -72,7 +75,7 @@ def time_trace(
     """
 
     hours = 24
-    dates = _dateutils.daterange(date1, date2, 1)
+    dates = _dateutils.daterange(date1, date2, delt)
     n_expt = len(expt_names)
     n_ob_type = len(ob_types)
     bias = _np.zeros(shape=(n_ob_type, n_expt, 24))
@@ -125,11 +128,6 @@ def time_trace(
                         bbreak = True  # need to break here and one loop higher.
                         break
 
-                    # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
-                    if ob_type == "u" or ob_type == "v":
-                        codes = codes_uv
-                    elif ob_type == "t" or ob_type == "q":
-                        codes = codes_tq
 
                     nc = Dataset(diagfile)
                     use = nc["Analysis_Use_Flag"][:]
@@ -160,6 +158,12 @@ def time_trace(
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
                         errorinv = nc["Errinv_Final"][:]
+
+                        # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
+                        if ob_type == "u" or ob_type == "v":
+                            codes = codes_uv
+                        elif ob_type == "t" or ob_type == "q":
+                            codes = codes_tq
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -212,10 +216,10 @@ def time_trace(
                     omf = omf[used]
 
                     if mem == 1:
-                        fcst_ens_mean = ob - omf
+                        fcst_ens = ob - omf
                         fcst_ens_var = (ob - omf) ** 2
                     else:
-                        fcst_ens_mean = fcst_ens_mean + ob - omf
+                        fcst_ens = fcst_ens + ob - omf
                         fcst_ens_var = fcst_ens_var + (ob - omf) ** 2
                     mem = mem + 1
                     # end while n_mem
@@ -227,7 +231,7 @@ def time_trace(
                 except NameError:
                     break
 
-                fcst_ens_mean = fcst_ens_mean / n_mem
+                fcst_ens_mean = fcst_ens / n_mem
                 if n_mem > 1:
                     fcst_ens_var = (fcst_ens_var - n_mem * fcst_ens_mean**2) / (n_mem - 1)
                 else:
