@@ -1,8 +1,8 @@
 import numpy as _np
 import os as _os
 import emcpy.utils.dateutils as _dateutils
-import emcpy.io as _io
 import pyGSI.filter_obs as _filter_obs
+from netCDF4 import Dataset
 
 
 def time_trace(
@@ -125,7 +125,14 @@ def time_trace(
                         bbreak = True  # need to break here and one loop higher.
                         break
 
-                    use = _io.netCDF.read_netCDF_var(diagfile, "Analysis_Use_Flag", oneD=True)
+                    # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
+                    if ob_type == "u" or ob_type == "v":
+                        codes = codes_uv
+                    elif ob_type == "t" or ob_type == "q":
+                        codes = codes_tq
+
+                    nc = Dataset(diagfile)
+                    use = nc["Analysis_Use_Flag"][:]
                     use[use < 1] = 0
                     if mem == 1:
                         analysis_use = use
@@ -145,26 +152,21 @@ def time_trace(
                         diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
                     else:
                         diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                    nc = Dataset(diagfile)
                     if mem == 1:
-                        code = _io.netCDF.read_netCDF_var(diagfile, "Observation_Type", oneD=True)
-                        lat = _io.netCDF.read_netCDF_var(diagfile, "Latitude", oneD=True)
-                        lon = _io.netCDF.read_netCDF_var(diagfile, "Longitude", oneD=True)
-                        pressure = _io.netCDF.read_netCDF_var(diagfile, "Pressure", oneD=True)
                         use = analysis_use  # preemptively read the diag files to get used by all members.
-                        errorinv = _io.netCDF.read_netCDF_var(diagfile, "Errinv_Final", oneD=True)
-
-                        # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
-                        if ob_type == "u" or ob_type == "v":
-                            codes = codes_uv
-                        elif ob_type == "t" or ob_type == "q":
-                            codes = codes_tq
+                        code = nc["Observation_Type"][:]
+                        lat = nc["Latitude"][:]
+                        lon = nc["Longitude"][:]
+                        pressure = nc["Pressure"][:]
+                        errorinv = nc["Errinv_Final"][:]
 
                         if ob_type == "u":
-                            ob = _io.netCDF.read_netCDF_var(diagfile, "u_Observation", oneD=True)
+                            ob = nc["u_Observation"][:]
                         elif ob_type == "v":
-                            ob = _io.netCDF.read_netCDF_var(diagfile, "v_Observation", oneD=True)
+                            ob = nc["v_Observation"][:]
                         else:
-                            ob = _io.netCDF.read_netCDF_var(diagfile, "Observation", oneD=True)
+                            ob = nc["Observation"][:]
 
                         if ob_type == "q":
                             ob = 1000.0 * ob  # convert from kg/kg to g/kg
@@ -199,11 +201,11 @@ def time_trace(
                         # end if mem==1
 
                     if ob_type == "u":
-                        omf = _io.netCDF.read_netCDF_var(diagfile, "u_Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
                     elif ob_type == "v":
-                        omf = _io.netCDF.read_netCDF_var(diagfile, "v_Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
                     else:
-                        omf = _io.netCDF.read_netCDF_var(diagfile, "Obs_Minus_Forecast_adjusted", oneD=True)
+                        omf = nc["Obs_Minus_Forecast_adjusted"][:]
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
