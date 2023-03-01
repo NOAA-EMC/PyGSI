@@ -10,9 +10,9 @@
 # PyGSIdir=path/to/PyGSI_Directory
 PyGSIdir=../
 OUTDIR=../
-YAML=$PyGSIdir/test_conv_yaml.yaml
+YAML=$PyGSIdir/yamls/diag_conv_t_ges.yaml
 
 # load environment needed to run python scripts
-source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
+# source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
 python $PyGSIdir/scripts/mp_plot_conv_diags.py -n 20 -y $YAML -o $OUTDIR
