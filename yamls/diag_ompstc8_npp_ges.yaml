@@ -1,7 +1,12 @@
 diagnostic:
   data type: omf
+  plot types:
+    - histogram
+    - spatial
   ozone:
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 0

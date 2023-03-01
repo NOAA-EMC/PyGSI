@@ -1,67 +1,102 @@
 diagnostic:
   data type: omf
+  plot types:
+    - histogram
+    - spatial
   ozone:
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 6
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 7
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 8
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 9
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 10
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 11
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 12
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 13
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 14
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 15
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 16
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 17
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 18
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 19
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 20
-  - bias correction:
+  - analysis use:
+    - true
+    bias correction:
     - true
     layer:
     - 21
