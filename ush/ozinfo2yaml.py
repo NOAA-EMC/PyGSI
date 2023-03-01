@@ -78,6 +78,7 @@ def main(config):
                 continue  # only process assimilated obs for now
             dictloop = {
                 'layer': [int(ilayer)],
+                'analysis use': [True],
                 'bias correction': [True]
             }
 
