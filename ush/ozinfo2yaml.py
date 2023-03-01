@@ -71,8 +71,8 @@ def main(config):
         yamlout['diagnostic']['ozone'] = []
 
         # loop through obtypes
-        for iuse, ichan in zip(np.array(obuse)[sensorindx],
-                               np.array(layer)[sensorindx]):
+        for iuse, ilayer in zip(np.array(obuse)[sensorindx],
+                                np.array(layer)[sensorindx]):
 
             if iuse != 1 and not config['monitor']:
                 continue  # only process assimilated obs for now
@@ -114,6 +114,8 @@ if __name__ == '__main__':
                         help='read departures, obs, or H(x)',
                         choices=['omf', 'obs', 'hofx'],
                         default='omf', required=False)
+    parser.add_argument('-m', '--monitor', action='store_true',
+                        help='include monitored obs?', required=False)
 
     args = parser.parse_args()
 

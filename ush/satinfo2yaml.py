@@ -111,6 +111,8 @@ if __name__ == '__main__':
                         help='read departures, obs, or H(x)',
                         choices=['omf', 'obs', 'hofx'],
                         default='omf', required=False)
+    parser.add_argument('-m', '--monitor', action='store_true',
+                        help='include monitored obs?', required=False)
 
     args = parser.parse_args()
 
