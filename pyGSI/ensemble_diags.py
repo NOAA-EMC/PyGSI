@@ -104,6 +104,11 @@ def time_trace(
             continue  # As of right now, the rrfs only runs the EnKF at 18-23Z so skip those off times
         for ob_type in ob_types:
             i_o = ob_types.index(ob_type)
+            # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
+            if ob_type == "u" or ob_type == "v":
+                codes = codes_uv
+            elif ob_type == "t" or ob_type == "q":
+                codes = codes_tq
             for expt_name in expt_names:
                 print(f"{date} {expt_name} {ob_type}")
                 i_e = expt_names.index(expt_name)
@@ -128,7 +133,6 @@ def time_trace(
                         bbreak = True  # need to break here and one loop higher.
                         break
 
-
                     nc = Dataset(diagfile)
                     use = nc["Analysis_Use_Flag"][:]
                     use[use < 1] = 0
@@ -152,18 +156,12 @@ def time_trace(
                         diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
                     nc = Dataset(diagfile)
                     if mem == 1:
-                        use = analysis_use  # preemptively read the diag files to get used by all members.
+                        use = analysis_use
                         code = nc["Observation_Type"][:]
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
                         errorinv = nc["Errinv_Final"][:]
-
-                        # https://emc.ncep.noaa.gov/mmb/data_processing/prepbufr.doc/table_2.htm
-                        if ob_type == "u" or ob_type == "v":
-                            codes = codes_uv
-                        elif ob_type == "t" or ob_type == "q":
-                            codes = codes_tq
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -201,7 +199,6 @@ def time_trace(
                         itot = len(ob)
                         ob = ob[used]
                         iasm = len(ob)
-
                         # end if mem==1
 
                     if ob_type == "u":
