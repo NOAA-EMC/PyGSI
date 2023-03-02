@@ -11,7 +11,7 @@ from datetime import datetime
 start_time = datetime.now()
 
 
-def plotting(sat_config, diag_file, data_type, plot_type, outdir):
+def plotting(ozone_config, diag_file, data_type, plot_type, outdir):
 
     analysis_use = ozone_config['analysis use'][0]
     layer = ozone_config['layer'][0]
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     with open(input_yaml, 'r') as file:
         parsed_yaml_file = yaml.load(file, Loader=yaml.FullLoader)
 
-    work = parsed_yaml_file['diagnostic']['radiance']
+    work = parsed_yaml_file['diagnostic']['ozone']
     data_type = parsed_yaml_file['diagnostic']['data type']
     data_path = parsed_yaml_file['diagnostic']['path']
     try:
@@ -94,5 +94,11 @@ if __name__ == '__main__':
                         "Please add key 'plot types' to yaml and list "
                         "of the plot types you would like to create. "
                         "i.e. ['histogram', 'spatial']")
+
+    p = Pool(processes=nprocs)
+    p.map(partial(plotting, diag_file=data_path,
+                  data_type=data_type,
+                  plot_type=plot_type,
+                  outdir=outdir), work)
 
     print(datetime.now() - start_time)

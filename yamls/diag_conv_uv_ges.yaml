@@ -1,0 +1,447 @@
+diagnostic:
+  conventional:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 220
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 221
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 223
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 224
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 229
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 230
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 231
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 232
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 233
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 234
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 235
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 242
+    observation subtype:
+    - 171
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 242
+    observation subtype:
+    - 172
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 242
+    observation subtype:
+    - 173
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 242
+    observation subtype:
+    - 174
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 243
+    observation subtype:
+    - 55
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 243
+    observation subtype:
+    - 70
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 3
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 4
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 206
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 207
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 209
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 244
+    observation subtype:
+    - 223
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 245
+    observation subtype:
+    - 270
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 245
+    observation subtype:
+    - 271
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 246
+    observation subtype:
+    - 270
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 246
+    observation subtype:
+    - 271
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 247
+    observation subtype:
+    - 270
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 247
+    observation subtype:
+    - 271
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 250
+    observation subtype:
+    - 171
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 250
+    observation subtype:
+    - 172
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 250
+    observation subtype:
+    - 173
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 250
+    observation subtype:
+    - 174
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 252
+    observation subtype:
+    - 171
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 252
+    observation subtype:
+    - 172
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 252
+    observation subtype:
+    - 173
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 252
+    observation subtype:
+    - 174
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 253
+    observation subtype:
+    - 55
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 253
+    observation subtype:
+    - 70
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 254
+    observation subtype:
+    - 55
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 254
+    observation subtype:
+    - 70
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 257
+    observation subtype:
+    - 783
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 257
+    observation subtype:
+    - 784
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 258
+    observation subtype:
+    - 783
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 258
+    observation subtype:
+    - 784
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 259
+    observation subtype:
+    - 783
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 259
+    observation subtype:
+    - 784
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 260
+    observation subtype:
+    - 224
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 260
+    observation subtype:
+    - 225
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 280
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 280
+    observation subtype:
+    - 1
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 282
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 289
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 290
+    observation subtype:
+    - 4
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 290
+    observation subtype:
+    - 3
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_uv_ges.2020092000.nc4
+  plot types:
+    - histogram
+    - spatial
