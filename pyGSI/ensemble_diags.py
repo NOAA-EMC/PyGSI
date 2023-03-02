@@ -303,7 +303,7 @@ def profile(
     error_min=0.000001,
 ):
     """
-    Computes observation space stats into 4D arrays (n_ob_type, n_expt, n_dates, n_levs) and plots the stats as a
+    Computes observation space stats into 4D arrays (n_ob_type, n_expt, n_dates, n_levs) for plotting as a
     vertical profile.
 
     Args:
@@ -393,7 +393,6 @@ def profile(
     cr = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     ser = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
 
-    check_variable = 0
     sum_innov = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_innovsq = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_fcst_ens_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
