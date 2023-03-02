@@ -1,0 +1,103 @@
+diagnostic:
+  data type: omf
+  plot types:
+    - histogram
+    - spatial
+  ozone:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 6
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 7
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 8
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 9
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 10
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 11
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 12
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 13
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 14
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 15
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 16
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 17
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 18
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 19
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 20
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 21
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20230225/18/atmos/diag_ompsnp_npp_ges.2023022518.nc4

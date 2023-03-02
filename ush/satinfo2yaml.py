@@ -113,6 +113,7 @@ if __name__ == '__main__':
                         default='omf', required=False)
     parser.add_argument('-m', '--monitor', action='store_true',
                         help='include monitored obs?', required=False)
+
     args = parser.parse_args()
 
     config = vars(args)

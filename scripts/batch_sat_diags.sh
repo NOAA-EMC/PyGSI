@@ -10,9 +10,9 @@
 # PyGSIdir=path/to/PyGSI_Directory
 PyGSIdir=../
 OUTDIR=../
-YAML=$PyGSIdir/test_sat_yaml.yaml
+YAML=$PyGSIdir/yamls/diag_amsua_metop-a_ges.yaml
 
 # load environment needed to run python scripts
-source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
+# source $PyGSIdir/modulefiles/modulefile.PyGSI.hera.bash
 
 python $PyGSIdir/scripts/mp_plot_sat_diags.py -n 20 -y $YAML -o $OUTDIR
