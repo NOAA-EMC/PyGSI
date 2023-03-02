@@ -281,6 +281,7 @@ def bincount(pindx, n_levs, variable, count):
     variable = _np.bincount(pindx, minlength=n_levs, weights=variable) / count[::-1]
     return variable
 
+
 def profile(
     datapath,
     date1,
