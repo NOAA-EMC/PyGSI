@@ -608,13 +608,13 @@ def profile(
     num_obs_total = _np.sum(num_obs_total, axis=2)
     num_obs_assim = _np.sum(num_obs_assim, axis=2)
     # Average over all cycle times (axis=2)
-    bias = _np.nanmean(bias, axis=2) / n_dates
-    rms = _np.nanmean(rms, axis=2) / n_dates
-    ob_error = _np.nanmean(ob_error, axis=2) / n_dates
-    std_dev = _np.nanmean(std_dev, axis=2) / n_dates
-    spread = _np.nanmean(spread, axis=2) / n_dates
-    total_spread = _np.nanmean(total_spread, axis=2) / n_dates
-    cr = _np.nanmean(cr, axis=2) / n_dates
-    ser = _np.nanmean(ser, axis=2) / n_dates
+    bias = _np.nanmean(bias, axis=2)
+    rms = _np.nanmean(rms, axis=2)
+    ob_error = _np.nanmean(ob_error, axis=2)
+    std_dev = _np.nanmean(std_dev, axis=2)
+    spread = _np.nanmean(spread, axis=2)
+    total_spread = _np.nanmean(total_spread, axis=2)
+    cr = _np.nanmean(cr, axis=2)
+    ser = _np.nanmean(ser, axis=2)
 
     return levs, levs2, levs1, dates, bias, rms, std_dev, spread, ob_error, total_spread, num_obs_total, num_obs_assim, cr, ser
