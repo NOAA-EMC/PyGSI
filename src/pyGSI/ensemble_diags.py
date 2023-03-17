@@ -25,6 +25,8 @@ def time_trace(
     lon_min=0.0,
     error_max=40.0,
     error_min=0.000001,
+    lomfnbc=True,
+    lerrinv_input=True,
 ):
     """
     Computes observation space stats into 3D arrays (n_ob_type, n_expt, 24) and plots the stats as a
@@ -50,6 +52,8 @@ def time_trace(
       lon_min         : (float) minimum latitude (deg E) for including observation in calculations
       error_max       : (float) maximum error standard deviation for including observation in calculations
       error_min       : (float) minimum error standard deviation for including observation in calculations
+      lomfnbc         : (bool) use non-bias corrected observation minus background. =True: use omf_unadjusted.
+      lerrinv_input   : (bool) use input (i.e., non-modified) observation error. =True: use errinv_input
 
     Returns:
       dates         : (list str) list of date strings of the form YYYYMMDDHH based on date1 and date2
@@ -161,7 +165,10 @@ def time_trace(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Input"][:]
+                        if lerrinv_input:
+                            errorinv = nc["Errinv_Input"][:]
+                        else:
+                            errorinv = nc["Errinv_Final"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -201,12 +208,21 @@ def time_trace(
                         iasm = len(ob)
                         # end if mem==1
 
-                    if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
-                    elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                    if lomfnbc:
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_unadjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_unadjusted"][:]
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_adjusted"][:]
+
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
@@ -302,6 +318,8 @@ def profile(
     lon_min=0.0,
     error_max=40.0,
     error_min=0.000001,
+    lomfnbc=True,
+    lerrinv_input=True,
 ):
     """
     Computes observation space stats into 4D arrays (n_ob_type, n_expt, n_dates, n_levs) for plotting as a
@@ -327,6 +345,8 @@ def profile(
       lon_min         : (float) minimum latitude (deg E) for including observation in calculations
       error_max       : (float) maximum error standard deviation for including observation in calculations
       error_min       : (float) minimum error standard deviation for including observation in calculations
+      lomfnbc         : (bool) use non-bias corrected observation minus background. =True: use omf_unadjusted.
+      lerrinv_input   : (bool) use input (i.e., non-modified) observation error. =True: use errinv_input
 
     Returns:
       dates         : (list str) list of date strings of the form YYYYMMDDHH based on date1 and date2
@@ -476,7 +496,10 @@ def profile(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Input"][:]
+                        if lerrinv_input:
+                            errorinv = nc["Errinv_Input"][:]
+                        else:
+                            errorinv = nc["Errinv_Final"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -524,12 +547,21 @@ def profile(
                         iasm, bin_edges = _np.histogram(pressure, pbins[::-1])
                         # end if mem==1
 
-                    if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
-                    elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                    if lomfnbc:
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_unadjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_unadjusted"][:]
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_adjusted"][:]
+
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
