@@ -122,9 +122,9 @@ def time_trace(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     # Check for if there are any diag files for a particular cycle date.
                     # If there are none, move to the next cycle date.
                     exists = _os.path.exists(diagfile)
@@ -151,9 +151,9 @@ def time_trace(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     nc = Dataset(diagfile)
                     if mem == 1:
                         use = analysis_use
@@ -161,7 +161,7 @@ def time_trace(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Final"][:]
+                        errorinv = nc["Errinv_Input"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -202,11 +202,11 @@ def time_trace(
                         # end if mem==1
 
                     if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
                     elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["Obs_Minus_Forecast_unadjusted"][:]
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
@@ -437,9 +437,9 @@ def profile(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     # Check for if there are any diag files for a particular cycle date.
                     # If there are none, move to the next cycle date.
                     exists = _os.path.exists(diagfile)
@@ -466,9 +466,9 @@ def profile(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     nc = Dataset(diagfile)
                     if mem == 1:
                         use = analysis_use
@@ -476,7 +476,7 @@ def profile(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Final"][:]
+                        errorinv = nc["Errinv_Input"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -525,11 +525,11 @@ def profile(
                         # end if mem==1
 
                     if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
                     elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_adjusted"][:]
+                        omf = nc["Obs_Minus_Forecast_unadjusted"][:]
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
