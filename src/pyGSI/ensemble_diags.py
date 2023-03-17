@@ -403,29 +403,29 @@ def profile(
     for nlev in range(18, n_levs):
         levs[nlev] = 0.5 * (levs1[nlev] + levs2[nlev])
 
-    bias = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    rms = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    std_dev = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    total_spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    ob_error = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
+    # Initialize arrays with missing values.
+    bias = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    rms = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    std_dev = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    total_spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    ob_error = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    cr = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    ser = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+
+    # Initialize arrays with zeros.
     num_obs_assim = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     num_obs_total = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    cr = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    ser = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     sum_innov = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_innovsq = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_fcst_ens_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_fcst_ens = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_ob_err_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_ob_err = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     mean_innov = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     mean_ob_err_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     innov_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     mean_fcst_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     iasms = _np.zeros(shape=(n_dates, n_levs))
 
     bbreak = False
