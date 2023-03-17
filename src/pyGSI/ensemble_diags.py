@@ -25,6 +25,8 @@ def time_trace(
     lon_min=0.0,
     error_max=40.0,
     error_min=0.000001,
+    use_bc_omf=False,
+    use_input_err=True,
 ):
     """
     Computes observation space stats into 3D arrays (n_ob_type, n_expt, 24) and plots the stats as a
@@ -50,6 +52,8 @@ def time_trace(
       lon_min         : (float) minimum latitude (deg E) for including observation in calculations
       error_max       : (float) maximum error standard deviation for including observation in calculations
       error_min       : (float) minimum error standard deviation for including observation in calculations
+      use_bc_omf      : (bool) use bias corrected observation minus background (Obs_Minus_Forecast_adjusted)
+      use_input_err   : (bool) use input (i.e., non-modified) observation error (Error_Input)
 
     Returns:
       dates         : (list str) list of date strings of the form YYYYMMDDHH based on date1 and date2
@@ -122,9 +126,9 @@ def time_trace(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     # Check for if there are any diag files for a particular cycle date.
                     # If there are none, move to the next cycle date.
                     exists = _os.path.exists(diagfile)
@@ -151,9 +155,9 @@ def time_trace(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     nc = Dataset(diagfile)
                     if mem == 1:
                         use = analysis_use
@@ -161,7 +165,10 @@ def time_trace(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Final"][:]
+                        if use_input_err:
+                            errorinv = nc["Errinv_Input"][:]
+                        else:
+                            errorinv = nc["Errinv_Final"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -201,12 +208,21 @@ def time_trace(
                         iasm = len(ob)
                         # end if mem==1
 
-                    if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
-                    elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                    if use_bc_omf:
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_adjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_adjusted"][:]
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_unadjusted"][:]
+
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
@@ -302,6 +318,8 @@ def profile(
     lon_min=0.0,
     error_max=40.0,
     error_min=0.000001,
+    use_bc_omf=False,
+    use_input_err=True,
 ):
     """
     Computes observation space stats into 4D arrays (n_ob_type, n_expt, n_dates, n_levs) for plotting as a
@@ -327,6 +345,8 @@ def profile(
       lon_min         : (float) minimum latitude (deg E) for including observation in calculations
       error_max       : (float) maximum error standard deviation for including observation in calculations
       error_min       : (float) minimum error standard deviation for including observation in calculations
+      use_bc_omf      : (bool) use bias corrected observation minus background (Obs_Minus_Forecast_adjusted)
+      use_input_err   : (bool) use input (i.e., non-modified) observation error (Error_Input)
 
     Returns:
       dates         : (list str) list of date strings of the form YYYYMMDDHH based on date1 and date2
@@ -383,29 +403,29 @@ def profile(
     for nlev in range(18, n_levs):
         levs[nlev] = 0.5 * (levs1[nlev] + levs2[nlev])
 
-    bias = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    rms = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    std_dev = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    total_spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    ob_error = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
+    # Initialize arrays with missing values.
+    bias = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    rms = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    std_dev = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    total_spread = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    ob_error = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    cr = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+    ser = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs)) * _np.nan
+
+    # Initialize arrays with zeros.
     num_obs_assim = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     num_obs_total = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    cr = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-    ser = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     sum_innov = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_innovsq = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_fcst_ens_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_fcst_ens = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_ob_err_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     sum_ob_err = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     mean_innov = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     mean_ob_err_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     innov_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
     mean_fcst_var = _np.zeros(shape=(n_ob_type, n_expt, n_dates, n_levs))
-
     iasms = _np.zeros(shape=(n_dates, n_levs))
 
     bbreak = False
@@ -437,9 +457,9 @@ def profile(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     # Check for if there are any diag files for a particular cycle date.
                     # If there are none, move to the next cycle date.
                     exists = _os.path.exists(diagfile)
@@ -466,9 +486,9 @@ def profile(
                 while mem <= n_mem:
                     memid = str(mem).zfill(4)
                     if ob_type == "u" or ob_type == "v":
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_uv_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_uv_ges.{date}.nc4")
                     else:
-                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/diag_conv_{ob_type}_ges.{date}.nc4")
+                        diagfile = _os.path.join(datapath, f"{expt_name}/{date}/mem{memid}/observer_gsi/diag_conv_{ob_type}_ges.{date}.nc4")
                     nc = Dataset(diagfile)
                     if mem == 1:
                         use = analysis_use
@@ -476,7 +496,10 @@ def profile(
                         lat = nc["Latitude"][:]
                         lon = nc["Longitude"][:]
                         pressure = nc["Pressure"][:]
-                        errorinv = nc["Errinv_Final"][:]
+                        if use_input_err:
+                            errorinv = nc["Errinv_Input"][:]
+                        else:
+                            errorinv = nc["Errinv_Final"][:]
 
                         if ob_type == "u":
                             ob = nc["u_Observation"][:]
@@ -524,12 +547,21 @@ def profile(
                         iasm, bin_edges = _np.histogram(pressure, pbins[::-1])
                         # end if mem==1
 
-                    if ob_type == "u":
-                        omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
-                    elif ob_type == "v":
-                        omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                    if use_bc_omf:
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_adjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_adjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_adjusted"][:]
                     else:
-                        omf = nc["Obs_Minus_Forecast_adjusted"][:]
+                        if ob_type == "u":
+                            omf = nc["u_Obs_Minus_Forecast_unadjusted"][:]
+                        elif ob_type == "v":
+                            omf = nc["v_Obs_Minus_Forecast_unadjusted"][:]
+                        else:
+                            omf = nc["Obs_Minus_Forecast_unadjusted"][:]
+
                     if ob_type == "q":
                         omf = 1000.0 * omf  # convert from kg/kg to g/kg
 
