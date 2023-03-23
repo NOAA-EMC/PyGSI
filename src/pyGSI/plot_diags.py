@@ -265,7 +265,7 @@ def _no_data_histogram(data, metadata, outdir):
     return
 
 
-def _create_hist_plot(data, metadata, outdir, color, legend,
+def _create_hist_plot(data, metadata, var_yaml, outdir, color, legend,
                       grid, plot_mean, plot_zero, title,
                       date_title, xlabel, ylabel,
                       annotate_stats):
@@ -280,7 +280,8 @@ def _create_hist_plot(data, metadata, outdir, color, legend,
     eval_type = 'diff' if metadata['Diag Type'] in \
         ['omf', 'oma'] else 'magnitude'
     varspecs = VariableSpecs(variable=spec_variable,
-                             eval_type=eval_type)
+                             eval_type=eval_type,
+                             var_yaml=var_yaml)
     metadata['Variable'] = varspecs.name
 
     # Plot special histogram for if len of data is 0 or 1
@@ -407,7 +408,7 @@ def _no_data_map(domain, projection, metadata, outdir):
 
 
 def _create_map_plot(lats, lons, data, metadata,
-                     outdir, domain, projection,
+                     var_yaml, outdir, domain, projection,
                      title, date_title, xlabel,
                      ylabel, annotate_stats,
                      colorbar, cbar_label, grid):
@@ -420,7 +421,8 @@ def _create_map_plot(lats, lons, data, metadata,
     spec_variable = _varspecs_name(metadata['Variable'])
 
     varspecs = VariableSpecs(variable=spec_variable,
-                             eval_type=eval_type)
+                             eval_type=eval_type,
+                             var_yaml=var_yaml)
     metadata['Variable'] = varspecs.name
 
     # If no data, plot empty map
@@ -502,7 +504,7 @@ def _create_map_plot(lats, lons, data, metadata,
     return
 
 
-def plot_histogram(data, metadata, outdir='./', color='tab:blue',
+def plot_histogram(data, metadata, var_yaml, outdir='./', color='tab:blue',
                    legend=True, grid=False, plot_mean=True,
                    plot_zero=True, title=None, date_title=None,
                    xlabel=None, ylabel=None,
@@ -544,16 +546,16 @@ def plot_histogram(data, metadata, outdir='./', color='tab:blue',
             metadata['Anl Use Type'] = anl_type
 
             _create_hist_plot(data[anl_type],
-                              metadata, outdir,
-                              color, legend, grid,
-                              plot_mean, plot_zero,
+                              metadata, var_yaml,
+                              outdir, color, legend,
+                              grid, plot_mean, plot_zero,
                               title, date_title,
                               xlabel, ylabel,
                               annotate_stats)
 
     else:
         metadata['Anl Use Type'] = None
-        _create_hist_plot(data, metadata, outdir, color,
+        _create_hist_plot(data, metadata, var_yaml, outdir, color,
                           legend, grid, plot_mean, plot_zero,
                           title, date_title, xlabel, ylabel,
                           annotate_stats)
@@ -561,7 +563,7 @@ def plot_histogram(data, metadata, outdir='./', color='tab:blue',
     return
 
 
-def plot_map(lats, lons, data, metadata, outdir='./', domain='global',
+def plot_map(lats, lons, data, metadata, var_yaml, outdir='./', domain='global',
              projection='plcarr', title=None, date_title=None,
              xlabel=None, ylabel=None, annotate_stats=True, colorbar=True,
              cbar_label=None, grid=False):
@@ -604,7 +606,7 @@ def plot_map(lats, lons, data, metadata, outdir='./', domain='global',
             metadata['Anl Use Type'] = anl_type
 
             _create_map_plot(lats[anl_type], lons[anl_type],
-                             data[anl_type], metadata,
+                             data[anl_type], metadata, var_yaml,
                              outdir, domain, projection,
                              title, date_title, xlabel,
                              ylabel, annotate_stats,
@@ -612,9 +614,9 @@ def plot_map(lats, lons, data, metadata, outdir='./', domain='global',
 
     else:
         metadata['Anl Use Type'] = None
-        _create_map_plot(lats, lons, data, metadata, outdir,
-                         domain, projection, title, date_title,
-                         xlabel, ylabel, annotate_stats,
+        _create_map_plot(lats, lons, data, metadata, var_yaml,
+                         outdir, domain, projection, title,
+                         date_title, xlabel, ylabel, annotate_stats,
                          colorbar, cbar_label, grid)
 
     return

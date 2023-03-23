@@ -11,7 +11,7 @@ from datetime import datetime
 start_time = datetime.now()
 
 
-def plotting(ozone_config, diag_file, data_type, plot_type, outdir):
+def plotting(ozone_config, diag_file, data_type, plot_type, var_yaml, outdir):
 
     analysis_use = ozone_config['analysis use'][0]
     layer = ozone_config['layer'][0]
@@ -55,9 +55,9 @@ def plotting(ozone_config, diag_file, data_type, plot_type, outdir):
         data = df[dict_key][column].to_numpy()
 
     if np.isin('histogram', plot_type):
-        plot_histogram(data, metadata, outdir)
+        plot_histogram(data, metadata, var_yaml, outdir)
     if np.isin('spatial', plot_type):
-        plot_map(lats, lons, data, metadata, outdir)
+        plot_map(lats, lons, data, metadata, var_yaml, outdir)
 
 
 if __name__ == '__main__':
@@ -70,6 +70,8 @@ if __name__ == '__main__':
                     help="Path to yaml file with diag data")
     ap.add_argument("-o", "--outdir",
                     help="Out directory where files will be saved")
+    ap.add_argument("-v", "--varyaml", required=False,
+                    help="Path to yaml file with specific variable information")
 
     myargs = ap.parse_args()
 
@@ -95,10 +97,13 @@ if __name__ == '__main__':
                         "of the plot types you would like to create. "
                         "i.e. ['histogram', 'spatial']")
 
+    variable_yaml = myargs.varyaml if myargs.varyaml else None
+
     p = Pool(processes=nprocs)
     p.map(partial(plotting, diag_file=data_path,
                   data_type=data_type,
                   plot_type=plot_type,
+                  var_yaml=variable_yaml,
                   outdir=outdir), work)
 
     print(datetime.now() - start_time)
