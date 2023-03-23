@@ -79,7 +79,7 @@ if __name__ == '__main__':
                     help="Path to yaml file with specific variable information")
 
     myargs = ap.parse_args()
-    
+
     if myargs.nprocs:
         nprocs = int(myargs.nprocs)
     else:
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     with open(diag_yaml, 'r') as file:
         parsed_diag_yaml = yaml.load(file, Loader=yaml.FullLoader)
-        
+
     work = parsed_diag_yaml['diagnostic']['radiance']
     data_type = parsed_diag_yaml['diagnostic']['data type']
     data_path = parsed_diag_yaml['diagnostic']['path']
@@ -101,9 +101,9 @@ if __name__ == '__main__':
                         "Please add key 'plot types' to yaml and list "
                         "of the plot types you would like to create. "
                         "i.e. ['histogram', 'spatial']")
-        
+
     variable_yaml = myargs.varyaml if myargs.varyaml else None
-            
+
     p = Pool(processes=nprocs)
     p.map(partial(plotting, diag_file=data_path,
                   data_type=data_type,
