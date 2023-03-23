@@ -96,7 +96,7 @@ if __name__ == '__main__':
                         "Please add key 'plot types' to yaml and list "
                         "of the plot types you would like to create. "
                         "i.e. ['histogram', 'spatial']")
-        
+
     variable_yaml = myargs.varyaml if myargs.varyaml else None
 
     p = Pool(processes=nprocs)

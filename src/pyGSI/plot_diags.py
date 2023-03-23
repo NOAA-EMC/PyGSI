@@ -546,7 +546,7 @@ def plot_histogram(data, metadata, var_yaml, outdir='./', color='tab:blue',
             metadata['Anl Use Type'] = anl_type
 
             _create_hist_plot(data[anl_type],
-                              metadata, var_yaml, 
+                              metadata, var_yaml,
                               outdir, color, legend,
                               grid, plot_mean, plot_zero,
                               title, date_title,
@@ -614,7 +614,7 @@ def plot_map(lats, lons, data, metadata, var_yaml, outdir='./', domain='global',
 
     else:
         metadata['Anl Use Type'] = None
-        _create_map_plot(lats, lons, data, metadata, var_yaml, 
+        _create_map_plot(lats, lons, data, metadata, var_yaml,
                          outdir, domain, projection, title,
                          date_title, xlabel, ylabel, annotate_stats,
                          colorbar, cbar_label, grid)
