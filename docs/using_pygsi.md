@@ -2,7 +2,7 @@
 
 ## Using `diags.py`
 
-[`diags.py`](https://github.com/NOAA-EMC/PyGSI/blob/develop/src/pyGSI/diags.py) is the mian driver script for extracting data from GSI diagnostic netCDF4 files. It performs all of the heavy lifting to read, filter, and perform quality control of the data so the user does not have to do this themselves. Given the data type and a diagnostic file, `diags.py` will return the user a [Pandas](https://pandas.pydata.org/docs/index.html) dataframe they can use to perform their analysis.
+[`diags.py`](https://github.com/NOAA-EMC/PyGSI/blob/develop/src/pyGSI/diags.py) is the main driver script for extracting data from GSI diagnostic netCDF4 files. It performs all of the heavy lifting to read, filter, and perform quality control of the data so the user does not have to do this themselves. Given the data type and a diagnostic file, `diags.py` will return the user a [Pandas](https://pandas.pydata.org/docs/index.html) dataframe they can use to perform their analysis.
 
 ### Getting Started
 
