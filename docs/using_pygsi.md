@@ -10,7 +10,7 @@
 
 ### Conventional
 
-If the user is interested in using conventional data, the following code would return a datframe including all data from the inputted netCDF4 file:
+If the user is interested in using conventional data, the following code would return a dataframe including all data from the inputted netCDF4 file:
 
 ```
 from PyGSI.diags import Conventional
@@ -69,7 +69,7 @@ diag.list_stationids()
 
 ### Radiance
 
-If the user is interested in using radiance data, the following code would return a datframe including all data from the inputted netCDF4 file:
+If the user is interested in using radiance data, the following code would return a dataframe including all data from the inputted netCDF4 file:
 
 ```
 from PyGSI.diags import Radiance
@@ -122,7 +122,7 @@ diag.list_qcflags()
 
 ### Ozone
 
-If the user is interested in using ozone data, the following code would return a datframe including all data from the inputted netCDF4 file:
+If the user is interested in using ozone data, the following code would return a dataframe including all data from the inputted netCDF4 file:
 
 ```
 from PyGSI.diags import Ozone
