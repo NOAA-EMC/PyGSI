@@ -1,0 +1,3 @@
+# YAML File Example
+
+Example YAML files can be found in the [`PyGSI/yaml`](https://github.com/NOAA-EMC/PyGSI/tree/develop/yamls) directory. There are several examples including those for radiance, conventional, and ozone observations. These examples were generated using information from global input files that can be found in [`PyGSI/fix`](https://github.com/NOAA-EMC/PyGSI/tree/develop/fix). Users can create their own YAML files from scratch following these examples, or can create them by following the directions in the next section.
