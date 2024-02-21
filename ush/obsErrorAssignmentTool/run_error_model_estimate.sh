@@ -1,13 +1,13 @@
 #!/bin/sh -xvf
 # run_error_model_estimate.sh
-# This script is intended to simplify/automate extracting diag files and obs error parameters estimations.
-# This script will Call the python script to:
+# This script is intended to simplify/automate obs error parameters estimations.
+# This script will call the python script to:
 # - Compute error parameters and produce a csv file
 # - Plot mean cloud amount vs FG departure std.dev along with original error parameters
 
 #--------------- User modified options below -----------------
 
-# specify the directory for diag files
+# specify the directory for input config files
 config_path=/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/ush/obsErrorAssignmentTool/config_files/ 
 
 # specify the global_satinfo.txt and cloudy_radiance_info.txt path in GSI-fix directory
@@ -29,7 +29,7 @@ mkdir -p $output
 machine=${machine:-hera} 
 
 if [ $machine = orion ]; then
-   PyGSI=${PyGSI:-/work2/noaa/da/Azadeh.Gholoubi/git/GDASApp/} # Change this to your own branch
+   PyGSI=${PyGSI:-/Path/to/PyGSI/} # Change this to your own branch
 elif [ $machine = hera ]; then
    PyGSI=${PyGSI:-/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/} # Change this to your own branch
 else
