@@ -21,7 +21,7 @@ Before running the script, the user needs to specify certain parameters in `run_
 - `sensor`: Sensor name
 - `Channels`: Channel numbers (enclosed in quotes, separated by commas, e.g., "1,2,3,5")
 - `bin_size`: Size of bin for plotting (default=0.05)
-- `bindir`: Output file name
+- `bindir`: Output folder name
 - `qc_flag`: QC flag for filtering (default=0)
 - `PyGSI`: Path to the PyGSI branch on Hera or Orion to load the proper environment
 
