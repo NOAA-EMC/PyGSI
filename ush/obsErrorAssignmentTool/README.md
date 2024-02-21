@@ -10,7 +10,7 @@ This tool automates the estimation of observation error parameters. It consists 
    - Mean cloud amount vs. first guess departure standard deviation
    - Number of observations in each defined bin of mean cloud amount
    - Un-normalized and normalized first guess departure
-   - Histogram of Errors at each bin
+   - Histogram of Errors 
 3. Compute error parameters (`error_cld`, `error_clr`, `clw_clr`, and `clw_cld`) and create CSV files for each channel.
 
 ## Usage
