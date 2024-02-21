@@ -7,11 +7,11 @@ This tool automates the estimation of observation error parameters. It consists 
 
 1. Compute mean cloud amount and first guess standard deviation.
 2. Generate four plots:
-   - Mean cloud amount vs. first guess departure standard deviation
+   - Standard deviation of FG departures in each channel as a function of mean cloud amount: (clw_guess + clw_obs)/2
    - Number of observations in each defined bin of mean cloud amount
-   - Un-normalized and normalized first guess departure
+   - Histogram of un-normalised and also normalised FG departures in each channel
    - Histogram of Errors 
-3. Compute error parameters (`error_cld`, `error_clr`, `clw_clr`, and `clw_cld`) and create CSV files for each channel.
+3. Estimate error parameters (`error_cld`, `error_clr`, `clw_clr`, and `clw_cld`) and create CSV files for each channel.
 
 ## Usage
 Before running the script, the user needs to specify certain parameters in `run_error_model_estimate.sh`:
