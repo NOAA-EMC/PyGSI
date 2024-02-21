@@ -23,7 +23,6 @@ def errorAssignment(nc4_files, channel, BinValue, qc_num):
         QCData["%s_%s" % (BinLow, BinHigh)] = np.array([])
         AllData["%s_%s" % (BinLow, BinHigh)] = np.array([])
 
-    # for fileNo, filePath in enumerate(nc4_files[0:2]):
     for fileNo, filePath in enumerate(nc4_files):
         print(fileNo + 1)
         file = xr.open_dataset(filePath)
@@ -55,12 +54,10 @@ def errorAssignment(nc4_files, channel, BinValue, qc_num):
             file["clw_guess"][channelNum].values + file["clw_obs"][channelNum].values
         ) / 2
 
-        # CheckBool = (abs(BT) < 1000)
         CheckBool = (BT < 500) & (BT > 50)
         O_F = O_F[CheckBool]
         clw_mean = clw_mean[CheckBool]
         for i in range(BinsLength):
-            #           BinLow, BinHigh = str(round(Bins[i],2)), str(round(Bins[i + 1],2))
             BinLow, BinHigh = str(round(Bins[i], 2)), str(round(Bins[i + 1], 2))
             CheckBool = (clw_mean <= float(BinHigh)) & (clw_mean >= float(BinLow))
             ThisFile_O_F = O_F[CheckBool]
@@ -268,14 +265,15 @@ def plots(
     pdf_norm = kde_norm.evaluate(x_norm)
     ax3.plot(x_norm, pdf_norm, label="normalized", color="red")
     ax3.legend(loc="upper right", markerscale=2, scatterpoints=1)
-    ax3.set_xlabel("FG departure")
-    ax3.set_ylabel("PDF")
+    ax3.set_xlabel("FG departure",fontsize=14)
+    ax3.set_ylabel("PDF",fontsize=14)
     ax3.set_yscale("log")
     ax3.set_xlim(-10, 10)
 
     ax4 = fig.add_subplot(2, 2, 4)
     ax4.hist(AllErrors, bins=100, density=True, alpha=0.5, label="Un-normalized")
-    ax4.set_xlabel("Errors")
+    ax4.set_xlabel("Errors",fontsize=14)
+    ax4.legend(loc="upper right", markerscale=2, scatterpoints=1)
 
     plt.tight_layout()
     plt.savefig(output_path + "%s_ch%d.png" % (sensor, channel))
