@@ -1,6 +1,6 @@
-## Feb 2024
-## Azadeh Gholoubi
-# Python Tool for Observation Error Assignment
+### February 2024
+### Azadeh Gholoubi
+# Python Tool for Observation Error Estimation
 
 ## Overview
 This tool automates the estimation of observation error parameters. It consists of a shell script, `run_error_model_estimate.sh`, which invokes the `ObsErrorAssignment.py` Python script to perform the following tasks:
