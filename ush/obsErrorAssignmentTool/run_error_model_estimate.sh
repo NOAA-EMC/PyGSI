@@ -1,13 +1,14 @@
 #!/bin/sh -xvf
 # run_error_model_estimate.sh
 # This script is intended to simplify/automate obs error parameters estimations.
-# This script will call the python script to:
+# This script will call the python script
 # - Compute error parameters and produce a csv file
 # - Plot mean cloud amount vs FG departure std.dev along with original error parameters
 
 #--------------- User modified options below -----------------
 
-# specify the directory for input config files
+# specify the path to the input diag files
+
 config_path=/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/ush/obsErrorAssignmentTool/config_files/ 
 
 # specify the global_satinfo.txt and cloudy_radiance_info.txt path in GSI-fix directory
@@ -21,7 +22,7 @@ bin_size=0.005
 bindir=bin005
 qc_flag=0
 
-# specify the directory for saving output plots and csv file
+# specify the path to saving output plots and csv file
 output=/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/ush/obsErrorAssignmentTool/output/$bindir/
 
 mkdir -p $output
