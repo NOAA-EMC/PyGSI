@@ -1,4 +1,4 @@
-## 2/20/2024
+## Feb 2024
 ## Azadeh Gholoubi
 # Python Tool for Observation Error Assignment
 
