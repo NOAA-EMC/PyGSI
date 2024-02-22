@@ -297,13 +297,13 @@ def collect_statistics(setdict):
             # entries in a list
             # if they are not a list, assert them as a list
             it = sd['it']
-            it = [it] if type(it) != list else it
+            it = [it] if type(it) is not list else it
             use = sd['use']
-            use = [use] if type(use) != list else use
+            use = [use] if type(use) is not list else use
             typ = sd['typ']
-            typ = [typ] if type(typ) != list else typ
+            typ = [typ] if type(typ) is not list else typ
             styp = sd['styp']
-            styp = [styp] if type(styp) != list else styp
+            styp = [styp] if type(styp) is not list else styp
             # extract variable from gdas
             stat = gdas.extract(var)  # t, uv, q, etc.
             #             date         it           obs          use
