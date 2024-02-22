@@ -265,14 +265,14 @@ def plots(
     pdf_norm = kde_norm.evaluate(x_norm)
     ax3.plot(x_norm, pdf_norm, label="normalized", color="red")
     ax3.legend(loc="upper right", markerscale=2, scatterpoints=1)
-    ax3.set_xlabel("FG departure",fontsize=14)
-    ax3.set_ylabel("PDF",fontsize=14)
+    ax3.set_xlabel("FG departure", fontsize=14)
+    ax3.set_ylabel("PDF", fontsize=14)
     ax3.set_yscale("log")
     ax3.set_xlim(-10, 10)
 
     ax4 = fig.add_subplot(2, 2, 4)
     ax4.hist(AllErrors, bins=100, density=True, alpha=0.5, label="Un-normalized")
-    ax4.set_xlabel("Errors",fontsize=14)
+    ax4.set_xlabel("Errors", fontsize=14)
     ax4.legend(loc="upper right", markerscale=2, scatterpoints=1)
 
     plt.tight_layout()
