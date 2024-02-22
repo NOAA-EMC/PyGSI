@@ -8,7 +8,20 @@ import xarray as xr
 from scipy.stats import gaussian_kde
 
 
-def errorAssignment(nc4_files, channel, BinValue, qc_num):
+def calculate_statistics(nc4_files, channel, BinValue, qc_num):
+    """
+    Calculate observation statistics necessary for estimating observation error parameters.
+
+    Parameters:
+        nc4_files (list): List of paths to netCDF4 files.
+        channel (int): Channel number.
+        bin_value (float): Size of the bin for data categorization.
+        qc_num (int): Quality control flag for filtering.
+
+    Returns:
+        Tuple: QCDataSummaryDF (DataFrame), AllDataSummaryDF (DataFrame),
+        All_o_f (numpy.ndarray), All_clw (numpy.ndarray).
+    """
     Bins = np.arange(0, 2.51, BinValue)
     BinsLength = len(Bins) - 1
 
@@ -119,7 +132,20 @@ def errorAssignment(nc4_files, channel, BinValue, qc_num):
 
 
 # find the second point
-def findDesiredX(QCDataSummaryDF):
+def find_clw_cloudy(QCDataSummaryDF):
+    """
+    Find the clw_cld parameter value based on the maximum slope of the FG Departure std.Dev.
+
+    This function calculates the clw_cld parameter value based on the maximum slope
+    of the FG Departure std.Dev, which changes as a function of the mean cloud amount.
+
+    Parameters:
+        QCDataSummaryDF (DataFrame): DataFrame summarizing QC data.
+
+    Returns:
+        float: The calculated clw_cld parameter value.
+
+    """
     QCDataSummaryDF["x"] = QCDataSummaryDF["Mean cloud Amount"]
     QCDataSummaryDF["y"] = QCDataSummaryDF["FG Departure std.Dev"]
     x = QCDataSummaryDF["x"].values
@@ -145,23 +171,44 @@ def findDesiredX(QCDataSummaryDF):
     return clw_cld + XOfFirst
 
 
-def ErrorEstimation(QCDataSummaryDF):
+def error_estimation(QCDataSummaryDF):
+    """
+    Estimate observation error parameters based on the provided QCDataSummaryDF DataFrame.
+
+    Parameters:
+        QCDataSummaryDF (DataFrame): DataFrame summarizing QC data.
+
+    Returns:
+        Tuple: x (list), y (list), and error parameters (list).
+    """
     cLW_mean = QCDataSummaryDF["Mean cloud Amount"].values
     err = QCDataSummaryDF["FG Departure std.Dev"].values
     ErrCld = np.max(err)
     ErrClr = err[0]
     lastX = cLW_mean[-1]
     Clw_clr = cLW_mean[0]
-    clw_cld = findDesiredX(QCDataSummaryDF)
+    clw_cld = find_clw_cloudy(QCDataSummaryDF)
     x = [0, Clw_clr, clw_cld, lastX]
     y = [ErrClr, ErrClr, ErrCld, ErrCld]
     errorParam = [ErrCld, ErrClr, Clw_clr, clw_cld]
     return x, y, errorParam
 
 
-def read_previous_par(
+def read_previous_parameters(
     sensor_name, channel_num, path_cloudy_radiance_info, path_global_satinfo
 ):
+    """
+    Read previous parameters from specified files.
+
+    Parameters:
+        sensor_name (str): Name of the sensor.
+        channel_num (int): Channel number.
+        path_cloudy_radiance_info (str): Path to cloudy radiance info file.
+        path_global_satinfo (str): Path to global satinfo file.
+
+    Returns:
+         Tuple: x1 (list), y1 (list) values read from the files.
+    """
     # first from cloudy_radiance file
     senseor_generic_name = sensor_name.split("_")[0]
     with open(path_cloudy_radiance_info) as TXTFile:
@@ -198,6 +245,22 @@ def plots(
     All_o_f,
     AllErrors,
 ):
+    """
+    Generate plots based on provided data.
+
+    Parameters:
+        AllDataSummaryDF (DataFrame): DataFrame summarizing all data.
+        QCDataSummaryDF (DataFrame): DataFrame summarizing QC data.
+        output_path (str): Path to save the plots.
+        sensor (str): Sensor name.
+        channel (int): Channel number.
+        x (list): List of x values.
+        y (list): List of y values.
+        x1 (list): List of x1 values.
+        y1 (list): List of y1 values.
+        All_o_f (numpy.ndarray): Array containing all observed minus forecast values.
+        AllErrors (numpy.ndarray): Array containing all errors.
+    """
     fig = plt.figure(figsize=(8, 12))
     ax1 = fig.add_subplot(2, 2, 1)
     ax1.scatter(
@@ -280,7 +343,18 @@ def plots(
     plt.close()
 
 
-def GetAllErrors(x, y, All_clw):
+def get_all_errors(x, y, All_clw):
+    """
+    Get all errors based on provided parameters.
+
+    Parameters:
+        x (list): List of x values.
+        y (list): List of y values.
+        All_clw (numpy.ndarray): Array containing all cloud values.
+
+    Returns:
+        numpy.ndarray: Array containing all errors.
+    """
     Clw_clr, clw_cld = x[1], x[2]
     ErrClr, ErrCld = y[1], y[2]
     AllErrors = np.empty(len(All_clw))
@@ -306,6 +380,14 @@ def compute_obs_error_parameter(
     bin_size,
     qc_flag,
 ):
+    """
+    Compute observation error parameters based on provided data.
+
+    Returns:
+        DataFrame: DataFrame containing the error parameters of each channel.
+        Saved as a CSV file.
+    """
+
     print("+=================================================================+")
     print(
         "|                          compute_obs_error_parameter                 |"
@@ -326,12 +408,12 @@ def compute_obs_error_parameter(
     print(nc4_files)
     for i in Channels:
         print("working on channel %d" % i)
-        QCDataSummaryDF, AllDataSummaryDF, All_o_f, All_clw = errorAssignment(
+        QCDataSummaryDF, AllDataSummaryDF, All_o_f, All_clw = calculate_statistics(
             nc4_files, i, bin_size, qc_flag
         )
-        x, y, errorParam = ErrorEstimation(QCDataSummaryDF)
-        AllErrors = GetAllErrors(x, y, All_clw)
-        x1, y1 = read_previous_par(sensor, i, cloudy_path, global_satinPath)
+        x, y, errorParam = error_estimation(QCDataSummaryDF)
+        AllErrors = get_all_errors(x, y, All_clw)
+        x1, y1 = read_previous_parameters(sensor, i, cloudy_path, global_satinPath)
         errorParam.append(i)
         AllErrorParam.append(errorParam)
         plots(
@@ -357,7 +439,8 @@ def compute_obs_error_parameter(
 
 
 if __name__ == "__main__":
-    # Create an argument parser
+    # Argument parsing and main function call
+    # Parser setup and argument parsing here
     parser = argparse.ArgumentParser(description="obs error parameters")
 
     # Add arguments

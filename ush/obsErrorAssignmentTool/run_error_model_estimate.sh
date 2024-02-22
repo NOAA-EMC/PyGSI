@@ -9,7 +9,7 @@
 
 # specify the path to the input diag files
 
-config_path=/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/ush/obsErrorAssignmentTool/config_files/ 
+config_path=./config_files/ 
 
 # specify the global_satinfo.txt and cloudy_radiance_info.txt path in GSI-fix directory
 global_satinPath=../../fix/global_satinfo.txt  # Path to global_satinfo.txt
@@ -23,16 +23,16 @@ bindir=bin005
 qc_flag=0
 
 # specify the path to saving output plots and csv file
-output=/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/ush/obsErrorAssignmentTool/output/$bindir/
+output=./output/$bindir/
 
 mkdir -p $output
 
 machine=${machine:-hera} 
 
 if [ $machine = orion ]; then
-   PyGSI=${PyGSI:-/Path/to/PyGSI/} # Change this to your own branch
+   PyGSI=${PyGSI:-/Path/TO/PyGSI/} # Change this to your own branch
 elif [ $machine = hera ]; then
-   PyGSI=${PyGSI:-/scratch1/NCEPDEV/stmp4/Azadeh.Gholoubi/GDAS-ops/PyGSI/} # Change this to your own branch
+   PyGSI=${PyGSI:-/Path/TO/PyGSI/} # Change this to your own branch
 else
    echo "Machine " $machine "not found"
    exit 1
