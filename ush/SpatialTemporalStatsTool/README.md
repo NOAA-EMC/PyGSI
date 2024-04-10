@@ -23,6 +23,6 @@ Before running the script, the user needs to specify certain parameters in `user
 - `Channels`: Channel number (e.g., 1, 2, 3, 5)
 - `var_name`: variable name 
 - `start_date, end_date`: Start and End date of the input files for evaluations
-- `region`: Insert a number to select Global or Regional ouput plots (1: global (default), 2: polar region, 3: mid-latitudes region, 4:tropics region, 5:southern mid-latitudes region, 6:southern polar region)
+- `region`: Insert a number to select Global or Regional ouput plots (1: global (default), 2: polar region, 3: mid-latitudes region, 4: tropics region, 5: southern mid-latitudes region, 6: southern polar region)
 - `resolution`: Resolution for grid generation (1: 1X1 degree(default), 2:2X2 degree, 3:3X3 degree)
 - `filter_by_vars`: Filter by variable to generate plots based on surface type (land, water, snow, seaice) or can be an empty list for no filtering.
