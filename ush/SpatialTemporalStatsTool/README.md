@@ -26,6 +26,7 @@ Before running the script, the user needs to specify certain parameters in `user
 - `region`: Insert a number to select Global or Regional ouput plots (1: global (default), 2: polar region, 3: mid-latitudes region, 4: tropics region, 5: southern mid-latitudes region, 6: southern polar region)
 - `resolution`: Resolution for grid generation (1: 1X1 degree(default), 2:2X2 degree, 3:3X3 degree)
 - `filter_by_vars`: Filter by variable to generate plots based on surface type (land, water, snow, seaice) or can be an empty list for no filtering.
+  
 To run the tool:
 
 ```
