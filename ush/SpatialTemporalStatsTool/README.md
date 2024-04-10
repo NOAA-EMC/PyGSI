@@ -1,6 +1,6 @@
 ### March 2024
 ### Azadeh Gholoubi
-# Python Tool to do time/space (2D) stats and evaluation
+# Python Tool to do time/space (2D) evaluation
 
 ## Overview
 This tool provides functionalities for processing and analyzing data over time and space.
