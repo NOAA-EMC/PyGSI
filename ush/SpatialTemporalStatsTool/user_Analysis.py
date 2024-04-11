@@ -34,9 +34,9 @@ QC_filter = True  # should be always False or true
 
 # Set filter by variables
 # can be an empty list
-filter_by_vars=[]
+filter_by_vars = []
 
-#filter_by_vars = [("Land_Fraction", "lt", 0.9),]
+# filter_by_vars = [("Land_Fraction", "lt", 0.9),]
 # list each case in a separate tuple inside this list.
 # options are 'lt' or 'gt' for 'less than' and 'greater than'
 
