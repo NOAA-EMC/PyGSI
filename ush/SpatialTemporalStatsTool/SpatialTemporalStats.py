@@ -227,22 +227,36 @@ class SpatialTemporalStats:
                     selected_var_gdf.geometry.apply(lambda geom: geom.centroid.y < -60)
                 ]
 
-            min_val, max_val, std_val = (
+            min_val, max_val, std_val, avg_val = (
                 filtered_gdf[item].min(),
                 filtered_gdf[item].max(),
                 filtered_gdf[item].std(),
+                filtered_gdf[item].mean(),
             )
-            cbar_label = "grid=%dX%d, min=%.3lf, max=%.3lf, std=%.3lf\n" % (
+
+            if item == "Obs_Minus_Forecast_adjusted_Average":
+                max_val_cbar = 5.0*std_val
+                min_val_cbar = -5.0*std_val
+                cmap = "bwr"
+            else:
+                max_val_cbar = max_val
+                min_val_cbar = min_val
+                cmap = "jet"
+
+            cbar_label = "grid=%dx%d,   min=%.3lf,   max=%.3lf,   bias=%.3lf,   std=%.3lf\n" % (
                 resolution,
                 resolution,
                 min_val,
                 max_val,
+                avg_val,
                 std_val,
             )
 
             filtered_gdf.plot(
                 ax=ax,
-                cmap="jet",
+                cmap=cmap,
+                vmin=min_val_cbar,
+                vmax=max_val_cbar,
                 column=item,
                 legend=True,
                 missing_kwds={"color": "lightgrey"},
@@ -333,11 +347,15 @@ class SpatialTemporalStats:
                 & ((files_date_times_df["date"] <= end_date))
             )
         ]["file_name"]
+        index = studied_cycle_files.index
+
         Summary_results = []
 
         # get unique channels from one of the files
-        ds = xarray.open_dataset(studied_cycle_files[0])
+        ds = xarray.open_dataset(studied_cycle_files[index[0]])
         unique_channels = np.unique(ds["Channel_Index"].data).tolist()
+        print('Total Number of Channels ', len(unique_channels))
+        print('Channels ', unique_channels)
 
         for this_channel in unique_channels:
             this_channel_values = np.empty(shape=(0,))
