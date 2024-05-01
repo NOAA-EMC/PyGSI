@@ -355,34 +355,41 @@ class SpatialTemporalStats:
         ds = xarray.open_dataset(studied_cycle_files[index[0]])
         unique_channels = np.unique(ds["Channel_Index"].data).tolist()
         print('Total Number of Channels ', len(unique_channels))
-        print('Channels ', unique_channels)
 
+        Allchannels_data={}
         for this_channel in unique_channels:
-            this_channel_values = np.empty(shape=(0,))
-            for this_cycle_obs_file in studied_cycle_files:
-                ds = xarray.open_dataset(this_cycle_obs_file)
-                Combined_bool = ds["Channel_Index"].data == this_channel
+           Allchannels_data[this_channel] = np.empty(shape=(0,))
+        for this_cycle_obs_file in studied_cycle_files:
+            ds = xarray.open_dataset(this_cycle_obs_file)
+            if QC_filter:
+                QC_bool = ds["QC_Flag"].data == 0
+                
+            for this_channel in unique_channels:
+                channel_bool = ds["Channel_Index"].data == this_channel
 
-                if QC_filter:
-                    QC_bool = ds["QC_Flag"].data == 0
-                    Combined_bool = Combined_bool * QC_bool
-
-                this_cycle_var_values = ds[var_name].data[Combined_bool]
-                this_channel_values = np.append(
-                    this_channel_values, this_cycle_var_values
+                this_cycle_channel_var_values = ds[var_name].data[channel_bool*QC_bool]
+                Allchannels_data[this_channel] = np.append(
+                    Allchannels_data[this_channel], this_cycle_channel_var_values
                 )
 
+        for this_channel in unique_channels:
+            this_channel_values=Allchannels_data[this_channel]
+            squared_values = [x**2 for x in this_channel_values]
+            mean_of_squares = sum(squared_values) / len(squared_values)
+            rms_value=mean_of_squares ** 0.5
             Summary_results.append(
                 [
                     this_channel,
                     np.size(this_channel_values),
                     np.std(this_channel_values),
                     np.mean(this_channel_values),
+                    rms_value               
                 ]
             )
 
+
         Summary_resultsDF = pd.DataFrame(
-            Summary_results, columns=["channel", "count", "std", "mean"]
+            Summary_results, columns=["channel", "count", "std", "mean", "rms"]
         )
         # Plotting
         plt.figure(figsize=(10, 6))
@@ -390,8 +397,8 @@ class SpatialTemporalStats:
         plt.xlabel("Channel")
         plt.ylabel("Count")
         plt.title("%s %s" % ((self.sensor, var_name)))
-        plt.xticks(Summary_resultsDF["channel"])
-        plt.xticks(rotation=45)
+        #plt.xticks(Summary_resultsDF["channel"])
+        #plt.xticks(rotation=45)
         plt.grid(True)
         plt.tight_layout()
         plt.savefig(
@@ -402,26 +409,34 @@ class SpatialTemporalStats:
         plt.close()
 
         # Plotting scatter plot for mean and std
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(15, 6))
         plt.scatter(
             Summary_resultsDF["channel"],
             Summary_resultsDF["mean"],
             s=50,
-            c="red",
+            c="green",
             label="Mean",
         )
         plt.scatter(
             Summary_resultsDF["channel"],
             Summary_resultsDF["std"],
             s=50,
-            c="green",
+            c="red",
             label="Std",
+        )
+        plt.scatter(
+            Summary_resultsDF["channel"],
+            Summary_resultsDF["rms"],
+            s=50,
+            label="Rms",
+            facecolors='none',
+            edgecolors='blue'
         )
         plt.xlabel("Channel")
         plt.ylabel("Statistics")
         plt.title("%s %s" % ((self.sensor, var_name)))
-        plt.xticks(Summary_resultsDF["channel"])
-        plt.xticks(rotation=45)
+        #plt.xticks(Summary_resultsDF["channel"])
+        #plt.xticks(rotation=45)
         plt.grid(True)
         plt.tight_layout()
         plt.legend()
