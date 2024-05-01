@@ -2,9 +2,7 @@ from SpatialTemporalStats import SpatialTemporalStats
 
 # Set input and output paths
 input_path = "/PATH/TO/Input/Files"
-
-#output_path = r'./Results'
-
+output_path = r'./Results'
 
 # Set sensor name
 sensor = "iasi_metop-c"
@@ -14,7 +12,7 @@ var_name = "Obs_Minus_Forecast_adjusted"
 channel_no = 1
 
 # Set start and end dates
-start_date, end_date = '2024-01-01', '2024-01-31'
+start_date, end_date = "2024-01-01", "2024-01-31"
 
 # Set region
 # 1: global, 2: polar region, 3: mid-latitudes region,
@@ -69,5 +67,4 @@ summary_results = my_tool.make_summary_plots(
     input_path, sensor, var_name, start_date, end_date, QC_filter, output_path
 )
 print("Summary plots created!")
-
 # Print summary results
