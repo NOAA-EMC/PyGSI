@@ -1,6 +1,9 @@
+import argparse
 import os
 from datetime import datetime
 
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -177,55 +180,72 @@ class SpatialTemporalStats:
 
         for _, item in enumerate(var_names):
             plt.figure(figsize=(12, 8))
-            ax = plt.subplot(1, 1, 1)
+            ax = plt.subplot(1, 1, 1, projection=ccrs.PlateCarree())
+            # Add global map coastlines
+            ax.add_feature(cfeature.GSHHSFeature(scale="auto"))
+            filtered_gdf = selected_var_gdf.copy()
 
             if region == 1:
                 # Plotting global region (no need for filtering)
-                title = "Global Region"
-                filtered_gdf = selected_var_gdf
+                title = "Global"
+                # filtered_gdf = selected_var_gdf
 
             elif region == 2:
                 # Plotting polar region (+60 latitude and above)
                 title = "Polar Region (+60 latitude and above)"
-                filtered_gdf = selected_var_gdf[
-                    selected_var_gdf.geometry.apply(
+                filtered_gdf[item] = np.where(
+                    filtered_gdf.geometry.apply(
                         lambda geom: self.is_polygon_in_polar_region(geom, 60)
-                    )
-                ]
+                    ),
+                    filtered_gdf[item],
+                    np.nan,
+                )
 
             elif region == 3:
                 # Plotting northern mid-latitudes region (20 to 60 latitude)
                 title = "Northern Mid-latitudes Region (20 to 60 latitude)"
-                filtered_gdf = selected_var_gdf[
-                    selected_var_gdf.geometry.apply(
+                filtered_gdf[item] = np.where(
+                    filtered_gdf.geometry.apply(
                         lambda geom: self.is_polygon_in_latitude_range(geom, 20, 60)
-                    )
-                ]
+                    ),
+                    filtered_gdf[item],
+                    np.nan,
+                )
 
             elif region == 4:
                 # Plotting tropics region (-20 to 20 latitude)
                 title = "Tropics Region (-20 to 20 latitude)"
-                filtered_gdf = selected_var_gdf[
-                    selected_var_gdf.geometry.apply(
+
+                filtered_gdf[item] = np.where(
+                    filtered_gdf.geometry.apply(
                         lambda geom: self.is_polygon_in_latitude_range(geom, -20, 20)
-                    )
-                ]
+                    ),
+                    filtered_gdf[item],
+                    np.nan,
+                )
 
             elif region == 5:
                 # Plotting southern mid-latitudes region (-60 to -20 latitude)
                 title = "Southern Mid-latitudes Region (-60 to -20 latitude)"
-                filtered_gdf = selected_var_gdf[
-                    selected_var_gdf.geometry.apply(
+                filtered_gdf[item] = np.where(
+                    filtered_gdf.geometry.apply(
                         lambda geom: self.is_polygon_in_latitude_range(geom, -60, -20)
-                    )
-                ]
+                    ),
+                    filtered_gdf[item],
+                    np.nan,
+                )
 
             elif region == 6:
                 # Plotting southern polar region (less than -60 latitude)
                 title = "Southern Polar Region (less than -60 latitude)"
-                filtered_gdf = selected_var_gdf[
-                    selected_var_gdf.geometry.apply(lambda geom: geom.centroid.y < -60)
-                ]
+                filtered_gdf[item] = np.where(
+                    filtered_gdf.geometry.apply(lambda geom: geom.centroid.y < -60),
+                    filtered_gdf[item],
+                    np.nan,
+                )
+                # filtered_gdf = selected_var_gdf[
+                #     selected_var_gdf.geometry.apply(lambda geom: geom.centroid.y < -60)
+                # ]
 
             min_val, max_val, std_val, avg_val = (
                 filtered_gdf[item].min(),
@@ -243,18 +263,30 @@ class SpatialTemporalStats:
                 min_val_cbar = min_val
                 cmap = "jet"
 
-            cbar_label = (
-                "grid=%dx%d,   min=%.3lf,   max=%.3lf,   bias=%.3lf,   std=%.3lf\n"
-                % (
-                    resolution,
-                    resolution,
-                    min_val,
-                    max_val,
-                    avg_val,
-                    std_val,
+            if item == "Obs_Minus_Forecast_adjusted_Count":
+                cbar_label = (
+                    "grid=%dx%d,   min=%.3lf,   max=%.3lf\n"
+                    % (
+                        resolution,
+                        resolution,
+                        min_val,
+                        max_val,
+                    )
                 )
-            )
-
+            else:
+                cbar_label = (
+                    "grid=%dx%d,   min=%.3lf,   max=%.3lf,   bias=%.3lf,   std=%.3lf\n"
+                    % (
+                        resolution,
+                        resolution,
+                        min_val,
+                        max_val,
+                        avg_val,
+                        std_val,
+                    )
+                )
+                
+                
             filtered_gdf.plot(
                 ax=ax,
                 cmap=cmap,
@@ -268,6 +300,14 @@ class SpatialTemporalStats:
                     "shrink": 0.5,
                     "label": cbar_label,
                 },
+            )
+
+            filtered_gdf.to_file(
+                os.path.join(
+                    output_path,
+                    "%s_ch%d_%s_region_%d.gpkg"
+                    % (self.sensor, self.channel_no, item, region),
+                )
             )
 
             plt.title("%s\n%s ch:%d %s" % (title, self.sensor, self.channel_no, item))
@@ -364,7 +404,11 @@ class SpatialTemporalStats:
         for this_cycle_obs_file in studied_cycle_files:
             ds = xarray.open_dataset(this_cycle_obs_file)
             if QC_filter:
-                QC_bool = ds["QC_Flag"].data == 0
+                QC_bool = ds["QC_Flag"].data == 0.0
+            else:
+                QC_bool = np.ones(
+                    ds["QC_Flag"].data.shape, dtype=bool
+                )  # this selects all obs as True
             for this_channel in unique_channels:
                 channel_bool = ds["Channel_Index"].data == this_channel
 
@@ -379,7 +423,7 @@ class SpatialTemporalStats:
             this_channel_values = Allchannels_data[this_channel]
             squared_values = [x**2 for x in this_channel_values]
             mean_of_squares = sum(squared_values) / len(squared_values)
-            rms_value = mean_of_squares ** 0.5
+            rms_value = mean_of_squares**0.5
             Summary_results.append(
                 [
                     this_channel,
@@ -391,7 +435,8 @@ class SpatialTemporalStats:
             )
 
         Summary_resultsDF = pd.DataFrame(
-            Summary_results, columns=["channel", "count", "std", "mean", "rms"])
+            Summary_results, columns=["channel", "count", "std", "mean", "rms"]
+        )
         # Plotting
         plt.figure(figsize=(10, 6))
         plt.scatter(Summary_resultsDF["channel"], Summary_resultsDF["count"], s=50)
@@ -442,3 +487,209 @@ class SpatialTemporalStats:
         )
 
         return Summary_resultsDF
+
+
+def main(
+    input_path,
+    output_path,
+    sensor,
+    var_name,
+    channel,
+    grid_size,
+    qc_flag,
+    region,
+    start_date,
+    end_date,
+    filter_by_vars,
+):
+    # Initialize SpatialTemporalStats object
+    my_tool = SpatialTemporalStats()
+
+    # Generate grid
+    my_tool.generate_grid(grid_size)  # Call generate_grid method)
+    print("grid created!")
+
+    # Read observational values and perform analysis
+    o_minus_f_gdf = my_tool.read_obs_values(
+        input_path,
+        sensor,
+        var_name,
+        channel,
+        start_date,
+        end_date,
+        filter_by_vars,
+        qc_flag,
+    )
+
+    print("read obs values!")
+
+    # Plot observations
+    print("creating plots...")
+
+    my_tool.plot_obs(o_minus_f_gdf, var_name, region, grid_size, output_path)
+    print("Time/Area stats plots created!")
+
+    # Make summary plots
+    print("Creating summary plots...")
+    summary_results = my_tool.make_summary_plots(
+        input_path, sensor, var_name, start_date, end_date, qc_flag, output_path
+    )
+    summary_results.to_csv(
+        os.path.join(output_path, "%s_summary.csv" % sensor), index=False
+    )
+    print("Summary plots created!")
+
+
+def parse_filter(s):
+    try:
+        var_name, comparison, threshold = s.split(",")
+        if comparison not in ("lt", "gt"):
+            raise ValueError("Comparison must be 'lt' or 'gt'")
+        return (var_name, comparison, float(threshold))
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "Filter must be in format 'var_name,comparison,threshold'"
+        )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Python Tool for Spatial and Temporal Analysis"
+    )
+
+    # Add arguments
+    parser.add_argument(
+        "-input",
+        dest="input_path",
+        help=r"REQUIRED: path to input config nc files",
+        required=True,
+        metavar="DIR",
+        type=str,
+    )
+    parser.add_argument(
+        "-output",
+        dest="output_path",
+        help=r"REQUIRED: path to output files",
+        required=True,
+        metavar="DIR",
+        type=str,
+    )
+    
+    parser.add_argument(
+        "-sensor",
+        dest="sensor",
+        help=r"REQUIRED: sensor name",
+        required=True,
+        metavar="string",
+        type=str,
+    )
+    parser.add_argument(
+        "-var",
+        dest="var_name",
+        help=r"REQUIRED: variable name",
+        required=True,
+        metavar="string",
+        type=str,
+    )
+    parser.add_argument(
+        "-ch",
+        dest="channel",
+        help=r"REQUIRED the channel number",
+        required=True,
+        metavar="integer",
+        type=int,
+    )
+    parser.add_argument(
+        "-grid",
+        dest="grid_size",
+        help=r"optional: size of grid for plotting (choices: 0.5, 1, 2)",
+        required=False,
+        default=1,
+        metavar="float",
+        type=float,
+    )
+    parser.add_argument(
+        "-no_qc_flag",
+        dest="no_qc_flag",
+        help=r"Optional: qc flag for filtering",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-region",
+        dest="region",
+        help="REQUIRED: region for mapplot. 1: global, 2: polar region, 3: mid-latitudes region,"
+        "4: tropics region, 5:southern mid-latitudes region, 6: southern polar region",
+        required=False,
+        default=0,
+        metavar="integer",
+        type=int,
+    )
+    parser.add_argument(
+        "-sdate",
+        dest="start_date",
+        help=r"REQUIRED: start date of evaluation",
+        required=False,
+        default=0,
+        metavar="string",
+        type=str,
+    )
+    parser.add_argument(
+        "-edate",
+        dest="end_date",
+        help=r"REQUIRED: end date of evaluation",
+        required=False,
+        default=0,
+        metavar="string",
+        type=str,
+    )
+
+    # New argument for filter criteria
+    parser.add_argument(
+        "-filter_by_vars",
+        dest="filter_by_vars",
+        help="Optional: Filtering criteria in format 'var_name,comparison,"
+        "threshold'. Example: Land_Fraction,lt,0.9",
+        nargs="+",
+        type=parse_filter,
+        default=[],
+    )
+
+    args = vars(parser.parse_args())
+
+    input_path = args["input_path"]
+    output_path = args["output_path"]
+    sensor = args["sensor"]
+    var_name = args["var_name"]
+    channel = args["channel"]
+    grid_size = args["grid_size"]
+    region = args["region"]
+    start_date = args["start_date"]
+    end_date = args["end_date"]
+
+    if args["no_qc_flag"]:
+        qc_flag = False
+    else:
+        qc_flag = True
+
+    # Accessing and printing the parsed filter criteria
+    if args["filter_by_vars"]:
+        for filter_criteria in args["filter_by_vars"]:
+            print(
+                f"Variable: {filter_criteria[0]},"
+                f"Comparison: {filter_criteria[1]},"
+                f"Threshold: {filter_criteria[2]}"
+            )
+
+    main(
+        input_path,
+        output_path,
+        sensor,
+        var_name,
+        channel,
+        grid_size,
+        qc_flag,
+        region,
+        start_date,
+        end_date,
+        args["filter_by_vars"],
+    )
