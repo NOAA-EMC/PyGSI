@@ -264,14 +264,11 @@ class SpatialTemporalStats:
                 cmap = "jet"
 
             if item == "Obs_Minus_Forecast_adjusted_Count":
-                cbar_label = (
-                    "grid=%dx%d,   min=%.3lf,   max=%.3lf\n"
-                    % (
-                        resolution,
-                        resolution,
-                        min_val,
-                        max_val,
-                    )
+                cbar_label = "grid=%dx%d,   min=%.3lf,   max=%.3lf\n" % (
+                    resolution,
+                    resolution,
+                    min_val,
+                    max_val,
                 )
             else:
                 cbar_label = (
@@ -285,8 +282,7 @@ class SpatialTemporalStats:
                         std_val,
                     )
                 )
-                
-                
+
             filtered_gdf.plot(
                 ax=ax,
                 cmap=cmap,
@@ -574,7 +570,7 @@ if __name__ == "__main__":
         metavar="DIR",
         type=str,
     )
-    
+
     parser.add_argument(
         "-sensor",
         dest="sensor",
