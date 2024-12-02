@@ -1074,12 +1074,14 @@ if __name__ == "__main__":
                 plt.ioff()
                 fig_prof.savefig(errProName, bbox_inches='tight',
                                  facecolor='w')
+                plt.close()
             if penProName is not None:
                 fig_prof = plot_cpen_profiles(cpen_profs, nobs_profs,
                                               name_list, levl_profs)
                 plt.ioff()
                 fig_prof.savefig(penProName, bbox_inches='tight',
                                  facecolor='w')
+                plt.close()
             #
             # Generate trace plots
             #
@@ -1090,6 +1092,7 @@ if __name__ == "__main__":
                 plt.ioff()
                 fig_trace.savefig(errTraName, bbox_inches='tight',
                                   facecolor='w')
+                plt.close()
             if penTraName is not None:
                 fig_trace = plot_cpen_traces(cpen_trace, nobs_trace,
                                              name_list, date_trace,
@@ -1097,6 +1100,7 @@ if __name__ == "__main__":
                 plt.ioff()
                 fig_trace.savefig(penTraName, bbox_inches='tight',
                                   facecolor='w')
+                plt.close()
             ##############################################################
     else:
         print('No Figure Cards Found, Exiting...')
