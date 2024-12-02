@@ -1,0 +1,20 @@
+diagnostic:
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_abi_g16_ges.2020092200.nc4
+  radiance:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 8
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 10
+    qc flag:
+    - 0

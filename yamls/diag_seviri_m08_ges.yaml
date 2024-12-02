@@ -1,0 +1,20 @@
+diagnostic:
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_seviri_m08_ges.2020092200.nc4
+  radiance:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 5
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 6
+    qc flag:
+    - 0

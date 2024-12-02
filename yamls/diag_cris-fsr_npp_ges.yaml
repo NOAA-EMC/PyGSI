@@ -1,0 +1,804 @@
+diagnostic:
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200922/00/atmos/diag_cris-fsr_npp_ges.2020092200.nc4
+  radiance:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 24
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 26
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 28
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 32
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 37
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 39
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 42
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 44
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 47
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 49
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 51
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 53
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 55
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 57
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 59
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 61
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 63
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 65
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 67
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 69
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 71
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 73
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 75
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 77
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 79
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 81
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 83
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 85
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 87
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 89
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 91
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 93
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 95
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 97
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 99
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 103
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 105
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 107
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 109
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 111
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 113
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 115
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 117
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 119
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 121
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 123
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 125
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 127
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 129
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 131
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 133
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 135
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 137
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 139
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 141
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 143
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 145
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 147
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 149
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 151
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 153
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 155
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 157
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 159
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 163
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 167
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 171
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 175
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 179
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 183
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 187
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 190
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 194
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 197
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 200
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 211
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 224
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 275
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 279
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 291
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 311
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 332
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 342
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 389
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 410
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 427
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 464
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 482
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 501
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 529
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 710
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 713
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 742
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 882
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 890
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 937
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 995
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 1008
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 1022
+    qc flag:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    channel:
+    - 1058
+    qc flag:
+    - 0

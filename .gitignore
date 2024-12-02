@@ -131,5 +131,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.swp*
+# Ignore the following
+*.[aox]
+*.mod
+*.la
+*.lo
+
+# Ignore editor caches
+.*.sw[a-p]
+*DS_Store*
 *~
+
+# Ignore the following directories anywhere in the tree
+bin/
+

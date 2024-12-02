@@ -1,0 +1,172 @@
+diagnostic:
+  conventional:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 4
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 722
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 723
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 740
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 741
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 742
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 743
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 744
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 745
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 820
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 42
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 43
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 786
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 3
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 825
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 750
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 751
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 752
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 753
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 754
+    observation subtype:
+    - 0
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 755
+    observation subtype:
+    - 0
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_gps_ges.2020092000.nc4

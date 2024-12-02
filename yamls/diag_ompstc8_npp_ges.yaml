@@ -1,0 +1,13 @@
+diagnostic:
+  data type: omf
+  plot types:
+    - histogram
+    - spatial
+  ozone:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    layer:
+    - 0
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20230225/18/atmos/diag_ompstc8_npp_ges.2023022518.nc4

@@ -1,0 +1,12 @@
+diagnostic:
+  conventional:
+  - analysis use:
+    - true
+    bias correction:
+    - true
+    observation id:
+    - 112
+    observation subtype:
+    - 0
+  data type: omf
+  path: /scratch2/NCEPDEV/stmp1/Kevin.Dougherty/ncDiags/gdas.20200920/00/atmos/diag_conv_tcp_ges.2020092000.nc4
