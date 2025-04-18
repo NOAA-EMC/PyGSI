@@ -55,7 +55,7 @@ class SpatialTemporalStats:
             # Extract the last part which contains the date/time information
             date_time_part = parts[-2]
 
-            # date/time format in filename is 'YYYYMMDDHH', can parse it accordingly
+            # date/time format in filename is 'YYYYMMDDHH'
             year = int(date_time_part[:4])
             month = int(date_time_part[4:6])
             day = int(date_time_part[6:8])
@@ -83,76 +83,78 @@ class SpatialTemporalStats:
         comparison_plots,
     ):
         self.geovar = geovar
-        #self.channel_no = channel_no
         self.pmin = pmin
         self.pmax = pmax
         self.channel_no = f"{pmin} to {pmax}"
-       
+
         if comparison_plots:
             num_passes = 2
         else:
             num_passes = 1
 
-
         for ipass in range(num_passes):
-            print('num_passes, ipath',num_passes,ipass)
+            print('num_passes, ipath', num_passes, ipass)
             if ipass == 0:
                 obs_files_path = obs_files_path_exp
             else:
                 obs_files_path = obs_files_path_ctl
-            print('Processing: ',obs_files_path)
+            print('Processing: ', obs_files_path)
             # read all obs files
             all_files = os.listdir(obs_files_path)
             obs_files = [
                 os.path.join(obs_files_path, file)
                 for file in all_files
-                if file.endswith(".nc4") and "diag_conv_%s_ges" % geovar in file
-            ]   
- 
+                if file.endswith(".nc4") and
+                "diag_conv_%s_ges" % geovar in file
+            ]
+
             # get date time from file names
             files_date_times_df = pd.DataFrame()
             files_date_times = self._extract_date_times(obs_files)
             files_date_times_df["file_name"] = obs_files
             files_date_times_df["date_time"] = files_date_times
             files_date_times_df["date"] = pd.to_datetime(
-            files_date_times_df["date_time"].dt.date
-            )
- 
+                files_date_times_df["date_time"].dt.date)
+
             # read start date
             start_date = datetime.strptime(start_date, "%Y-%m-%d")
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
- 
+
             studied_cycle_files = files_date_times_df[
                 (
                     (files_date_times_df["date"] >= start_date)
                     & ((files_date_times_df["date"] <= end_date))
                 )
             ]["file_name"]
- 
+
             studied_gdf_list = []
             for this_cycle_obs_file in studied_cycle_files:
                 ds = xarray.open_dataset(this_cycle_obs_file)
- 
-                #Combined_bool = ds["Channel_Index"].data == channel_no
-                Combined_bool = (ds["Pressure"].data <= pmax) & (ds["Pressure"].data >= pmin)
+
+                # Combined_bool = ds["Channel_Index"].data == channel_no
+                Combined_bool = (ds["Pressure"].data <= pmax) &
+                (ds["Pressure"].data >= pmin)
                 if QC_filter:
                     QC_bool = ds["Analysis_Use_Flag"].data == 1
                     Combined_bool = Combined_bool * QC_bool
- 
+
                 # apply filters by variable
                 for this_filter in filter_by_vars:
-                    filter_var_name, filter_operation, filter_value = this_filter
+                    filter_var_name, filter_operation, filter_value =
+                    this_filter
                     if filter_operation == "lt":
-                       this_filter_bool = ds[filter_var_name].data <= filter_value
+                        this_filter_bool = ds[filter_var_name].data <=
+                        filter_value
                     else:
-                        this_filter_bool = ds[filter_var_name].data >= filter_value
+                        this_filter_bool = ds[filter_var_name].data >=
+                        filter_value
                     Combined_bool = (
-                        Combined_bool * ~this_filter_bool
+                         Combined_bool * ~this_filter_bool
                     )  # here we have to negate the above bool to make it right
- 
+
                 if (Combined_bool.sum() <= 0):
-                    print("WARNING: No matching obs in ",this_cycle_obs_file)
- 
+                    print("WARNING: No matching obs in ", this_cycle_obs_file)
+
                 this_cycle_var_values = ds[var_name].data[Combined_bool]
                 this_cycle_lat_values = ds["Latitude"].data[Combined_bool]
                 this_cycle_long_values = ds["Longitude"].data[Combined_bool]
@@ -162,44 +164,59 @@ class SpatialTemporalStats:
                     this_cycle_long_values - 360,
                 )
                 geometry = [
-                    Point(xy) for xy in zip(this_cycle_long_values, this_cycle_lat_values)
+                    Point(xy) for xy in zip(
+                        this_cycle_long_values,
+                        this_cycle_lat_values)
                 ]
- 
+
                 # Create a GeoDataFrame
-                this_cycle_gdf = gpd.GeoDataFrame(geometry=geometry, crs="EPSG:4326")
+                this_cycle_gdf = gpd.GeoDataFrame(
+                        geometry=geometry,
+                        crs="EPSG:4326")
                 this_cycle_gdf["value"] = this_cycle_var_values
- 
+
                 studied_gdf_list.append(this_cycle_gdf)
- 
+
             studied_gdf = pd.concat(studied_gdf_list)
- 
+
             # Perform spatial join
-            joined_gdf = gpd.sjoin(studied_gdf, self.grid_gdf, predicate="within", how="right")
- 
+            joined_gdf = gpd.sjoin(studied_gdf, self.grid_gdf,
+                                   predicate="within", how="right")
+
             # Calculate average values of points in each polygon
             if ipass == 0:
                 self.obs_gdf_exp = self.grid_gdf.copy()
-                self.obs_gdf_exp[var_name + "_Average"] = joined_gdf.groupby("grid_id")[
-                       "value"].mean()
-                self.obs_gdf_exp[var_name + "_RMS"] = joined_gdf.groupby("grid_id")["value"].apply(
+                self.obs_gdf_exp[var_name + "_Average"] =
+                joined_gdf.groupby("grid_id")["value"].mean()
+                self.obs_gdf_exp[var_name + "_RMS"] =
+                joined_gdf.groupby("grid_id")["value"].apply(
                        lambda x: np.sqrt((x**2).mean()))
-                self.obs_gdf_exp[var_name + "_Count"] = joined_gdf.groupby("grid_id")[
-                       "value" ].count() 
+                self.obs_gdf_exp[var_name + "_Count"] =
+                joined_gdf.groupby("grid_id")["value"].count()
             else:
                 self.obs_gdf_ctl = self.grid_gdf.copy()
-                self.obs_gdf_ctl[var_name + "_Average"] = joined_gdf.groupby("grid_id")[ "value" ].mean()
-                self.obs_gdf_ctl[var_name + "_RMS"] = joined_gdf.groupby("grid_id") [
-                        "value"].apply( lambda x: np.sqrt((x**2).mean()))
-                self.obs_gdf_ctl[var_name + "_Count"] = joined_gdf.groupby("grid_id")[
-                        "value" ].count()
- 
+                self.obs_gdf_ctl[var_name + "_Average"] =
+                joined_gdf.groupby("grid_id")["value"].mean()
+                self.obs_gdf_ctl[var_name + "_RMS"] =
+                joined_gdf.groupby("grid_id")["value"].apply(
+                       lambda x: np.sqrt((x**2).mean()))
+                self.obs_gdf_ctl[var_name + "_Count"] =
+                joined_gdf.groupby("grid_id")["value"].count()
 
         # Th2is is where we do the differencing
         self.obs_gdf = self.obs_gdf_exp.copy()
         if comparison_plots:
-            self.obs_gdf[var_name + "_Average"] = self.obs_gdf[var_name + "_Average"] - self.obs_gdf_ctl[var_name + "_Average"] 
-            self.obs_gdf[var_name + "_RMS"] = self.obs_gdf[var_name + "_RMS"] - self.obs_gdf_ctl[var_name + "_RMS"] 
-            self.obs_gdf[var_name + "_Count"] = self.obs_gdf[var_name + "_Count"] - self.obs_gdf_ctl[var_name + "_Count"] 
+            self.obs_gdf[var_name + "_Average"] =
+            self.obs_gdf[var_name + "_Average"] -
+            self.obs_gdf_ctl[var_name + "_Average"]
+
+            self.obs_gdf[var_name + "_RMS"] =
+            self.obs_gdf[var_name + "_RMS"] -
+            self.obs_gdf_ctl[var_name + "_RMS"]
+
+            self.obs_gdf[var_name + "_Count"] =
+            self.obs_gdf[var_name + "_Count"] -
+            self.obs_gdf_ctl[var_name + "_Count"]
 
         # convert count of zero to null. This will help also for plotting
         self.obs_gdf[var_name + "_Count"] = np.where(
@@ -210,21 +227,23 @@ class SpatialTemporalStats:
 
         return self.obs_gdf
 
-    def plot_obs(self, selected_var_gdf, var_name, region, resolution, output_path):
+    def plot_obs(self, selected_var_gdf,
+                 var_name, region, resolution, output_path):
         self.resolution = resolution
-        var_names = [var_name + "_Average", var_name + "_Count", var_name + "_RMS"]
+        var_names = [var_name + "_Average", var_name +
+                     "_Count", var_name + "_RMS"]
 
         for _, item in enumerate(var_names):
             plt.figure(figsize=(12, 8))
             if region == 2:
                 ax = plt.subplot(1, 1, 1, projection=ccrs.NorthPolarStereo())
                 ax.set_extent([-180, 180, 60, 90], crs=ccrs.PlateCarree())
-            elif region ==6:
+            elif region == 6:
                 ax = plt.subplot(1, 1, 1, projection=ccrs.SouthPolarStereo())
                 ax.set_extent([-180, 180, -90, -60], crs=ccrs.PlateCarree())
             else:
                 ax = plt.subplot(1, 1, 1, projection=ccrs.PlateCarree())
-                
+
             # Add global map coastlines
             ax.add_feature(cfeature.GSHHSFeature(scale="auto"))
             filtered_gdf = selected_var_gdf.copy()
@@ -250,7 +269,8 @@ class SpatialTemporalStats:
                 title = "Northern Mid-latitudes Region (20 to 60 latitude)"
                 filtered_gdf[item] = np.where(
                     filtered_gdf.geometry.apply(
-                        lambda geom: self.is_polygon_in_latitude_range(geom, 20, 60)
+                        lambda geom:
+                        self.is_polygon_in_latitude_range(geom, 20, 60)
                     ),
                     filtered_gdf[item],
                     np.nan,
@@ -262,7 +282,8 @@ class SpatialTemporalStats:
 
                 filtered_gdf[item] = np.where(
                     filtered_gdf.geometry.apply(
-                        lambda geom: self.is_polygon_in_latitude_range(geom, -20, 20)
+                        lambda geom:
+                        self.is_polygon_in_latitude_range(geom, -20, 20)
                     ),
                     filtered_gdf[item],
                     np.nan,
@@ -273,7 +294,8 @@ class SpatialTemporalStats:
                 title = "Southern Mid-latitudes Region (-60 to -20 latitude)"
                 filtered_gdf[item] = np.where(
                     filtered_gdf.geometry.apply(
-                        lambda geom: self.is_polygon_in_latitude_range(geom, -60, -20)
+                        lambda geom:
+                        self.is_polygon_in_latitude_range(geom, -60, -20)
                     ),
                     filtered_gdf[item],
                     np.nan,
@@ -283,25 +305,26 @@ class SpatialTemporalStats:
                 # Plotting southern polar region (less than -60 latitude)
                 title = "Southern Polar Region (less than -60 latitude)"
                 filtered_gdf[item] = np.where(
-                    filtered_gdf.geometry.apply(lambda geom: geom.centroid.y < -60),
+                    filtered_gdf.geometry.apply(lambda geom:
+                                                geom.centroid.y < -60),
                     filtered_gdf[item],
                     np.nan,
                 )
-            
+
             elif region == 7:
                 # Plotting CONUS
                 title = "Continental US"
                 filtered_gdf[item] = np.where(
-                    filtered_gdf.geometry.apply(lambda geom: self.is_polygon_in_latitude_range(geom, 24.5, 49.5)
-                    and -125.0 <= geom.centroid.x <= -66.5
-                ),
+                    filtered_gdf.geometry.apply(
+                        lambda geom:
+                        self.is_polygon_in_latitude_range(geom, 24.5, 49.5)
+                        and -125.0 <= geom.centroid.x <= -66.5
+                        ),
                     filtered_gdf[item],
                     np.nan,
                 )
-                ax.set_extent([-125.0, -66.5, 24.5, 49.5], crs=ccrs.PlateCarree())
-                # filtered_gdf = selected_var_gdf[
-                #     selected_var_gdf.geometry.apply(lambda geom: geom.centroid.y < -60)
-                # ]
+                ax.set_extent([-125.0, -66.5, 24.5, 49.5],
+                              crs=ccrs.PlateCarree())
 
             min_val, max_val, std_val, avg_val = (
                 filtered_gdf[item].min(),
@@ -328,7 +351,8 @@ class SpatialTemporalStats:
                 )
             else:
                 cbar_label = (
-                    "grid=%dx%d,   min=%.3lf,   max=%.3lf,   bias=%.3lf,   std=%.3lf\n"
+                    "grid=%dx%d,   min=%.3lf,   max=%.3lf,   \
+                            bias=%.3lf,   std=%.3lf\n"
                     % (
                         resolution,
                         resolution,
@@ -362,11 +386,12 @@ class SpatialTemporalStats:
                 )
             )
 
-            plt.title("%s\n%s ch:%s %s" % (title, self.geovar, self.channel_no, item))
+            plt.title("%s\n%s ch:%s %s" % (
+                title, self.geovar, self.channel_no, item))
             plt.savefig(
                 os.path.join(
                     output_path,
-                    #"%s_ch%d_%s_region_%d.png"
+                    # "%s_ch%d_%s_region_%d.png"
                     "%s_%s_hPA_%s_region_%d.png"
                     % (self.geovar, self.channel_no, item, region),
                 )
@@ -375,7 +400,8 @@ class SpatialTemporalStats:
 
     def is_polygon_in_polar_region(self, polygon, latitude_threshold):
         """
-        Check if a polygon is in the polar region based on a latitude threshold.
+        Check if a polygon is in the polar region
+        based on a latitude threshold.
         """
         # Get the centroid of the polygon
         centroid = polygon.centroid
@@ -386,7 +412,8 @@ class SpatialTemporalStats:
         # Check if the latitude is above the threshold
         return centroid_latitude >= latitude_threshold
 
-    def is_polygon_in_latitude_range(self, polygon, min_latitude, max_latitude):
+    def is_polygon_in_latitude_range(
+            self, polygon, min_latitude, max_latitude):
         """
         Check if a polygon is in the specified latitude range.
         """
@@ -423,7 +450,8 @@ class SpatialTemporalStats:
         ]
 
         # get date time from file names.
-        # alternatively could get from attribute but that needs reading the entire nc4
+        # alternatively could get from attribute but that needs
+        # reading the entire nc4
         files_date_times_df = pd.DataFrame()
 
         files_date_times = self._extract_date_times(obs_files)
@@ -448,20 +476,22 @@ class SpatialTemporalStats:
         Summary_results = []
 
         # get unique channels from one of the files
-        #ds = xarray.open_dataset(studied_cycle_files[index[0]])
-        #unique_channels = np.unique(ds["Channel_Index"].data).tolist()
-        #print("Total Number of Channels ", len(unique_channels))
-        #Allchannels_data = {}
-        #for this_channel in unique_channels:
+        # ds = xarray.open_dataset(studied_cycle_files[index[0]])
+        # unique_channels = np.unique(ds["Channel_Index"].data).tolist()
+        # print("Total Number of Channels ", len(unique_channels))
+        # Allchannels_data = {}
+        # for this_channel in unique_channels:
         #    Allchannels_data[this_channel] = np.empty(shape=(0,))
         Allbins_data = {}
-        pressure_bins=[0,10,50,100,500,1100]
-        plabels=['0-10hPa','10-50hPa','50-100hPa','100-500hPa','500hPa-Surface']
+        pressure_bins = [0, 10, 50, 100, 500, 1100]
+        plabels = ['0-10hPa', '10-50hPa', '50-100hPa', '100-500hPa',
+                   '500hPa-Surface']
         for this_cycle_obs_file in studied_cycle_files:
             ds = xarray.open_dataset(this_cycle_obs_file)
             # Assign Pressure Bin Index
-            pressures= ds["Pressure"].data
-            pressure_bin_indices = pd.cut(pressures, bins=pressure_bins, labels=plabels, include_lowest=True)
+            pressures = ds["Pressure"].data
+            pressure_bin_indices = pd.cut(pressures, bins=pressure_bins,
+                                          labels=plabels, include_lowest=True)
             ds["Pressure_bin"] = pressure_bin_indices
             if QC_filter:
                 QC_bool = ds["Analysis_Use_Flag"].data >= 0.0
@@ -469,9 +499,9 @@ class SpatialTemporalStats:
                 QC_bool = np.ones(
                     ds["Analysis_Use_Flag"].data.shape, dtype=bool
                 )  # this selects all obs as True
-            print('pressure_bins=',pressure_bins)
+            print('pressure_bins=', pressure_bins)
             for this_bin in pressure_bins:
-                print('this_bin',this_bin)
+                print('this_bin', this_bin)
                 pressure_bool = ds["Pressure_bin"].data == this_bin
 
                 this_cycle_pressure_var_values = ds[var_name].data[
@@ -497,11 +527,13 @@ class SpatialTemporalStats:
             )
 
         Summary_resultsDF = pd.DataFrame(
-            Summary_results, columns=["Pressures", "count", "std", "mean", "rms"]
+            Summary_results,
+            columns=["Pressures", "count", "std", "mean", "rms"]
         )
         # Plotting
         plt.figure(figsize=(10, 6))
-        plt.scatter(Summary_resultsDF["Pressures"], Summary_resultsDF["count"], s=50)
+        plt.scatter(Summary_resultsDF["Pressures"],
+                    Summary_resultsDF["count"], s=50)
         plt.xlabel("Pressure")
         plt.ylabel("Count")
         plt.title("%s %s" % ((self.geovar, var_name)))
@@ -509,7 +541,8 @@ class SpatialTemporalStats:
         plt.tight_layout()
         plt.savefig(
             os.path.join(
-                output_path, "%s_%s_sumamryCounts.png" % (self.geovar, var_name)
+                output_path, "%s_%s_sumamryCounts.png" %
+                (self.geovar, var_name)
             )
         )
         plt.close()
@@ -545,7 +578,8 @@ class SpatialTemporalStats:
         plt.tight_layout()
         plt.legend()
         plt.savefig(
-            os.path.join(output_path, "%s_%s_mean_std.png" % (self.geovar, var_name))
+            os.path.join(output_path, "%s_%s_mean_std.png" %
+                         (self.geovar, var_name))
         )
 
         return Summary_resultsDF
@@ -598,14 +632,15 @@ def main(
     print("Time/Area stats plots created!")
 
     # Make summary plots
-    #print("Creating summary plots...")
-    #summary_results = my_tool.make_summary_plots(
-    #    input_path, geovar, var_name, start_date, end_date, qc_flag, output_path
-    #)
-    #summary_results.to_csv(
+    # print("Creating summary plots...")
+    # summary_results = my_tool.make_summary_plots(
+    #    input_path, geovar, var_name, start_date, end_date,
+    #    qc_flag, output_path
+    # )
+    # summary_results.to_csv(
     #    os.path.join(output_path, "%s_summary.csv" % geovar), index=False
-    #)
-    #print("Summary plots created!")
+    # )
+    # print("Summary plots created!")
 
 
 def parse_filter(s):
@@ -693,8 +728,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-region",
         dest="region",
-        help="REQUIRED: region for mapplot. 1: global, 2: polar region, 3: mid-latitudes region,"
-        "4: tropics region, 5:southern mid-latitudes region, 6: southern polar region",
+        help="REQUIRED: region for mapplot. 1: global, 2: polar region, "
+        "3: mid-latitudes region, 4: tropics region, "
+        "5:southern mid-latitudes region, 6: southern polar region, 7: CONUS",
         required=False,
         default=0,
         metavar="integer",
