@@ -78,6 +78,7 @@ class SpatialTemporalStats:
         pmax,
         start_date,
         end_date,
+        obs_types,
         filter_by_vars,
         QC_filter,
         comparison_plots,
@@ -86,14 +87,17 @@ class SpatialTemporalStats:
         self.pmin = pmin
         self.pmax = pmax
         self.channel_no = f"{pmin} to {pmax}"
+        self.channel_no_fnam = f"{pmin}_to_{pmax}"
 
         if comparison_plots:
             num_passes = 2
         else:
             num_passes = 1
 
+        start_date = datetime.strptime(start_date, "%Y-%m-%d")
+        end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
         for ipass in range(num_passes):
-            print('num_passes, ipath', num_passes, ipass)
             if ipass == 0:
                 obs_files_path = obs_files_path_exp
             else:
@@ -117,9 +121,6 @@ class SpatialTemporalStats:
                 files_date_times_df["date_time"].dt.date)
 
             # read start date
-            start_date = datetime.strptime(start_date, "%Y-%m-%d")
-            end_date = datetime.strptime(end_date, "%Y-%m-%d")
-
             studied_cycle_files = files_date_times_df[
                 (
                     (files_date_times_df["date"] >= start_date)
@@ -129,25 +130,31 @@ class SpatialTemporalStats:
 
             studied_gdf_list = []
             for this_cycle_obs_file in studied_cycle_files:
+                print('ipass, this_cycle_obs_file =',
+                      ipass, this_cycle_obs_file)
                 ds = xarray.open_dataset(this_cycle_obs_file)
 
                 # Combined_bool = ds["Channel_Index"].data == channel_no
-                Combined_bool = (ds["Pressure"].data <= pmax) &
-                (ds["Pressure"].data >= pmin)
+                Combined_bool = (ds["Pressure"].data <= pmax) & \
+                    (ds["Pressure"].data >= pmin)
+                if obs_types != []:
+                    Combined_bool &= ds["Observation_Type"].isin(obs_types)
                 if QC_filter:
-                    QC_bool = ds["Analysis_Use_Flag"].data == 1
-                    Combined_bool = Combined_bool * QC_bool
+                    Combined_bool &= ds["Analysis_Use_Flag"] == 1
 
                 # apply filters by variable
                 for this_filter in filter_by_vars:
-                    filter_var_name, filter_operation, filter_value =
-                    this_filter
+                    filter_var_name, filter_operation, filter_value = \
+                        this_filter
                     if filter_operation == "lt":
-                        this_filter_bool = ds[filter_var_name].data <=
-                        filter_value
+                        this_filter_bool = ds[filter_var_name].data <= \
+                            filter_value
+                    elif filter_operation == "eq":
+                        this_filter_bool = ds[filter_var_name].data == \
+                            filter_value
                     else:
-                        this_filter_bool = ds[filter_var_name].data >=
-                        filter_value
+                        this_filter_bool = ds[filter_var_name].data >= \
+                            filter_value
                     Combined_bool = (
                          Combined_bool * ~this_filter_bool
                     )  # here we have to negate the above bool to make it right
@@ -186,48 +193,72 @@ class SpatialTemporalStats:
             # Calculate average values of points in each polygon
             if ipass == 0:
                 self.obs_gdf_exp = self.grid_gdf.copy()
-                self.obs_gdf_exp[var_name + "_Average"] =
-                joined_gdf.groupby("grid_id")["value"].mean()
-                self.obs_gdf_exp[var_name + "_RMS"] =
-                joined_gdf.groupby("grid_id")["value"].apply(
+                self.obs_gdf_exp[var_name + "_Average"] = \
+                    joined_gdf.groupby("grid_id")["value"].mean()
+                self.obs_gdf_exp[var_name + "_RMS"] = \
+                    joined_gdf.groupby("grid_id")["value"].apply(
                        lambda x: np.sqrt((x**2).mean()))
-                self.obs_gdf_exp[var_name + "_Count"] =
-                joined_gdf.groupby("grid_id")["value"].count()
+                self.obs_gdf_exp[var_name + "_Count"] = \
+                    joined_gdf.groupby("grid_id")["value"].count()
             else:
                 self.obs_gdf_ctl = self.grid_gdf.copy()
-                self.obs_gdf_ctl[var_name + "_Average"] =
-                joined_gdf.groupby("grid_id")["value"].mean()
-                self.obs_gdf_ctl[var_name + "_RMS"] =
-                joined_gdf.groupby("grid_id")["value"].apply(
+                self.obs_gdf_ctl[var_name + "_Average"] = \
+                    joined_gdf.groupby("grid_id")["value"].mean()
+                self.obs_gdf_ctl[var_name + "_RMS"] = \
+                    joined_gdf.groupby("grid_id")["value"].apply(
                        lambda x: np.sqrt((x**2).mean()))
-                self.obs_gdf_ctl[var_name + "_Count"] =
-                joined_gdf.groupby("grid_id")["value"].count()
+                self.obs_gdf_ctl[var_name + "_Count"] = \
+                    joined_gdf.groupby("grid_id")["value"].count()
 
-        # Th2is is where we do the differencing
+        # This is where we do the differencing
         self.obs_gdf = self.obs_gdf_exp.copy()
         if comparison_plots:
-            self.obs_gdf[var_name + "_Average"] =
-            self.obs_gdf[var_name + "_Average"] -
-            self.obs_gdf_ctl[var_name + "_Average"]
+            self.obs_gdf[var_name + "_Average"] = \
+                self.obs_gdf[var_name + "_Average"] - \
+                self.obs_gdf_ctl[var_name + "_Average"]
 
-            self.obs_gdf[var_name + "_RMS"] =
-            self.obs_gdf[var_name + "_RMS"] -
-            self.obs_gdf_ctl[var_name + "_RMS"]
+            self.obs_gdf[var_name + "_RMS"] = \
+                self.obs_gdf[var_name + "_RMS"] - \
+                self.obs_gdf_ctl[var_name + "_RMS"]
 
-            self.obs_gdf[var_name + "_Count"] =
-            self.obs_gdf[var_name + "_Count"] -
-            self.obs_gdf_ctl[var_name + "_Count"]
+            self.obs_gdf[var_name + "_Count"] = \
+                self.obs_gdf[var_name + "_Count"] - \
+                self.obs_gdf_ctl[var_name + "_Count"]
 
         # convert count of zero to null. This will help also for plotting
-        self.obs_gdf[var_name + "_Count"] = np.where(
-            self.obs_gdf[var_name + "_Count"].values == 0,
+        self.obs_gdf_exp[var_name + "_Count"] = np.where(
+            self.obs_gdf_exp[var_name + "_Count"].values == 0,
             np.nan,
-            self.obs_gdf[var_name + "_Count"].values,
+            self.obs_gdf_exp[var_name + "_Count"].values,
         )
+        if comparison_plots:
+            self.obs_gdf_ctl[var_name + "_Count"] = np.where(
+                self.obs_gdf_ctl[var_name + "_Count"].values == 0,
+                np.nan,
+                self.obs_gdf_ctl[var_name + "_Count"].values,
+            )
+            self.obs_gdf[var_name + "_Count"] = np.where(
+                self.obs_gdf[var_name + "_Count"].values == 0,
+                np.nan,
+                self.obs_gdf[var_name + "_Count"].values,
+            )
 
-        return self.obs_gdf
+        # Set RMS amd Average fields to missing in difference field where
+        # counts are significantly different
+        if comparison_plots:
+            bool_test = ((self.obs_gdf_ctl[var_name + "_Count"].values +
+                         self.obs_gdf_exp[var_name + "_Count"].values) /
+                         self.obs_gdf[var_name + "_Count"].values) < 100.0
+            self.obs_gdf[var_name + "_RMS"] = \
+                np.where(bool_test, np.nan,
+                         self.obs_gdf[var_name + "_RMS"].values)
+            self.obs_gdf[var_name + "_Average"] = \
+                np.where(bool_test, np.nan,
+                         self.obs_gdf[var_name + "_Average"].values)
 
-    def plot_obs(self, selected_var_gdf,
+        return self.obs_gdf, self.obs_gdf_exp, self.obs_gdf_ctl
+
+    def plot_obs(self, selected_var_gdf, plot_name,
                  var_name, region, resolution, output_path):
         self.resolution = resolution
         var_names = [var_name + "_Average", var_name +
@@ -245,6 +276,9 @@ class SpatialTemporalStats:
                 ax = plt.subplot(1, 1, 1, projection=ccrs.PlateCarree())
 
             # Add global map coastlines
+            # if region == 7:
+            #    ax.add_feature(cfeature.GSHHSFeature(scale="high"))
+            # else:
             ax.add_feature(cfeature.GSHHSFeature(scale="auto"))
             filtered_gdf = selected_var_gdf.copy()
 
@@ -336,11 +370,25 @@ class SpatialTemporalStats:
             if item == "Obs_Minus_Forecast_adjusted_Average":
                 max_val_cbar = 5.0 * std_val
                 min_val_cbar = -5.0 * std_val
-                cmap = "bwr"
+                cmap = "Spectral"
             else:
                 max_val_cbar = max_val
                 min_val_cbar = min_val
-                cmap = "jet"
+                cmap = "Spectral"
+
+            if item == "Obs_Minus_Forecast_adjusted_RMS":
+                if plot_name == 'Experiment - Control':
+                    max_val_cbar = 5.0 * std_val
+                    min_val_cbar = -5.0 * std_val
+                    cmap = "Spectral"
+                else:
+                    max_val_cbar = 5.0 * avg_val
+                    min_val_cbar = 0.0
+                    cmap = "cool"
+            else:
+                max_val_cbar = max_val
+                min_val_cbar = min_val
+                cmap = "Spectral"
 
             if item == "Obs_Minus_Forecast_adjusted_Count":
                 cbar_label = "grid=%dx%d,   min=%.3lf,   max=%.3lf\n" % (
@@ -381,19 +429,21 @@ class SpatialTemporalStats:
             filtered_gdf.to_file(
                 os.path.join(
                     output_path,
-                    "%s_%s_hPA_%s_region_%d.gpkg"
-                    % (self.geovar, self.channel_no, item, region),
+                    "%s_%s_%s_hPA_%s_region_%d.gpkg"
+                    % (plot_name, self.geovar, self.channel_no_fnam,
+                       item, region),
                 )
             )
 
-            plt.title("%s\n%s ch:%s %s" % (
-                title, self.geovar, self.channel_no, item))
+            plt.title("%s %s\n%s %shPa %s" % (
+                plot_name, title, self.geovar, self.channel_no, item))
             plt.savefig(
                 os.path.join(
                     output_path,
                     # "%s_ch%d_%s_region_%d.png"
-                    "%s_%s_hPA_%s_region_%d.png"
-                    % (self.geovar, self.channel_no, item, region),
+                    "%s_%s_%s_hPA_%s_region_%d.png"
+                    % (plot_name, self.geovar, self.channel_no_fnam,
+                       item, region),
                 )
             )
             plt.close()
@@ -597,9 +647,9 @@ def main(
     region,
     start_date,
     end_date,
-    comparison_plots,
     filter_by_vars,
     input_path_ctl,
+    obs_types
 ):
     # Initialize SpatialTemporalStats object
     my_tool = SpatialTemporalStats()
@@ -609,7 +659,7 @@ def main(
     print("grid created!")
 
     # Read observational values and perform analysis
-    o_minus_f_gdf = my_tool.read_obs_values(
+    diff, exp, ctl = my_tool.read_obs_values(
         input_path,
         input_path_ctl,
         geovar,
@@ -618,6 +668,7 @@ def main(
         pmax,
         start_date,
         end_date,
+        obs_types,
         filter_by_vars,
         qc_flag,
         comparison_plots,
@@ -628,7 +679,21 @@ def main(
     # Plot observations
     print("creating plots...")
 
-    my_tool.plot_obs(o_minus_f_gdf, var_name, region, grid_size, output_path)
+    if comparison_plots:
+        plot_name = 'Experiment'
+        my_tool.plot_obs(exp, plot_name, var_name, region,
+                         grid_size, output_path)
+        plot_name = 'Control'
+        my_tool.plot_obs(ctl, plot_name, var_name, region,
+                         grid_size, output_path)
+        plot_name = 'Experiment - Control'
+        my_tool.plot_obs(diff, plot_name, var_name, region,
+                         grid_size, output_path)
+    else:
+        plot_name = ''
+        my_tool.plot_obs(exp, plot_name, var_name, region,
+                         grid_size, output_path)
+
     print("Time/Area stats plots created!")
 
     # Make summary plots
@@ -646,7 +711,7 @@ def main(
 def parse_filter(s):
     try:
         var_name, comparison, threshold = s.split(",")
-        if comparison not in ("lt", "gt"):
+        if comparison not in ("lt", "gt", "eq"):
             raise ValueError("Comparison must be 'lt' or 'gt'")
         return (var_name, comparison, float(threshold))
     except ValueError:
@@ -770,10 +835,19 @@ if __name__ == "__main__":
         "-input_ctl",
         dest="input_path_ctl",
         help="Optional: Input path of comparison expt ",
-        nargs="+",
-        default=[],
+        default='',
+        # nargs="+",
         metavar="DIR",
         type=str,
+    )
+
+    parser.add_argument(
+        "-obs_types",
+        dest="obs_types",
+        help="Optional: List specific obs types ",
+        default=[],
+        nargs="+",
+        type=int,
     )
 
     args = vars(parser.parse_args())
@@ -801,6 +875,11 @@ if __name__ == "__main__":
         input_path_ctl = ' '
         comparison_plots = False
 
+    if args["obs_types"]:
+        obs_types = args["obs_types"]
+    else:
+        obs_types = []
+
     # Accessing and printing the parsed filter criteria
     if args["filter_by_vars"]:
         for filter_criteria in args["filter_by_vars"]:
@@ -822,7 +901,7 @@ if __name__ == "__main__":
         region,
         start_date,
         end_date,
-        comparison_plots,
         args["filter_by_vars"],
         args["input_path_ctl"],
+        args["obs_types"],
     )
