@@ -243,12 +243,12 @@ class SpatialTemporalStats:
                 self.obs_gdf[var_name + "_Count"].values,
             )
 
-        # Set RMS amd Average fields to missing in difference field where
+        # Set RMS and Average fields to missing in difference field where
         # counts are significantly different
         if comparison_plots:
-            bool_test = ((self.obs_gdf_ctl[var_name + "_Count"].values +
-                         self.obs_gdf_exp[var_name + "_Count"].values) /
-                         self.obs_gdf[var_name + "_Count"].values) < 100.0
+            bool_test = (abs(self.obs_gdf[var_name + "_Count"].values)) / \
+                        (self.obs_gdf_ctl[var_name + "_Count"].values +
+                         self.obs_gdf_exp[var_name + "_Count"].values) < 0.1
             self.obs_gdf[var_name + "_RMS"] = \
                 np.where(bool_test, np.nan,
                          self.obs_gdf[var_name + "_RMS"].values)
@@ -426,11 +426,12 @@ class SpatialTemporalStats:
                 },
             )
 
+            plot_namef = plot_name.replace(" ", "_") + "_"
             filtered_gdf.to_file(
                 os.path.join(
                     output_path,
-                    "%s_%s_%s_hPA_%s_region_%d.gpkg"
-                    % (plot_name, self.geovar, self.channel_no_fnam,
+                    "%s%s_%s_hPA_%s_region_%d.gpkg"
+                    % (plot_namef, self.geovar, self.channel_no_fnam,
                        item, region),
                 )
             )
@@ -441,8 +442,8 @@ class SpatialTemporalStats:
                 os.path.join(
                     output_path,
                     # "%s_ch%d_%s_region_%d.png"
-                    "%s_%s_%s_hPA_%s_region_%d.png"
-                    % (plot_name, self.geovar, self.channel_no_fnam,
+                    "%s%s_%s_hPA_%s_region_%d.png"
+                    % (plot_namef, self.geovar, self.channel_no_fnam,
                        item, region),
                 )
             )
