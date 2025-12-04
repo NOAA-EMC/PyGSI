@@ -153,9 +153,9 @@ class GSIstat(object):
         df = pd.DataFrame(data=tmp, columns=columns)
         df.drop(['col1', 'col2', 'col3'], inplace=True, axis=1)
         df[['channel', 'nassim', 'nrej']] = df[[
-            'channel', 'nassim', 'nrej']].astype(np.int)
+            'channel', 'nassim', 'nrej']].astype(int)
         df[['oberr', 'OmF_bc', 'OmF_wobc']] = df[[
-            'oberr', 'OmF_bc', 'OmF_wobc']].astype(np.float)
+            'oberr', 'OmF_bc', 'OmF_wobc']].astype(float)
 
         # Since iteration number is not readily available, make one
         lendf = len(df)
@@ -230,9 +230,9 @@ class GSIstat(object):
 
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
-        df[['it', 'typ', 'count']] = df[['it', 'typ', 'count']].astype(np.int)
+        df[['it', 'typ', 'count']] = df[['it', 'typ', 'count']].astype(int)
         df[['bias', 'rms', 'cpen', 'qcpen']] = df[[
-            'bias', 'rms', 'cpen', 'qcpen']].astype(np.float)
+            'bias', 'rms', 'cpen', 'qcpen']].astype(float)
         df.set_index(columns[:5], inplace=True)
 
         return df
@@ -251,7 +251,7 @@ class GSIstat(object):
             if re.search(pattern, line):
                 if re.search(' '+name+' ', self._lines[i+2]):
                     header = line.strip()
-                    ptops = np.array(header.split()[2:-1], dtype=np.float)
+                    ptops = np.array(header.split()[2:-1], dtype=float)
                     break
         if ptops is []:
             print(f'No matching ptop for {name}')
@@ -267,7 +267,7 @@ class GSIstat(object):
                     header = line.strip()
                     header = re.sub('pbot', 'stat', header)
                     header = re.sub('0.200E' + r'\+04', 'column', header)
-                    pbots = np.array(header.split()[7:-1], dtype=np.float)
+                    pbots = np.array(header.split()[7:-1], dtype=float)
                     break
         if pbots is []:
             print(f'No matching pbot for {name}')
@@ -291,9 +291,9 @@ class GSIstat(object):
 
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
-        df[['it', 'typ']] = df[['it', 'typ']].astype(np.int)
+        df[['it', 'typ']] = df[['it', 'typ']].astype(int)
         df.set_index(columns[:7], inplace=True)
-        df = df.astype(np.float)
+        df = df.astype(float)
 
         return df
 
@@ -328,9 +328,9 @@ class GSIstat(object):
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
         df[['it', 'read', 'keep', 'assim']] = df[[
-            'it', 'read', 'keep', 'assim']].astype(np.int)
+            'it', 'read', 'keep', 'assim']].astype(int)
         df[['penalty', 'cpen', 'qcpen', 'qcfail']] = df[[
-            'penalty', 'cpen', 'qcpen', 'qcfail']].astype(np.float)
+            'penalty', 'cpen', 'qcpen', 'qcfail']].astype(float)
         df.set_index(columns[:4], inplace=True)
         df = df.swaplevel('sat', 'inst')
         df.index.rename(['satellite', 'instrument'], level=[
@@ -369,9 +369,9 @@ class GSIstat(object):
         columns = header.split()
         df = pd.DataFrame(data=tmp, columns=columns)
         df[['it', 'read', 'keep', 'assim']] = df[[
-            'it', 'read', 'keep', 'assim']].astype(np.int)
+            'it', 'read', 'keep', 'assim']].astype(int)
         df[['penalty', 'qcpnlty', 'cpen', 'qccpen']] = df[[
-            'penalty', 'qcpnlty', 'cpen', 'qccpen']].astype(np.float)
+            'penalty', 'qcpnlty', 'cpen', 'qccpen']].astype(float)
         df.set_index(columns[:4], inplace=True)
         df = df.swaplevel('satellite', 'instrument')
 
@@ -405,8 +405,8 @@ class GSIstat(object):
 
         columns = ['Outer', 'Inner', 'J', 'gJ']
         df = pd.DataFrame(data=tmp, columns=columns)
-        df[['Outer', 'Inner', ]] = df[['Outer', 'Inner']].astype(np.int)
+        df[['Outer', 'Inner', ]] = df[['Outer', 'Inner']].astype(int)
         df.set_index(columns[:2], inplace=True)
-        df = df.astype(np.float)
+        df = df.astype(float)
 
         return df
